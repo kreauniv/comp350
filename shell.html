@@ -134,7 +134,7 @@ bring many tools to bear on that representation right within the shell.</p>
 </pre></div>
 </div>
 <p>For example, <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">'[.]js$'</span></code> will take the long form listing of the
-current directory and pass that list to <code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">'js$'</span></code> which will read each
+current directory and pass that list to <code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">'[.]js$'</span></code> which will read each
 line in its input and only send to its <em>stdout</em> only those lines that have ‘.js’
 as the last two characters on the line.</p>
 <p>Notice how <code class="docutils literal notranslate"><span class="pre">ls</span></code> itself doesn’t need to do any such filtering and <code class="docutils literal notranslate"><span class="pre">grep</span></code>
