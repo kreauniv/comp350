@@ -116,7 +116,7 @@ The piping syntax is simple --
     <command1> <argA1> <argA2> .. <argAM> | <command2> <argB1> <argB2> ... <argBN>
 
 For example, ``ls -l | grep '[.]js$'`` will take the long form listing of the
-current directory and pass that list to ``grep 'js$'`` which will read each
+current directory and pass that list to ``grep '[.]js$'`` which will read each
 line in its input and only send to its *stdout* only those lines that have '.js'
 as the last two characters on the line.
 
