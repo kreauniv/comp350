@@ -1,10 +1,10 @@
-The "shell" a.k.a. the "command line"
-=====================================
+The "shell" 
+===========
 
-The **shell** has been given that name in line with the notion of the operating
-system **kernel** which serves as its core. The shell then offers a means of
-interacting with the kernel to use its services, such as managing the **file
-system**.
+The **shell** (a.k.a. the "command line") has been given that name in line with
+the notion of the operating system **kernel** which serves as its core. The
+shell then offers a means of interacting with the kernel to use its services,
+such as managing the **file system**.
 
 For this course, I urge you to become familiar with doing much, if not all, of
 your activities via the shell on your laptop. If you're using MacOS, the
