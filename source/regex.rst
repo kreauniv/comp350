@@ -148,8 +148,9 @@ First we notice that each "part" separated by the hyphen character consists of
 one or more "hexadecimal" characters. This idea we may describe using the
 regex pattern "``[0-9a-f]\+``".
 
-.. admonition:: **Pause and think**: Is the pattern "``[0-9a-f]\+``" precise
-   or a more loose match than we need?
+.. admonition:: **Pause and think**
+
+    Is the pattern "``[0-9a-f]\+``" precise or a more loose match than we need?
 
 So we may conceive of the UUID pattern as "hexdigits followed by one or more
 occurrences of (hyphen followed by hexdigits)", where we've placed the group
@@ -165,16 +166,20 @@ we simply place "``\+``" after the group like this - "``\(-[0-9a-f]\+\)\+``".
 So you see that "``\+``" applies to the "unit" that immediately precedes it,
 be it a single character, or a parenthesized group.
 
-.. admonition:: **Pause and think**: How would you then say "exactly 4
-   occurrences of the group (hyphen followed by hexdigits)".
+.. admonition:: **Pause and think**
+
+   How would you then say "exactly 4 occurrences of the group (hyphen followed
+   by hexdigits)".
 
 Now we can complete a possible description of a UUID using the regex --
 "``[0-9a-f]\+\(-[0-9a-f]\+\)\+``".
 
-.. admonition:: **Pause and think**: That final regex pattern will also match
-   "2-3-4-5-6-7-8-9" which is not a valid UUID. The parts of the UUID are fixed
-   and must have exactly the same fixed number of characters. So can you modify
-   the regex to match UUIDs strictly (i.e. with greater precision)?
+.. admonition:: **Pause and think**
+
+   That final regex pattern will also match "2-3-4-5-6-7-8-9" which is not a
+   valid UUID. The parts of the UUID are fixed and must have exactly the same
+   fixed number of characters. So can you modify the regex to match UUIDs
+   strictly (i.e. with greater precision)?
 
 Invisible characters
 --------------------
@@ -198,10 +203,12 @@ look-ahead and look-behind, other invisible character positions such as "word
 boundary" and more. However, the above collection should serve you well for
 many common needs.
 
-.. admonition:: **Important**: While the language is richer than described
-   here, do not underestimate the value of **composing** the above features.
-   For example, you can provides options ("``\|``") within groups ("``\(\)``")
-   and ask for at least 2 occurrences ("``{2,}``"), and so on.
+.. admonition:: **Important**
+
+   While the language is richer than described here, do not underestimate the
+   value of **composing** the above features. For example, you can provides
+   options ("``\|``") within groups ("``\(\)``") and ask for at least 2
+   occurrences ("``{2,}``"), and so on.
 
 To learn about the other features, you can refer to the `grep man page`_ 
 pointed to earlier.

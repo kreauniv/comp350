@@ -53,17 +53,19 @@ file name using single quotes, like this -- ``ls 'prefix*'``. Similar to ``*``,
 the ``?`` character will match any single character, so ``ls '*.??'`` will list
 all files that have two character "extensions" (the portion after the ".").
 
-.. admonition:: **Note**: The special characters ``*`` and ``?`` are called
-   "wild card" characters because, as in the UNO game, they can be used in
-   place of arbitrary text.
+.. admonition:: **Note**
 
-.. admonition:: **Another note**: If you have two files named
-   ``assignment-first.txt`` and ``assignment-second.txt`` in the current
-   directory and you've typed ``ls assignment-*`` expecting to see both of
-   them, know that doing so is exactly equivalent to having typed ``ls
-   assignment-first.txt assignment-second.txt`` by hand! i.e. The wild card
-   characters are expanded first and passed as arguments to the ``ls`` program
-   *before* running the program.
+   The special characters ``*`` and ``?`` are called "wild card" characters
+   because, as in the UNO game, they can be used in place of arbitrary text.
+
+.. admonition:: **Another note**
+
+   If you have two files named ``assignment-first.txt`` and
+   ``assignment-second.txt`` in the current directory and you've typed ``ls
+   assignment-*`` expecting to see both of them, know that doing so is exactly
+   equivalent to having typed ``ls assignment-first.txt assignment-second.txt``
+   by hand! i.e. The wild card characters are expanded first and passed as
+   arguments to the ``ls`` program *before* running the program.
 
 Redirecting the output of a command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,8 +85,9 @@ absolute path ``/tmp/listing.txt``. The ``/tmp`` folder, by convention, is
 commonly used for temporary files and this directory is emptied every time you
 reboot your machine.
 
-.. admonition:: **Note**: The ``>`` redirection operator will only redirect
-   *stdout* and not *stderr*.
+.. admonition:: **Note**
+
+   The ``>`` redirection operator will only redirect *stdout* and not *stderr*.
 
 Connecting programs via pipes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,14 +129,16 @@ have ".js" as their extensions.
 Obviously, you can repeat such a pipe operation like -- ``cmd1 | cmd2 | cmd3 ...``
 and the combination will do the obvious thing.
 
-.. admonition:: **Note**: If the commands are all producing their outputs one
-   line at a time and consuming one line of input at a time, then if any of the
-   commands deep down the "pipeline" fails at a point, the whole pipeline will
-   fail without forcing the first command to run to completion. i.e. The whole
-   pipe will fail early, and this is an incredibly useful property. This also
-   means that ``cmd2``, ``cmd3`` etc. will start their processing even before
-   ``cmd1`` has completed generating all its output. This magic is orchestrated
-   by the kernel facility called "process".
+.. admonition:: **Note**
+   
+   If the commands are all producing their outputs one line at a time and
+   consuming one line of input at a time, then if any of the commands deep down
+   the "pipeline" fails at a point, the whole pipeline will fail without
+   forcing the first command to run to completion. i.e. The whole pipe will
+   fail early, and this is an incredibly useful property. This also means that
+   ``cmd2``, ``cmd3`` etc. will start their processing even before ``cmd1`` has
+   completed generating all its output. This magic is orchestrated by the
+   kernel facility called "process".
 
 Useful conventions of shell programs
 ------------------------------------
@@ -165,11 +170,13 @@ pages" using the ``man`` command. For example, ``man ls`` will bring up the
 manual page for the ``ls`` command giving details of all its parameters and
 what they are for.
 
-.. admonition:: **Note**: You are NOT expected to know by heart what the flags
-   of various commands are and what they do. You can always look them up using
-   ``man`` or ``<cmd> --help`` when you need to. **In fact, you should expect
-   to do a LOT more reading of manuals than writing of code!!**, at least in the
-   early stages of mastery.
+.. admonition:: **Note**
+
+   You are NOT expected to know by heart what the flags of various commands are
+   and what they do. You can always look them up using ``man`` or ``<cmd>
+   --help`` when you need to. **In fact, you should expect to do a LOT more
+   reading of manuals than writing of code!!**, at least in the early stages of
+   mastery.
 
 Google
 ~~~~~~
@@ -303,12 +310,14 @@ text by first typing the ``/`` character followed by what you want to find. You
 can also jump to specific lines by first typing the number followed by the
 character ``G`` (for "go to").
 
-.. admonition:: *History note* - why is this program called "less" you ask? The
-   original unix pager program was called "more", which would show a page of
-   content and wait for you to hit the space bar to show the next page (hence
-   "pager"). When GNU/Linux was written, they couldn't use the same program
-   name for copyright reasons, so they named it "less" because "less is more"
-   :P Unix history is full of such delightful/groanful word play.
+.. admonition:: *History note*
+
+   Why is this program called "less" you ask? The original unix pager program
+   was called "more", which would show a page of content and wait for you to
+   hit the space bar to show the next page (hence "pager"). When GNU/Linux was
+   written, they couldn't use the same program name for copyright reasons, so
+   they named it "less" because "less is more" :P Unix history is full of such
+   delightful/groanful word play.
 
 ``curl URL`` -- Downloads the given URL and sends the result to its *stdout*.
 ``curl`` is a very powerful program with very many options to control the kind
