@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>The “shell” a.k.a. the “command line” &#8212; Comp350: Software design v1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Basics of “regular expressions”" href="regex.html" />
+    <link rel="prev" title="Introduction" href="intro.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-shell-a-k-a-the-command-line">
+<h1>The “shell” a.k.a. the “command line”<a class="headerlink" href="#the-shell-a-k-a-the-command-line" title="Permalink to this heading">¶</a></h1>
+<p>The <strong>shell</strong> has been given that name in line with the notion of the operating
+system <strong>kernel</strong> which serves as its core. The shell then offers a means of
+interacting with the kernel to use its services, such as managing the <strong>file
+system</strong>.</p>
+<p>For this course, I urge you to become familiar with doing much, if not all, of
+your activities via the shell on your laptop. If you’re using MacOS, the
+“Terminal” application offers such a shell. If you’re using Windows, please
+install “WSL” (“Windows Subsystem for Linux” with Ubuntu as the OS choice) and
+use that in place of the traditional Windows “command line”.</p>
+<p>This document offers a “cheat sheet” that you can refer to for common
+operations you need to perform. I’ll assume that you’re familiar with basic
+computer organization terms such as “file” and “folder” (a.k.a. “directory”).</p>
+<section id="basics-and-guidelines">
+<h2>Basics and Guidelines<a class="headerlink" href="#basics-and-guidelines" title="Permalink to this heading">¶</a></h2>
+<p>There are 3 main concepts you need to be familiar with to use the shell
+effectively.</p>
+<section id="running-a-command">
+<h3>Running a command<a class="headerlink" href="#running-a-command" title="Permalink to this heading">¶</a></h3>
+<p>A “command” is (typically) a verb instruction given to the shell that identifies
+an operation to perform and takes arguments that control that operation. A command
+has the simple form of verb and arguments separated by one or more spaces. The number
+of space characters separating arguments does not matter. Here are some such commands.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">mydir</span></code> - lists the contents of the <code class="docutils literal notranslate"><span class="pre">mydir</span></code> directory in “long form”.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">mydir</span></code> - changes the present working directory to <code class="docutils literal notranslate"><span class="pre">mydir</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">textfile.txt</span></code> - dumps <code class="docutils literal notranslate"><span class="pre">textfile.txt</span></code> to the terminal.</p></li>
+</ul>
+<p>All shell commands send their output to a stream called “standard output” (or
+“stdout” for short) and perhaps another (depending on the case) called
+“standard error” (or “stderr” for short). The shell programs also take input
+from a “standard input” (or “stdin” for short). So the general structure of a
+command invocation is –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">verb</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">command</span> <span class="n">arg1</span> <span class="n">arg2</span> <span class="o">...</span> <span class="n">argN</span>
+</pre></div>
+</div>
+<p>Most shells (such as <code class="docutils literal notranslate"><span class="pre">bash</span></code> on Ubuntu and <code class="docutils literal notranslate"><span class="pre">zsh</span></code> on MacOS), will interpret
+some characters in the arguments as special. For example, <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">prefix*</span></code> will
+list all the files that start with <code class="docutils literal notranslate"><span class="pre">prefix</span></code>, taking the <code class="docutils literal notranslate"><span class="pre">*</span></code> to match
+anything that follows the prefix string. So what do you do if your file name
+itself has one of these characters? In such cases, you can strict quote the
+file name using single quotes, like this – <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">'prefix*'</span></code>. Similar to <code class="docutils literal notranslate"><span class="pre">*</span></code>,
+the <code class="docutils literal notranslate"><span class="pre">?</span></code> character will match any single character, so <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">'*.??'</span></code> will list
+all files that have two character “extensions” (the portion after the “.”).</p>
+<div class="admonition-note admonition">
+<p class="admonition-title"><strong>Note</strong></p>
+<p>The special characters <code class="docutils literal notranslate"><span class="pre">*</span></code> and <code class="docutils literal notranslate"><span class="pre">?</span></code> are called “wild card” characters
+because, as in the UNO game, they can be used in place of arbitrary text.</p>
+</div>
+<div class="admonition-another-note admonition">
+<p class="admonition-title"><strong>Another note</strong></p>
+<p>If you have two files named <code class="docutils literal notranslate"><span class="pre">assignment-first.txt</span></code> and
+<code class="docutils literal notranslate"><span class="pre">assignment-second.txt</span></code> in the current directory and you’ve typed <code class="docutils literal notranslate"><span class="pre">ls</span>
+<span class="pre">assignment-*</span></code> expecting to see both of them, know that doing so is exactly
+equivalent to having typed <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">assignment-first.txt</span> <span class="pre">assignment-second.txt</span></code>
+by hand! i.e. The wild card characters are expanded first and passed as
+arguments to the <code class="docutils literal notranslate"><span class="pre">ls</span></code> program <em>before</em> running the program.</p>
+</div>
+</section>
+<section id="redirecting-the-output-of-a-command">
+<h3>Redirecting the output of a command<a class="headerlink" href="#redirecting-the-output-of-a-command" title="Permalink to this heading">¶</a></h3>
+<p>We saw that commands send their output to their <em>stdout</em>. If we want to store
+whatever is sent to the command’s <em>stdout</em> to a file for later use, we can use
+the “redirection” operator <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> like this – <code class="docutils literal notranslate"><span class="pre">command</span> <span class="pre">arg1</span> <span class="pre">arg2</span> <span class="pre">...</span> <span class="pre">argN</span> <span class="pre">&gt;</span>
+<span class="pre">filename.ext</span></code>. Note that the file name and extension are completely arbitrary
+from the system’s perspective. Different programs may interpret extensions
+according to their own conventions. It is common for text files to have the
+“.txt” extension and programming language source code files are also identified
+by their extension by editors.</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">&gt;</span> <span class="pre">/tmp/listing.txt</span></code> will list the files in the current
+directory in long form and store (“redirect”) that output to the file at the
+absolute path <code class="docutils literal notranslate"><span class="pre">/tmp/listing.txt</span></code>. The <code class="docutils literal notranslate"><span class="pre">/tmp</span></code> folder, by convention, is
+commonly used for temporary files and this directory is emptied every time you
+reboot your machine.</p>
+<div class="admonition-note admonition">
+<p class="admonition-title"><strong>Note</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> redirection operator will only redirect <em>stdout</em> and not <em>stderr</em>.</p>
+</div>
+</section>
+<section id="connecting-programs-via-pipes">
+<h3>Connecting programs via pipes<a class="headerlink" href="#connecting-programs-via-pipes" title="Permalink to this heading">¶</a></h3>
+<p>Since shell programs take their input from a <em>stdin</em> and output their results
+to an <em>stdout</em>, we can now think about combining programs by connecting the
+<em>stdout</em> of one command/program to the <em>stdin</em> of another command/program to
+further process the output of the first program.</p>
+<p>This is called “piping” and is done using the <code class="docutils literal notranslate"><span class="pre">|</span></code> operator.</p>
+<p>Shell programs in unix operating systems are designed to do one focused task
+each that work usually by taking input from <em>stdin</em> and sending output to
+<em>stdout</em>. So accomplishing more complex tasks that involve more than one such
+operation is usually done via piping, or if piping is not feasible for some
+reason, via temporary files on the file system.</p>
+<p>Typically, programs work with lines of text one line at a time as well. This
+means if you organize the output of a program as lines of text, you can
+bring many tools to bear on that representation right within the shell.</p>
+<p>The piping syntax is simple –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;command1&gt;<span class="w"> </span>&lt;argA1&gt;<span class="w"> </span>&lt;argA2&gt;<span class="w"> </span>..<span class="w"> </span>&lt;argAM&gt;<span class="w"> </span><span class="p">|</span><span class="w"> </span>&lt;command2&gt;<span class="w"> </span>&lt;argB1&gt;<span class="w"> </span>&lt;argB2&gt;<span class="w"> </span>...<span class="w"> </span>&lt;argBN&gt;
+</pre></div>
+</div>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">'[.]js$'</span></code> will take the long form listing of the
+current directory and pass that list to <code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">'js$'</span></code> which will read each
+line in its input and only send to its <em>stdout</em> only those lines that have ‘.js’
+as the last two characters on the line.</p>
+<p>Notice how <code class="docutils literal notranslate"><span class="pre">ls</span></code> itself doesn’t need to do any such filtering and <code class="docutils literal notranslate"><span class="pre">grep</span></code>
+doesn’t need to know anything about line-by-line listing of filenames and yet
+we can put these together to “list only the javascript source files in the
+current directory”, for that is the meaning we attach to files with names that
+have “.js” as their extensions.</p>
+<p>Obviously, you can repeat such a pipe operation like – <code class="docutils literal notranslate"><span class="pre">cmd1</span> <span class="pre">|</span> <span class="pre">cmd2</span> <span class="pre">|</span> <span class="pre">cmd3</span> <span class="pre">...</span></code>
+and the combination will do the obvious thing.</p>
+<div class="admonition-note admonition">
+<p class="admonition-title"><strong>Note</strong></p>
+<p>If the commands are all producing their outputs one line at a time and
+consuming one line of input at a time, then if any of the commands deep down
+the “pipeline” fails at a point, the whole pipeline will fail without
+forcing the first command to run to completion. i.e. The whole pipe will
+fail early, and this is an incredibly useful property. This also means that
+<code class="docutils literal notranslate"><span class="pre">cmd2</span></code>, <code class="docutils literal notranslate"><span class="pre">cmd3</span></code> etc. will start their processing even before <code class="docutils literal notranslate"><span class="pre">cmd1</span></code> has
+completed generating all its output. This magic is orchestrated by the
+kernel facility called “process”.</p>
+</div>
+</section>
+</section>
+<section id="useful-conventions-of-shell-programs">
+<h2>Useful conventions of shell programs<a class="headerlink" href="#useful-conventions-of-shell-programs" title="Permalink to this heading">¶</a></h2>
+<p>You’d have seen argument of the form <code class="docutils literal notranslate"><span class="pre">-l</span></code> that kind of stand out from other
+“normal” arguments like file names. These are called “flags” or “switches” and
+give special instruction to the command. In the case of <code class="docutils literal notranslate"><span class="pre">ls</span></code>, adding a <code class="docutils literal notranslate"><span class="pre">-l</span></code>
+flag tells it to output lots of details about the files in the specified
+directory (or the current directory).</p>
+<p>Some commands also have long descriptive flags that make such commands more
+readable and easier to debug. One such common conventional flag is <code class="docutils literal notranslate"><span class="pre">--help</span></code>.
+These long flags always start with two hyphen characters and may take an
+additional associated value (depending on the situation) like <code class="docutils literal notranslate"><span class="pre">--flag=value</span></code>
+or equivalently <code class="docutils literal notranslate"><span class="pre">--flag</span> <span class="pre">value</span></code>.</p>
+<section id="help">
+<h3><code class="docutils literal notranslate"><span class="pre">--help</span></code><a class="headerlink" href="#help" title="Permalink to this heading">¶</a></h3>
+<p>If you want some quick details of what a command does, you can often invoke it
+with the <code class="docutils literal notranslate"><span class="pre">--help</span></code> flag to get a short help. Sometimes, the short flag <code class="docutils literal notranslate"><span class="pre">-h</span></code>
+also works but <code class="docutils literal notranslate"><span class="pre">--help</span></code> is more common.</p>
+</section>
+<section id="man">
+<h3><code class="docutils literal notranslate"><span class="pre">man</span></code><a class="headerlink" href="#man" title="Permalink to this heading">¶</a></h3>
+<p>To get detailed help about a program’s function, you can consult its “manual
+pages” using the <code class="docutils literal notranslate"><span class="pre">man</span></code> command. For example, <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">ls</span></code> will bring up the
+manual page for the <code class="docutils literal notranslate"><span class="pre">ls</span></code> command giving details of all its parameters and
+what they are for.</p>
+<div class="admonition-note admonition">
+<p class="admonition-title"><strong>Note</strong></p>
+<p>You are NOT expected to know by heart what the flags of various commands are
+and what they do. You can always look them up using <code class="docutils literal notranslate"><span class="pre">man</span></code> or <code class="docutils literal notranslate"><span class="pre">&lt;cmd&gt;</span>
+<span class="pre">--help</span></code> when you need to. <strong>In fact, you should expect to do a LOT more
+reading of manuals than writing of code!!</strong>, at least in the early stages of
+mastery.</p>
+</div>
+</section>
+<section id="google">
+<h3>Google<a class="headerlink" href="#google" title="Permalink to this heading">¶</a></h3>
+<p>Of course, all such help is available via Google, so you can always google for
+help. In fact, all the man pages are also available on the internet and if you
+type “man &lt;something&gt;” in google, you’ll be taken to the appropriate linux man
+pages (usually, if you’re lucky, these days).</p>
+<p>The caveat is that there are many predatory sites that have “SEO”d their way to
+the top of the google search list for such programmer help and which more often
+are interested in engaging you on their site for advertisement revenue than
+actually helping you with what you want. For this reason, once you find out about
+a command using Google, I recommend you stick to referring to its <code class="docutils literal notranslate"><span class="pre">man</span></code> page
+for the details.</p>
+</section>
+<section id="stackoverflow">
+<h3>Stackoverflow<a class="headerlink" href="#stackoverflow" title="Permalink to this heading">¶</a></h3>
+<p>Once you’ve gained some fluency with the command line or some basics of a
+programming language and find yourself occasionally stuck on some task, you can
+also ask <a class="reference external" href="https://stackoverflow.com">stackoverflow.com</a>. You may find this useful
+only from about a month into this course.</p>
+</section>
+<section id="mozilla-developer-network-mdn">
+<h3>Mozilla Developer Network (MDN)<a class="headerlink" href="#mozilla-developer-network-mdn" title="Permalink to this heading">¶</a></h3>
+<p>For <strong>all</strong> details on <strong>HTML</strong>, <strong>CSS</strong> and <strong>Javascript</strong> functions and
+objects related details, use the “Mozilla Developer Network” or “MDN” for
+short. These are excellent, descriptive and non predatory pages that give you
+precise definitions with examples to help understand how to use a particular
+feature. In other words, “MDN” is your <code class="docutils literal notranslate"><span class="pre">man</span></code> for those three areas.</p>
+<p>To search MDN specifically, you can always add the word “mdn” to any search you
+do in google that pertains to those topics and an MDN page will usually be the
+first link you get. For example, to learn how to specify argument of
+<code class="docutils literal notranslate"><span class="pre">document.querySelector</span></code> Javascript function, you can google for
+<code class="docutils literal notranslate"><span class="pre">querySelector</span> <span class="pre">mdn</span></code>.</p>
+<p>MDN is also a “wiki”, meaning you can contribute to it. So if you notice any
+errors, you can create an account and submit fixes to them.</p>
+</section>
+</section>
+<section id="cheat-sheet">
+<h2>Cheat sheet<a class="headerlink" href="#cheat-sheet" title="Permalink to this heading">¶</a></h2>
+<p>Here, if I give a word in <code class="docutils literal notranslate"><span class="pre">ALLCAPS</span></code>, it is a placeholder for an argument
+you have to supply. Paths (file and directory names) can either be relative
+to the current directory or refer to an absolute location on the file system.
+Absolute paths start with <code class="docutils literal notranslate"><span class="pre">/</span></code>.</p>
+<section id="working-with-folders-a-k-a-directories-and-files">
+<h3>Working with folders (a.k.a. directories) and files<a class="headerlink" href="#working-with-folders-a-k-a-directories-and-files" title="Permalink to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">mkdir</span> <span class="pre">DIRNAME</span></code> or <code class="docutils literal notranslate"><span class="pre">md</span> <span class="pre">DIRNAME</span></code> – “make directory” creates a new empty
+directory with the given name within the current directory.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">DIRNAME</span></code> – “change directory” changes the “present working directory”
+(PWD) to the given directory. To change the PWD to the parent, use <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">..</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pwd</span></code> – Outputs the full (absolute) path of the “present working directory”.</p>
+<p><code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">FILENAME</span></code> – “remove” the specified file. Note that there is no “undo”
+for this destructive operation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">OPT_PATH</span></code> or <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">OPT_PATH</span></code> – “list files” in the given directory,
+either just the file names or some elaborate details if <code class="docutils literal notranslate"><span class="pre">-l</span></code> flag is given.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">FILENAME1</span> <span class="pre">FILENAME2</span> <span class="pre">...</span></code> – Reads the given files in the given order and
+dumps (“conCATenates”) their contents to the <em>stdout</em>. So if you want to join
+two files into a new file, you can use redirection like this – <code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">FILE1</span>
+<span class="pre">FILE2</span> <span class="pre">&gt;</span> <span class="pre">OUTFILE</span></code>.</p>
+</section>
+<section id="processing-line-by-line-formatted-data">
+<h3>Processing line-by-line formatted data<a class="headerlink" href="#processing-line-by-line-formatted-data" title="Permalink to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">sort</span></code> – sorts the contents sent to its <em>stdin</em> line by line in
+lexicographical order. There are other controls for the sort operation, which
+you can learn using <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">sort</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cut</span> <span class="pre">-f</span> <span class="pre">N</span></code> – can extract the <code class="docutils literal notranslate"><span class="pre">N</span></code>-th “field” from each line of input,
+discarding everything else. Use <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">cut</span></code> to learn how fields are determined
+and how to select different delimiters for the fields.</p>
+<p><code class="docutils literal notranslate"><span class="pre">wc</span></code> – short for “word count”, it counts the number of characters, words and
+lines in its <em>stdin</em> and prints out three numbers to its <em>stdout</em>. By passing
+appropriate flags, you can select which of these numbers you want. Learn about
+these flags using, you guessed it, <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">wc</span></code>. For example, to just know the number
+of files in the current directory, you can do <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">|</span> <span class="pre">wc</span> <span class="pre">-l</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">head</span> <span class="pre">FILENAME</span></code> – shows only the first few lines of the file, or if the file
+name is not given, the first few lines that get sent to its <em>stdin</em>. See <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">head</span></code>
+to learn how to control the number of lines shown.</p>
+<p><code class="docutils literal notranslate"><span class="pre">tail</span> <span class="pre">FILENAME</span></code> – shows the last few lines of the file, or if the file name
+is not given, the last few lines of the content sent to its <em>stdin</em> before it
+is closed. See <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">tail</span></code> to see how to control how many lines you want to
+see. <code class="docutils literal notranslate"><span class="pre">tail</span></code> is a useful program to track the progress of long running
+computations where log data is sent to a log file. You can do <code class="docutils literal notranslate"><span class="pre">tail</span> <span class="pre">-f</span>
+<span class="pre">FILENAME</span></code> (“-f” for “follow”) to ask <code class="docutils literal notranslate"><span class="pre">tail</span></code> to stay alive and update as new
+lines get written to the file by the process.</p>
+<p><code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">'REGEXP_PATTERN'</span> <span class="pre">FILENAME</span></code> – searches the lines in the given
+<code class="docutils literal notranslate"><span class="pre">FILENAME</span></code> or if the file name is omitted, searches its <em>stdin</em> for the given
+pattern. If a line contains the pattern, the line is output in its entirety,
+otherwise the line is omitted from the output that <code class="docutils literal notranslate"><span class="pre">grep</span></code> sends to its
+<em>stdout</em>. <code class="docutils literal notranslate"><span class="pre">grep</span></code> is an odd name for a tool that looks for patterns. It stands
+for “GNU regular expression parser”. “Regular expressions” constitute a popular
+sub-language to express simple (and even some complex) textual patterns. To
+learn how to construct and use regular expressions, see <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">grep</span></code>, where
+you’ll also learn about other options to control <code class="docutils literal notranslate"><span class="pre">grep</span></code>’s output. For
+searching through source code, you can use a drop-in replacement program that’s
+much more convenient for that purpose called <code class="docutils literal notranslate"><span class="pre">ripgrep</span></code> (abbreviated <code class="docutils literal notranslate"><span class="pre">rg</span></code>).</p>
+</section>
+<section id="utilities">
+<h3>Utilities<a class="headerlink" href="#utilities" title="Permalink to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">&lt;arg1&gt;</span> <span class="pre">&lt;arg2&gt;</span> <span class="pre">...</span></code> – prints out the given arguments on the same line,
+separated by spaces. This is useful if you want to show the value of a “shell
+variable” like <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>. You can see the current set of search paths using
+<code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$PATH</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">less</span> <span class="pre">FILENAME</span></code> – <code class="docutils literal notranslate"><span class="pre">less</span></code> is a “pager” program that lets you scroll through
+the contents of a large text file using the cursor keys, and also lets you
+search for specific patterns in the file. If the file name is not specified, it
+works on the contents sent to its <em>stdin</em>. So <code class="docutils literal notranslate"><span class="pre">less</span> <span class="pre">FILENAME</span></code> is quite
+equivalent to <code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">FILENAME</span> <span class="pre">|</span> <span class="pre">less</span></code>. This program is <strong>so extremely</strong> useful
+that many tools such as <code class="docutils literal notranslate"><span class="pre">man</span></code> and <code class="docutils literal notranslate"><span class="pre">git</span></code> automatically send their output to
+it. Learn how to jump through the file being paged using <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">less</span></code>. One of
+the useful things you can do when in the <code class="docutils literal notranslate"><span class="pre">less</span></code> pager is to <strong>search</strong> for
+text by first typing the <code class="docutils literal notranslate"><span class="pre">/</span></code> character followed by what you want to find. You
+can also jump to specific lines by first typing the number followed by the
+character <code class="docutils literal notranslate"><span class="pre">G</span></code> (for “go to”).</p>
+<div class="admonition-history-note admonition">
+<p class="admonition-title"><em>History note</em></p>
+<p>Why is this program called “less” you ask? The original unix pager program
+was called “more”, which would show a page of content and wait for you to
+hit the space bar to show the next page (hence “pager”). When GNU/Linux was
+written, they couldn’t use the same program name for copyright reasons, so
+they named it “less” because “less is more” :P Unix history is full of such
+delightful/groanful word play.</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">URL</span></code> – Downloads the given URL and sends the result to its <em>stdout</em>.
+<code class="docutils literal notranslate"><span class="pre">curl</span></code> is a very powerful program with very many options to control the kind
+of request sent, kind of data and headers to send, etc. It’s all documented in
+<code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">curl</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">touch</span> <span class="pre">FILENAME</span></code> – does not modify the file at all, except for changing its
+“last update time stamp” to the current time. If the file with that name doesn’t
+exist, it creates an empty file with that name.</p>
+<p><code class="docutils literal notranslate"><span class="pre">vi</span></code> or <code class="docutils literal notranslate"><span class="pre">vim</span></code> – is an interactive text editor that can be found
+pre-installed on all Linux systems. So it is useful to be familiar with some
+basics. Firstly, always use <code class="docutils literal notranslate"><span class="pre">vim</span></code> instead of <code class="docutils literal notranslate"><span class="pre">vi</span></code> ‘cos its “improved vi”.
+This editor has two “modes” – the “insert mode” where you type into the text
+file, and the “command mode” where you can issue edit commands. At launch,
+you’ll be put in the “command mode”. You can enter the “insert mode” by
+pressing the “i” key. Then type away like in a normal editor. When you’re ready
+to save and quit, switch to the command mode by pressing the ESC key. Then to
+write the text to a file, type <code class="docutils literal notranslate"><span class="pre">:w</span> <span class="pre">FILENAME&lt;enter&gt;</span></code>. To quit, you type
+<code class="docutils literal notranslate"><span class="pre">:q</span></code>. This much should help you not be puzzled when you’re on the occasion
+thrown into the <code class="docutils literal notranslate"><span class="pre">vim</span></code> editor. These commands are the same for both <code class="docutils literal notranslate"><span class="pre">vi</span></code> and
+<code class="docutils literal notranslate"><span class="pre">vim</span></code>.</p>
+<p>(MacOS only) <code class="docutils literal notranslate"><span class="pre">pbcopy</span></code> – takes all the input given to its <em>stdin</em> and copies
+it to the clipboard so you can paste it anywhere you want using Cmd-P. So, for
+example, you can copy a list of files in the current directory using <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">|</span> <span class="pre">pbcopy</span></code>.</p>
+<p>(MacOS only) <code class="docutils literal notranslate"><span class="pre">pbpaste</span></code> – copies the contents of the clipboard to its
+<em>stdout</em> so you can further process it by piping it to other programs.</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The “shell” a.k.a. the “command line”</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basics-and-guidelines">Basics and Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#useful-conventions-of-shell-programs">Useful conventions of shell programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cheat-sheet">Cheat sheet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="regex.html">Basics of “regular expressions”</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="intro.html" title="previous chapter">Introduction</a></li>
+      <li>Next: <a href="regex.html" title="next chapter">Basics of “regular expressions”</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Srikumar K. S..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/shell.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
