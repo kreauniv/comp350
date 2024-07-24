@@ -16,6 +16,7 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Many mini languages" href="minilangs.html" />
     <link rel="prev" title="The “shell”" href="shell.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -35,14 +36,15 @@
             
   <section id="basics-of-regular-expressions">
 <h1>Basics of “regular expressions”<a class="headerlink" href="#basics-of-regular-expressions" title="Permalink to this heading">¶</a></h1>
-<p>Regular expressions (abbr. “regex”) are a common pattern description language
-based on which efficient pattern processing can be done. They are not fully
-general, but are sufficient for many simple data extraction and transformation
-needs that every programming language has a regex library included in the
-standard package. They all have mostly the same concepts, but sometimes differ
-in syntax in small ways due to the context of usage. We’ll concern ourselves
-with <code class="docutils literal notranslate"><span class="pre">grep</span></code> here and you can learn the differences on your own once you know
-this.</p>
+<p>When computing, we often come across situations where we want to describe some
+action to be taken on textual data that matches certain patterns. Regular
+expressions (abbr. “regex”) are a common pattern description language based on
+which efficient pattern processing can be done. They are not fully general, but
+are sufficient for many simple data extraction and transformation needs that
+every programming language has a regex library included in the standard
+package. They all have mostly the same concepts, but sometimes differ in syntax
+in small ways due to the context of usage. We’ll concern ourselves with
+<code class="docutils literal notranslate"><span class="pre">grep</span></code> here and you can learn the differences on your own once you know this.</p>
 <p><code class="docutils literal notranslate"><span class="pre">grep</span></code> (the “GNU regular expression parser”) command is fully described on
 the <a class="reference external" href="https://www.gnu.org/software/grep/manual/grep.html">grep man page</a> including all the component constructs of the language,
 but I offer a commonly used subset here to give you a flavour of how to use it.</p>
@@ -65,6 +67,54 @@ giving the pattern.</p></li>
 <span class="pre">Kong</span> <span class="pre">versus</span>&#160; <span class="pre">Godzilla</span></code> (note the extra space character between <code class="docutils literal notranslate"><span class="pre">versus</span></code>
 and <code class="docutils literal notranslate"><span class="pre">Godzilla</span></code>).</p></li>
 </ol>
+</section>
+<section id="precision-and-recall">
+<h2>Precision and Recall<a class="headerlink" href="#precision-and-recall" title="Permalink to this heading">¶</a></h2>
+<p>When you’re constructing a search pattern, you may want to have the concepts
+of “precision” and “recall” clear in your minds and construct patterns such
+that both precision and recall are as close to 1.0 as necessary for your problem
+at hand.</p>
+<p>Learn about <a class="reference external" href="https://en.wikipedia.org/wiki/Precision_and_recall">precision and recall</a>.</p>
+<p>In the context of search patterns, your goal with constructing a pattern
+is to select a specific subset of a set of strings (lines, typically).
+A number of things may happen when you do this –</p>
+<ol class="arabic simple">
+<li><p>A string that your pattern selects may be what you’re looking for. This is
+called a “true positive” (TP).</p></li>
+<li><p>A string that your pattern does not match is a string that you do not want
+to select. This is called a “true negative” (TN).</p></li>
+<li><p>A string that your pattern selects is something that you actually wanted
+to exclude. This is called a “false positive” (FP).</p></li>
+<li><p>A string that your pattern does not match is a string that you actually
+wanted. This is called a “false negative” (FN).</p></li>
+</ol>
+<p><strong>Precision</strong> refers to the ratio TP / (TP + FP). When precision is 0.0 or low,
+it means your pattern is matching against too many strings that you don’t want.
+In this case, your pattern is too broad and you need to make your pattern more
+“precise”. When precision is closer to 1.0, it means whatever strings match
+your pattern are almost always ones you’re looking for, though they may not be
+all of the strings you’re looking for.</p>
+<p><strong>Recall</strong> refers to the ratio TP / (TP + FN). When recall is low, it means
+that your pattern is missing out on matching many of the strings that are of
+interest to you. When recall is close to 1.0, it means it is managing to
+catch nearly all of the strings of interest to you, even if it means it lets
+through some that are not of interest to you.</p>
+<p>An ideal pattern is one for which both precision and recall are at 1.0. It may
+not always be necessary to ensure this because it may be too complicated to do
+so for very little payoff. So you may in some circumstances strike a compromise
+based on what you already know about the specific set of strings you are
+matching against. For example, you may know that the set of strings only have
+lower case characters and so you don’t need to make your pattern robust to
+character case variations.</p>
+<p>Sometimes, you may be able to split your task into stages where in one stage
+you use an approximate pattern to filter some strings and then apply a second
+pattern to further trim the errors in the first approximate match.</p>
+<div class="admonition-be-aware-of-precision-and-recall admonition">
+<p class="admonition-title">Be aware of <em>Precision</em> and <em>Recall</em></p>
+<p>However you construct your pattern, make sure you’ve thought through the
+four possibilities listed about and ensure that the “false negative” and
+“false positive” cases are eliminated in your problem context.</p>
+</div>
 </section>
 <section id="wildcard">
 <h2>Wildcard<a class="headerlink" href="#wildcard" title="Permalink to this heading">¶</a></h2>
@@ -136,16 +186,16 @@ like “<code class="docutils literal notranslate"><span class="pre">{,n}</span>
 an exact number of times, you can either give “<code class="docutils literal notranslate"><span class="pre">{m,m}</span></code>” or abbreviate it as
 “<code class="docutils literal notranslate"><span class="pre">{m}</span></code>”.</p>
 <p>“<code class="docutils literal notranslate"><span class="pre">{1,}</span></code>” describes “one or more occurrences” and since this is a commonly used
-pattern it has a special character for it “<code class="docutils literal notranslate"><span class="pre">\+</span></code>”. <a class="footnote-reference brackets" href="#esc" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+pattern it has a special character for it “<code class="docutils literal notranslate"><span class="pre">\+</span></code>”. <a class="footnote-reference brackets" href="#esc" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
 <p>Similarly, the notion of “zero or more occurrences” is also commonly used and has a special
-character for it “<code class="docutils literal notranslate"><span class="pre">\*</span></code>”. <a class="footnote-reference brackets" href="#esc" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+character for it “<code class="docutils literal notranslate"><span class="pre">\*</span></code>”. <a class="footnote-reference brackets" href="#esc" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
 <p>These are considered “eager matching operators”, meaning they will match as many
 characters as possible. So if you have a text “xxxxx” and you’re using “<code class="docutils literal notranslate"><span class="pre">x\+</span></code>” to
 match it, though the notion of “one or more xs” includes the idea of “3 xs”, it will
 match the whole run of them <strong>eagerly</strong>.</p>
 <aside class="footnote brackets" id="esc" role="note">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
 <p>In other situations, the “+” and “*” is usually not escaped like
 that. In the context of <code class="docutils literal notranslate"><span class="pre">grep</span></code> though, “+” by itself means the literal
 character and so “+” is needed to impart the special meaning of “one or
@@ -242,6 +292,7 @@ pointed to earlier.</p>
 <li class="toctree-l1"><a class="reference internal" href="shell.html">The “shell”</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Basics of “regular expressions”</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#searching-for-words-and-phrases">Searching for words and phrases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#precision-and-recall">Precision and Recall</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#wildcard">Wildcard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#character-sets">Character sets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#alternatives">Alternatives</a></li>
@@ -251,6 +302,7 @@ pointed to earlier.</p>
 <li class="toctree-l2"><a class="reference internal" href="#there-s-more">There’s more</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="minilangs.html">Many mini languages</a></li>
 </ul>
 
 <div class="relations">
@@ -258,6 +310,7 @@ pointed to earlier.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="shell.html" title="previous chapter">The “shell”</a></li>
+      <li>Next: <a href="minilangs.html" title="next chapter">Many mini languages</a></li>
   </ul></li>
 </ul>
 </div>

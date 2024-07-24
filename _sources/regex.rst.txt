@@ -1,14 +1,15 @@
 Basics of "regular expressions"
 ===============================
 
-Regular expressions (abbr. "regex") are a common pattern description language
-based on which efficient pattern processing can be done. They are not fully
-general, but are sufficient for many simple data extraction and transformation
-needs that every programming language has a regex library included in the
-standard package. They all have mostly the same concepts, but sometimes differ
-in syntax in small ways due to the context of usage. We'll concern ourselves
-with ``grep`` here and you can learn the differences on your own once you know
-this.
+When computing, we often come across situations where we want to describe some
+action to be taken on textual data that matches certain patterns. Regular
+expressions (abbr. "regex") are a common pattern description language based on
+which efficient pattern processing can be done. They are not fully general, but
+are sufficient for many simple data extraction and transformation needs that
+every programming language has a regex library included in the standard
+package. They all have mostly the same concepts, but sometimes differ in syntax
+in small ways due to the context of usage. We'll concern ourselves with
+``grep`` here and you can learn the differences on your own once you know this.
 
 ``grep`` (the "GNU regular expression parser") command is fully described on
 the `grep man page`_ including all the component constructs of the language,
@@ -38,6 +39,66 @@ A few things to note -
 3. Every character matters - i.e. the given pattern will not match against ``King
    Kong versus  Godzilla`` (note the extra space character between ``versus``
    and ``Godzilla``).
+
+Precision and Recall
+--------------------
+
+When you're constructing a search pattern, you may want to have the concepts
+of "precision" and "recall" clear in your minds and construct patterns such 
+that both precision and recall are as close to 1.0 as necessary for your problem
+at hand.
+
+Learn about `precision and recall`_.
+
+.. _precision and recall: https://en.wikipedia.org/wiki/Precision_and_recall
+
+In the context of search patterns, your goal with constructing a pattern
+is to select a specific subset of a set of strings (lines, typically).
+A number of things may happen when you do this --
+
+1. A string that your pattern selects may be what you're looking for. This is
+   called a "true positive" (TP).
+
+2. A string that your pattern does not match is a string that you do not want
+   to select. This is called a "true negative" (TN).
+
+3. A string that your pattern selects is something that you actually wanted
+   to exclude. This is called a "false positive" (FP).
+
+4. A string that your pattern does not match is a string that you actually
+   wanted. This is called a "false negative" (FN).
+
+**Precision** refers to the ratio TP / (TP + FP). When precision is 0.0 or low,
+it means your pattern is matching against too many strings that you don't want.
+In this case, your pattern is too broad and you need to make your pattern more
+"precise". When precision is closer to 1.0, it means whatever strings match
+your pattern are almost always ones you're looking for, though they may not be
+all of the strings you're looking for.
+
+**Recall** refers to the ratio TP / (TP + FN). When recall is low, it means
+that your pattern is missing out on matching many of the strings that are of
+interest to you. When recall is close to 1.0, it means it is managing to
+catch nearly all of the strings of interest to you, even if it means it lets
+through some that are not of interest to you.
+
+An ideal pattern is one for which both precision and recall are at 1.0. It may
+not always be necessary to ensure this because it may be too complicated to do
+so for very little payoff. So you may in some circumstances strike a compromise
+based on what you already know about the specific set of strings you are
+matching against. For example, you may know that the set of strings only have 
+lower case characters and so you don't need to make your pattern robust to
+character case variations.
+
+Sometimes, you may be able to split your task into stages where in one stage
+you use an approximate pattern to filter some strings and then apply a second
+pattern to further trim the errors in the first approximate match.
+
+.. admonition:: Be aware of *Precision* and *Recall*
+
+    However you construct your pattern, make sure you've thought through the
+    four possibilities listed about and ensure that the "false negative" and
+    "false positive" cases are eliminated in your problem context.
+
 
 Wildcard
 --------

@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Many mini languages &#8212; Comp350: Software design v1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Basics of “regular expressions”" href="regex.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="many-mini-languages">
+<h1>Many mini languages<a class="headerlink" href="#many-mini-languages" title="Permalink to this heading">¶</a></h1>
+<p>In the practice of computing, language is a primary “technology” using which we
+get computing done. I believe a reason for this is that language is pretty much
+the only tool in our arsenal that can let us specify with sufficient precision
+<em>what</em> it is that we want done, and <em>how</em> we want it to be done, though there
+is no clear boundary that separates the <em>what</em> from the <em>how</em> in practice.</p>
+<p>So, in the course of your computing journey, you’ll encounter several mini
+languages and as you write more programs you’ll make some yourself to solve
+problems of interest to you and the fields you care about. Building mental
+fluidity with picking up such languages on demand is therefore a very valuable
+productivity skill.</p>
+<p>The shell, being a portal to getting your operating system to do things for
+you, presents such “mini languages” that when you develop some comfort with,
+will reduce the drudgery of many kinds of mechanical operations you might
+otherwise do manually on your computer.</p>
+<p>Here, I present some commonly encountered “mini languages”.</p>
+<section id="basic-program-command-and-arguments">
+<h2>Basic program/command and arguments<a class="headerlink" href="#basic-program-command-and-arguments" title="Permalink to this heading">¶</a></h2>
+<p>You run a command on the shell “prompt” by specifying the command by name, followed
+by its arguments separated by one or more spaces. Some examples –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is a comment</span>
+
+<span class="c1"># The command below lists a lot of details about the PDF files in</span>
+<span class="c1"># the present working directory.</span>
+ls<span class="w"> </span>-l<span class="w"> </span>*.pdf
+
+<span class="c1"># This command creates a new directory named &quot;mypdfs&quot;</span>
+mkdir<span class="w"> </span>mypdfs
+
+<span class="c1"># This command creates a new directory named &quot;My PDFs&quot;.</span>
+mkdir<span class="w"> </span><span class="s1">&#39;My PDFs&#39;</span>
+<span class="c1"># Note that because we use spaces as argument separators,</span>
+<span class="c1"># we need to somehow provide a directory name that contains</span>
+<span class="c1"># a space. So we do that by surrounding it with quote characters.</span>
+
+<span class="c1"># This command creates a new directory named - My PDF&#39;s sources</span>
+mkdir<span class="w"> </span><span class="s1">&#39;My PDF&#39;</span><span class="s2">&quot;&#39;&quot;</span><span class="s1">&#39;s sources&#39;</span>
+<span class="c1"># Note that because the &#39; character is now special, if we want</span>
+<span class="c1"># to use a directory name that itself contains a quote character,</span>
+<span class="c1"># we need some way to mark the character inside as &quot;this is not</span>
+<span class="c1"># the quote that ends the directory name&quot;. Such a way doesn&#39;t</span>
+<span class="c1"># exist for such single quoted strings, but the shell also</span>
+<span class="c1"># provides &quot;double quoted&quot; strings (which work a little differently)</span>
+<span class="c1"># and will also combine consecutive such strings for us if</span>
+<span class="c1"># given without intervening spaces. So here, we&#39;re in principle</span>
+<span class="c1"># constructing three strings -- &#39;My PDF&#39;, &quot;&#39;&quot;, and &#39;s sources&#39; --</span>
+<span class="c1"># and letting the shell join them up.</span>
+
+<span class="c1"># This command creates a new directory named - My &quot;PDF&quot;&#39;s sources</span>
+mkdir<span class="w"> </span><span class="s1">&#39;My &quot;PDF&quot;&#39;</span><span class="s2">&quot;&#39;&quot;</span><span class="s1">&#39;s sources&#39;</span>
+<span class="c1"># The &quot; character can be freely used within &#39; quoted strings since</span>
+<span class="c1"># the single quote strings are in general literal.</span>
+</pre></div>
+</div>
+<p>So you see, we already have some syntax about how to construct strings.
+The syntax for strings is perhaps the mini language that has the greatest
+variety across various programming languages and environments. So do not
+assume that there is only one way to notate strings. Always read the manual
+on that and test your assumptions.</p>
+</section>
+<section id="manual-pages">
+<h2>Manual pages<a class="headerlink" href="#manual-pages" title="Permalink to this heading">¶</a></h2>
+<p>It is impossible for anyone to know by heart all the ways in which every
+command or program available to you on the shell can be used. Usually due to
+frequent use you might have a hand full of these memorized. But at various
+times, you’ll need to refer to documentation to learn more.</p>
+<p>All the shell commands have associated manual pages, often abbreviated as “man
+pages” because they’re accessed via the <code class="docutils literal notranslate"><span class="pre">man</span></code> program.</p>
+<p>When you type <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">ls</span></code> in a shell, it will show the manual page for the <code class="docutils literal notranslate"><span class="pre">ls</span></code>
+program (see below). Note the various sections clearly marked out.</p>
+<figure class="align-center" id="id1">
+<img alt="Manual page for the &quot;ls&quot; program" src="_images/man-ls.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">The first page of the manual for the “ls” program as displayed by
+the <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">ls</span></code> command.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>There is a visual language to these “man pages”. The “NAME” section very briefly
+but clearly tells you what the program does. The “SYNOPSIS” section lists various
+common options - the “syntax” of the arguments of the program.</p>
+<p>Some arguments start with a hyphen “-” and usually a single character (like
+<code class="docutils literal notranslate"><span class="pre">-D</span></code>). These are sometimes referred to as “flags” or “switches” because
+(often) their presence as an argument is all that is needed to trigger a
+particular behaviour, (often) irrespective of where they occur in the argument
+order. Some programs provide two versions of such switches, one short
+identified by a single hyphen and one long, identified by a double hyphen (like
+<code class="docutils literal notranslate"><span class="pre">--date-format</span></code>).</p>
+<p>The “SYNOPSIS” section might also present some arguments within square
+brackets – like <code class="docutils literal notranslate"><span class="pre">[--date-format=FORMAT]</span></code>. If an argument is wrapped in such
+square brackets, it means that that argument is optional.</p>
+<div class="admonition-optional-arguments admonition">
+<p class="admonition-title">[OPTIONAL] arguments</p>
+<p>The SYNOPSIS sections of man pages present optional arguments within square
+brackets, like <code class="docutils literal notranslate"><span class="pre">[--date-format=FORMAT]</span></code>. Conversely, if an argument
+is presented without surrounding <code class="docutils literal notranslate"><span class="pre">[]</span></code>, it means that that particular
+argument MUST be provided - i.e. is compulsory.</p>
+</div>
+<p>All man pages also have a “SEE ALSO” section at the end that might give
+useful pointers to related pages.</p>
+<div class="admonition-notice-the-at-the-bottom-left-of-the-screen admonition">
+<p class="admonition-title">Notice the “:” at the bottom left of the screen</p>
+<p>The man page shows the contents using the <code class="docutils literal notranslate"><span class="pre">less</span></code> program which
+permits you to scroll and move through the contents.</p>
+</div>
+</section>
+<section id="scrolling-through-content">
+<h2>Scrolling through content<a class="headerlink" href="#scrolling-through-content" title="Permalink to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">less</span></code> program presents a way to navigate long form content by scrolling
+and searching and jumping. When it displays the “:” character at the bottom left of
+the screen, you can type some keys that will cause some movement. Here
+are a few useful keys –</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">h</span></code> for “help”, shows a summary of commands available</p></li>
+<li><p>space bar will move down by a page</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/&lt;regex-pattern&gt;</span></code> will search for a pattern in the text</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> and <code class="docutils literal notranslate"><span class="pre">N</span></code> jump to the “next” and “prev” occurrences of the pattern in search mode</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q</span></code> quits the less program.</p></li>
+</ul>
+<p>For info on more navigation keys and other features of <code class="docutils literal notranslate"><span class="pre">less</span></code>, refer to <code class="docutils literal notranslate"><span class="pre">man</span>
+<span class="pre">less</span></code>.</p>
+<p>See <a class="reference internal" href="regex.html"><span class="doc">regular expressions</span></a> for information about the family of
+“regular expression” languages that are used across various programming
+environments.</p>
+</section>
+<section id="connecting-programs">
+<h2>Connecting programs<a class="headerlink" href="#connecting-programs" title="Permalink to this heading">¶</a></h2>
+<p>Programs launched from the shell read from their “standard input” a.k.a.
+“stdin” and write their output to their “standard output” (“stdout”) and
+“standard error” (“stderr”). This structure lets us compose programs together
+by connecting (“piping”) what is sent on one program’s stdout into the stdin of
+another program, and display the stdout of that second program on the terminal.</p>
+<p>Here is an example that displays how many files and directories are present in
+the current directory using the <code class="docutils literal notranslate"><span class="pre">ls</span></code> and <code class="docutils literal notranslate"><span class="pre">wc</span></code> (word count) programs
+connected by a pipe.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+</pre></div>
+</div>
+<p>The idea behind the above program is that <code class="docutils literal notranslate"><span class="pre">ls</span></code> outputs one file name per
+line and therefore we can determine the number of files by counting the
+number of lines output by <code class="docutils literal notranslate"><span class="pre">ls</span></code>, which is exactly what <code class="docutils literal notranslate"><span class="pre">wc</span> <span class="pre">-l</span></code> does.
+(To learn about <code class="docutils literal notranslate"><span class="pre">wc</span></code> and why <code class="docutils literal notranslate"><span class="pre">wc</span> <span class="pre">-l</span></code>, see <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">wc</span></code>.)</p>
+<p>We can connect more than one program in a chain of pipes like this -</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;[.]pdf$&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+<span class="c1"># The above program counts the number of &quot;PDF&quot; files in the</span>
+<span class="c1"># current directory. Exercise: Modify the program to count</span>
+<span class="c1"># the number of PNG files.</span>
+</pre></div>
+</div>
+<p>An important property of the pipeline is that the if the receiving program
+terminates before the sending program finishes it task, then the sending
+program is also terminated with a “Broken pipe”. While in our own programs this
+might turn up as an error when we didn’t handle the condition properly, most
+shell programs are written so that they don’t have to run for longer than
+needed. For example, if you’re in a directory where there are 50000 files and
+you only want to see the details of the first 10 files, you can do <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">|</span>
+<span class="pre">head</span></code> and the <code class="docutils literal notranslate"><span class="pre">ls</span></code> program will do no work to list out files beyond the
+first 10, because its <code class="docutils literal notranslate"><span class="pre">stdout</span></code> will have been closed by then. On the other
+hand, a pipe like <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">|</span> <span class="pre">tee</span> <span class="pre">/tmp/out.txt</span> <span class="pre">|</span> <span class="pre">head</span></code> might end up writing a lot
+of lines to <code class="docutils literal notranslate"><span class="pre">/tmp/out.txt</span></code> before terminating. This non determinacy is
+due to the fact that all the programs in the pipeline are executing in parallel
+(at least in principle and on today’s computers, in practice as well). They’re
+all coordinating only via their respective input and output streams.</p>
+</section>
+<section id="common-commands">
+<h2>Common commands<a class="headerlink" href="#common-commands" title="Permalink to this heading">¶</a></h2>
+<p>Learn about the following commands using <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">&lt;command-name&gt;</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span><span class="nb">pwd</span><span class="w"> </span>mkdir<span class="w"> </span>rm<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>grep<span class="w"> </span>cat<span class="w"> </span>find<span class="w"> </span>wc<span class="w"> </span>sort<span class="w"> </span>uniq<span class="w"> </span>date
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shell.html">The “shell”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regex.html">Basics of “regular expressions”</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Many mini languages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-program-command-and-arguments">Basic program/command and arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-pages">Manual pages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scrolling-through-content">Scrolling through content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connecting-programs">Connecting programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-commands">Common commands</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="regex.html" title="previous chapter">Basics of “regular expressions”</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Srikumar K. S..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/minilangs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
