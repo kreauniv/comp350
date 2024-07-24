@@ -13,6 +13,7 @@ Welcome to Comp350: Software design
    intro
    shell
    regex
+   minilangs
 
 
 Indices and tables
