@@ -14,6 +14,7 @@ Welcome to Comp350: Software design
    shell
    regex
    minilangs
+   git
 
 
 Indices and tables
