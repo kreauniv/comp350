@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>A student’s guide to git &#8212; Comp350: Software design v1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=3d3fbe02" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Many mini languages" href="minilangs.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="a-student-s-guide-to-git">
+<h1>A student’s guide to git<a class="headerlink" href="#a-student-s-guide-to-git" title="Link to this heading">¶</a></h1>
+<p>Making worthy software involves collaborating with others as a team. With such
+collaboration comes the complexity of managing who is working on what and when
+and how are they doing it. Changes happen to the system all the time. Maybe two
+of them tried to change the same parts .. and what happens then?</p>
+<p>The role of a “source code management system” or “source control system” is to
+help coordinate these changes as a project progresses, and beyond release and
+during maintenance too … as software is never truly “done”.</p>
+<p>There is another collaborator who is often ignore and that is oneself. Even
+if a piece of software is being worked on by a solo developer, that developer
+also undergoes change as understanding of the problem being worked on changes
+over time and as new learning is acquired. So a programmer has to collaborate
+with their future selves.</p>
+<p>Today, “git” is the most widely used source control system and <a class="reference external" href="https://github.com">github.com</a>
+is the most widely used online “collaboration as a service”. In this chapter,
+you’ll be introduced to some of the mechanisms of git so you understand
+what’s going on to some extent and are also able to use it.</p>
+<div class="admonition-getting-help admonition">
+<p class="admonition-title"><strong>Getting help</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">git</span></code> command line tool comes with built-in help on every command.
+Just typing <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">help</span></code> will bring up a list of supported “sub commands”.
+For any specific sub-command, you can type <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">help</span> <span class="pre">&lt;subcommand&gt;</span></code> to get
+more detailed help. You can also do <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">&lt;subcommand&gt;</span> <span class="pre">--help</span></code> to get the
+same help.</p>
+</div>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p>Sign up for an account on <a class="reference external" href="https://github.com">github.com</a>. You’ll have to choose a short name
+to refer to your account which is usually called your “github handle”. Your
+“GitHub profile” (often used as a resumé these days) can be found at
+<a class="reference external" href="https://github.com">https://github.com</a>/{yourhandle}. For example, mine is at
+<a class="reference external" href="https://github.com/srikumarks">https://github.com/srikumarks</a>.</p></li>
+<li><p>Have one of your team members create a “repository” which will contain your
+project’s materials – source code, documentation, tests, examples, etc.
+Let’s say the repository is called <code class="docutils literal notranslate"><span class="pre">project350</span></code>.</p></li>
+<li><p>If you’ve made your project public, then anyone will be able to “clone” your
+repository on their computers. “Cloning” refers to fetching the entire project
+along with its whole history into a local copy in order to peruse it or
+contribute to it. The command for clone is –</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>&lt;repo-url&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<p>I recommend you use the “ssh clone” URL so that you don’t have to keep
+typing in your account password every time you want to contribute changes.</p>
+</li>
+<li><p>On <a class="reference external" href="https://github.com">github.com</a>, go to your <code class="docutils literal notranslate"><span class="pre">project350</span></code> repository settings and invite
+your team-mates as “collaborators”. You can given them “developer” rights,
+which means your team-mates will be able to contribute to the repository.</p></li>
+<li><p>When you clone the repository (“repo” for short), you also get a copy of the
+latest version of the files in the repo. This is usually called “a checkout”.
+It’s a bit anachronistic term today, but it’s stuck with us.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span></code> would’ve checked out what’s called the <code class="docutils literal notranslate"><span class="pre">main</span></code> “branch” of the repo.</p></li>
+</ol>
+</section>
+<section id="first-steps">
+<h2>First steps<a class="headerlink" href="#first-steps" title="Link to this heading">¶</a></h2>
+<p>Once you’ve cloned <code class="docutils literal notranslate"><span class="pre">project350</span></code>, you’ll have a local folder with that same
+name. Using the shell <code class="docutils literal notranslate"><span class="pre">cd</span></code> command, change the present working directory to
+that folder. That will be  –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>project350
+</pre></div>
+</div>
+<p>Create a new file named <code class="docutils literal notranslate"><span class="pre">README.md</span></code> (a convention on <a class="reference external" href="https://github.com">github.com</a>) for
+repositories. This is a “Markdown” file that is expected to contain a
+description of your project and anything you think someone interested in your
+project might want to know about the project.</p>
+<p>First off, you’ll be making changes to the repo and your team-mates will need
+to know who made what change. So you’ll need to tell git who you are. You do
+that using –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>config<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;C. V. Raman&quot;</span>
+git<span class="w"> </span>config<span class="w"> </span>user.email<span class="w"> </span>cvraman@krea.edu.in
+</pre></div>
+</div>
+<p>Once you do that, git will remember this for your repository and note down your
+name and email whenever you make a change to the repository.</p>
+<p>Open <code class="docutils literal notranslate"><span class="pre">README.md</span></code> in a text editor such as VSCode and type in some description
+and save it. Now do –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>README.md
+</pre></div>
+</div>
+<p>This marks the changes in the file as “to be put into the repository” (a place
+called the git “index”) but it’s not yet in the repository. Now do –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Initial commit of README&quot;</span>
+</pre></div>
+</div>
+<p>This will collect everything “added” so far and pack up those changes into a
+bundle called a “commit”. This commit will be linked to the currently checked
+out “latest version” and then placed into your local clone of the repository.</p>
+<p>At this stage, only you can see the changes you’ve made. It is not yet visible to
+your team-mates. So you now need to “push” these changes to the repository copy
+on <a class="reference external" href="https://github.com">github.com</a> using –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push
+</pre></div>
+</div>
+<p>Follow any instructions that the command might ask you to do when you push for
+the first time.</p>
+<div class="admonition-all-history-is-intact admonition">
+<p class="admonition-title"><strong>All history is intact</strong></p>
+<p>When you edit any number of files and add them using <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span></code> and <code class="docutils literal notranslate"><span class="pre">git</span>
+<span class="pre">commit</span></code> the set of changes to your repository, nothing gets overwritten or
+lost. THe whole purpose of git is to never lose history (though there are
+commands to modify history which you should <strong>NEVER</strong> use). What git stores
+is simply the set of <em>changes</em> you made and you can think of a <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span></code>
+instruction as “start at the the beginning where my repository was empty and
+apply all the changes I made one by one till you come to the latest version”.
+Git works more efficiently than that, but in effect it is doing just that.
+You can see the sequence of changes using <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">log</span></code>.</p>
+</div>
+<figure class="align-center" id="id3">
+<img alt="Simple git tree" src="_images/simple-git-tree.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">This figure shows the beginnings of a repository with two branches in progress.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>In the figure above, note that the two branches share a couple of change sets,
+although the view from each branch is as though it has a single linear history
+traceable all the way to the “start”.</p>
+<p>The arrows from each “change set” or “commit” point to the “parent commit”,
+which then points to its “parent”, all the way back to the start. When you add
+a new commit, you’re in effect doing the following –</p>
+<ol class="arabic simple">
+<li><p>Add another block, say, “change set 5” that points its parent to the “work-in-progress”
+branch (if that’s the currently checked out branch).</p></li>
+<li><p>Move the label “work-in-progress” from “change set 4” to “change set 5” so that
+checking out “work-in-progress” will from now on reconstruct the state of the
+repository as it exists on your local folder right now.</p></li>
+</ol>
+<p>To check whether you have any “uncommitted” changes in your local repo copy
+(a.k.a. “clone”), you can do –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">status</span>
+</pre></div>
+</div>
+<p>That command will show the current branch you’re on as well as list any changed
+files that aren’t yet committed to the repository. If there are no changes, you
+can switch to another branch simply using –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>&lt;branchname&gt;
+</pre></div>
+</div>
+<p>Although it will initially look as though some of the changes you’d done have
+been lost, rest assured that they’re all stored just fine and you can switch
+back using –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>&lt;previous-branchname&gt;
+</pre></div>
+</div>
+<p>… to get those back.</p>
+<div class="admonition-all-history-is-intact admonition">
+<p class="admonition-title"><strong>All history is intact</strong></p>
+<p>Yes, I’m saying it again just so you can internalize it. Any changes
+checked into your git repository won’t get “lost”. <a class="footnote-reference brackets" href="#fossil" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+</div>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="fossil" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>There is another git-like version system called “fossil” that does
+this better than git, but it is more advanced and with less widespread
+support.</p>
+</aside>
+</aside>
+</section>
+<section id="simple-workflow">
+<h2>Simple workflow<a class="headerlink" href="#simple-workflow" title="Link to this heading">¶</a></h2>
+<p>If you’re working on a series of changes towards a “feature” in your program,
+you should create a new branch for it using –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>branch<span class="w"> </span>&lt;new_branch_name&gt;
+</pre></div>
+</div>
+<p>Let’s say the new branch name was <code class="docutils literal notranslate"><span class="pre">awesome_feature</span></code>. To switch the “current
+branch” to the newly created branch (which is merely a label referring to the
+same “latest change set” you had earlier), you can do –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">switch</span> <span class="n">awesome_feature</span>
+</pre></div>
+</div>
+<p>Now you work on your changes and commit relatively small but meaningful
+changesets as you work towards completing your feature. Ensure that you supply
+adequate descriptions of your change sets when you do a <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span></code> so that
+you can later recall what a particular set of changes was about.</p>
+<p>The “done” point of a feature branch is an agreement with your team-mates,
+but it usually involves the following –</p>
+<ol class="arabic simple">
+<li><p>You’ve run the code and checked that it works.</p></li>
+<li><p>The new code you’ve written has tests to show that they work and can be run
+to ensure that changes others make to the codebase don’t break your code.</p></li>
+<li><p>The code is understandable, cleaned up and documented for others to be
+able to read.</p></li>
+</ol>
+<p>Once you’re done, you can “merge” your changes to the “main” branch like this –</p>
+<ol class="arabic simple">
+<li><p>Ensure all changes are committed to the repository and <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">status</span></code>
+shows no pending changes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">main</span></code> - switch to the main branch.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">merge</span> <span class="pre">awesome_feature</span></code> – this is a kind of “magic step that will
+apply all the changes you did on the <code class="docutils literal notranslate"><span class="pre">awesome_feature</span></code> branch and apply
+it on top of the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch. Now, the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch will also
+contain the changes implementing your new feature.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span></code> – to send it over to github’s copy of the repository so
+that others can get to see it.</p></li>
+</ol>
+<div class="admonition-merge-conflicts admonition">
+<p class="admonition-title"><strong>Merge conflicts</strong></p>
+<p>Sometimes, when you merge a branch to another, you may end up with what are
+called “conflicts”. This is when changesets in the two branches are giving
+git instructions to edit the same parts of a file in different ways and it
+can’t decide what to do. In such cases, it’ll mark your files with change
+annotation and put itself in a “conflict” state awaiting your resolution.
+You then proceed to edit the conflicting files, resolving the conflicts,
+and then commit the changes to complete the merge. We’ll deal with merge
+conflicts when you run into them.</p>
+</div>
+</section>
+<section id="tagging">
+<h2>Tagging<a class="headerlink" href="#tagging" title="Link to this heading">¶</a></h2>
+<p>You can mark a particular change-set with a label, called a “tag”, so that you
+can remember to pick that version of the code for some reference purpose such
+as for reporting a bug or fixing a bug.</p>
+<p>You’ve already seen one kind of tag – we called them “branches”. The only
+difference between a “branch” and a “tag” is that a “tag” stays associated with
+the change-set forever whereas the change-set to which a branch label is
+associated will get updated every time you make a new commit to the branch.</p>
+<p>You could say a “tag” is an immutable “constant” and a branch is a “variable”.</p>
+<p>Tags are typically used to mark “gold versions” for deployment and are often
+associated with appropriate “release notes”. Typical tag names are like
+version numbers – “v1.0.5”, “v2.1.0-alpha” and so on.</p>
+</section>
+<section id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Link to this heading">¶</a></h2>
+<p>Once of the nice things about having a series of granular change sets is that
+when you suddenly realize that there is a bug in your program that didn’t exist
+before, you can track down the specific change when it happened rather easily.</p>
+<p>Assuming <code class="docutils literal notranslate"><span class="pre">tag1</span></code> refers to a version of the program that didn’t have the buggy
+behaviour you noticed and <code class="docutils literal notranslate"><span class="pre">tag2</span></code> refers to the version where the bug
+manifests, you can test for the bug somewhere half way between the two tags in
+the linear chain between them. <a class="footnote-reference brackets" href="#nonlinear" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> If the bug is absent, then perhaps
+it was introduced only after that “half way point”. If the bug is present, then
+you have to search the first half of the series of change sets only. You’ve
+eliminated half of the candidate change sets! This way, you can “bisect” and
+track down the specific set of changes that introduced the bug.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="nonlinear" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>It’s more complicated if the two tags are not part of the
+same branch.</p>
+</aside>
+</aside>
+</section>
+<section id="git-gui">
+<h2><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">gui</span></code><a class="headerlink" href="#git-gui" title="Link to this heading">¶</a></h2>
+<p>Git comes with its own desktop GUI tool for managing commits. Depending on
+your system, you may already have it installed and if not you may have to
+install the <code class="docutils literal notranslate"><span class="pre">git-gui</span></code> package.</p>
+<p>To launch the GUI, just do –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>gui
+</pre></div>
+</div>
+<p>The interface helps navigate the history of changes and the various branches,
+etc. However the most useful part of <code class="docutils literal notranslate"><span class="pre">git-gui</span></code> is to let you select a subset
+of changes made in order to form a commit. This task is better done visually
+than purely on the command line, though it is also possible to do it on the
+command line. Due to the human judgement involved in this step, there is little
+you can do to automate it anyway.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shell.html">The “shell”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regex.html">Basics of “regular expressions”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="minilangs.html">Many mini languages</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">A student’s guide to git</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-steps">First steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simple-workflow">Simple workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tagging">Tagging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging">Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#git-gui"><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">gui</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="minilangs.html" title="previous chapter">Many mini languages</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Srikumar K. S..
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/git.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
