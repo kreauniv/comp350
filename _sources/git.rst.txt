@@ -307,3 +307,184 @@ of changes made in order to form a commit. This task is better done visually
 than purely on the command line, though it is also possible to do it on the
 command line. Due to the human judgement involved in this step, there is little
 you can do to automate it anyway.
+
+Using ssh keys with `github.com`_
+---------------------------------
+
+To simplify the process of development so you don't have to type in your
+username and token every time you need to push some commits to your repository,
+set an "ssh key" for accessing github using the following steps. The original
+documentation is at the following two locations --
+
+1. `Generating a new SSH key and adding it to the ssh-agent`_
+2. `Adding a new SSH key to your GitHub account`_
+
+.. _Generating a new SSH key and adding it to the ssh-agent: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+.. _Adding a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+
+You can follow those two links which have specific instructions for each
+platform. Since we're standardized on unix systems (including WSL), here is an
+extract of the steps. The lines that start with ``$`` are commands that you
+should copy and paste into the shell (without the start ``$`` character, which
+is there as a placeholder for the prompt).
+
+Generate a new "key-pair"
+
+.. code::
+
+    $ ssh-keygen -t ed25519 -C "your_email@example.com"
+
+You'll be asked for a file name like this --
+
+.. code:: 
+
+    > Enter a file in which to save the key (/Users/YOU/.ssh/id_ed25519): [Press enter]
+
+
+If that file doesn't exist already, you can press enter to continue. Otherwise
+type in a file name to which to write the key - such as
+``/Users/YOU/.ssh/github_key`` Once you go through with that, two files will be
+created -- a) ``github_key`` and b) ``github_key.pub``. The former is the
+"private key" that you shouldn't share and the latter is the public key
+intended for sharing.
+
+If you do ``ls -l /Users/YOU/.ssh``, you may notice that the ``github_key``
+file has fewer permissions (``-rw-------``) than the ``github_key.pub`` file
+(``-rw-r--r--``). That is as it should be.
+
+You'll be prompted to enter a "passphrase". For our purposes it is overkill and
+the simplicity of not having a passphrase is helpful. So just press ENTER when
+prompted like shown below -
+
+.. code::
+
+    > Enter passphrase (empty for no passphrase): [Type a passphrase]
+    > Enter same passphrase again: [Type passphrase again]
+
+Then start the "ssh agent" in the background like this -
+
+.. code::
+
+    $ eval "$(ssh-agent -s)"
+
+
+Now you need to tell the ssh agent the key you want to use when accessing github
+so it can use it automatically. You do this by creating/editing the file 
+``~/.ssh/config``. Here ``~`` refers to your "home directory" -- the place that
+the shell takes you when you run ``cd`` without any arguments. Often, ``echo $HOME``
+will also reveal your home directory. Create the ".ssh" directory in case it doesn't
+exist already and then create the ``config`` file with the following contents.
+
+.. code::
+
+    Host github.com
+        AddKeysToAgent yes
+        IdentityFile ~/.ssh/github_key
+
+Add the key to the ssh agent.
+
+.. code::
+
+    $ ssh-add ~/.ssh/github_key
+
+Now you need to add the key to your github account. To do this, first print
+the public key like this --
+
+.. code::
+
+    $ cat ~/.ssh/github_key.pub
+
+
+You should see something like below -
+
+.. code::
+
+    ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICel5+2FQUyquxyTJJjQzt5lSLaEKRaXTKPr1QbceunB "your_email@example.com"
+
+Copy whatever was printed by the cat command to the clipboard. On MacOS, you can do that
+using the following command -
+
+.. code:: bash
+
+    cat ~/.ssh/github_key.pub | pbcopy
+
+Now you need to tell github about your public key so that it can ratify
+messages you send as being genuinely from you. (The below steps are from
+github's docs ... more or less)
+
+* In the upper-right corner of any page on GitHub, click your profile photo,
+  then click Settings.
+
+* In the "Access" section of the sidebar, click  SSH and GPG keys.
+
+* Click New SSH key or Add SSH key.
+
+* In the "Title" field, add a descriptive label for the new key. For example,
+  if you're using a personal laptop, you might call this key "Personal laptop".
+
+* Select the type of key as "authentication key". Signing keys are useful for
+  larger scale collaborative projects where collaborators may be asked to sign
+  their commits. (The Linux Kernel project uses this, for example).
+
+* In the "Key" field, paste your public key. This is the contents of the ".pub"
+  file that you copied to the clipboard above.
+
+* Click "Add SSH key".
+
+* If prompted, confirm access to your account on GitHub. For more information,
+  see `Sudo mode`_.
+
+.. _Sudo mode: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/sudo-mode
+
+**The end result** of all of this is that when you clone your private
+repositories or try to push changes to them and you have your email configured
+in the repository correctly, the ``git`` command like tool will not prompt you
+again for username/password/token and you can finally get into flow.
+
+For the curious
+~~~~~~~~~~~~~~~
+
+If you're wondering what this whole "private key", "public key" and "ssh" dance
+was all about, we just established a way for us to send a message to github to
+do some operations to our private repositories in a manner that github can
+verify that indeed those instructions did come from us and not from someone
+else. **Only** you can produce a "signature" (for a message you send to github)
+using your "private key", which nobody else has. But **any party** who has your
+"public key" (such as github) can verify that indeed the given signature was
+produced by someone who possessed the corresponding private key.
+
+You can sign and verify an arbitrary piece of text like this --
+
+Make a message and store it in a file.
+
+.. code::
+
+   $ echo "My message: hello world!" > /tmp/txt
+
+Sign the above message and store the signature in /tmp/sig
+
+.. code::
+
+   $ cat /tmp/txt | ssh-keygen -Y sign -n file -f /Users/YOU/.ssh/github_key > /tmp/sig
+   
+   $ cat /tmp/sig
+   # You'll see some random numbers and letters. This is the "signature".
+
+Note who can sign
+
+.. code::
+
+   $ echo "your_email@example.com $(cat /Users/YOU/.ssh/github_key.pub)" > /tmp/allowed-signers
+   
+Verify that the signature is indeed that of the signer. Note that this step
+does not make use of the "private key" and only requires the "public key"
+
+.. code::
+
+   $ echo /tmp/txt | ssh-keygen -Y verify -f /tmp/allowed-signers -I your_email@example.com -n file -s /tmp/sig
+
+The two "keys" are mathematically related to each other in hard-to-reproduce
+ways and are therefore referred to as "key pairs" in most documentation.
+
+You may study the innards of this mechanism if you take a cryptography course.
+

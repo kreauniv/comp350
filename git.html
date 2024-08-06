@@ -1,26 +1,27 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>A student’s guide to git &#8212; Comp350: Software design v1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=3d3fbe02" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Many mini languages" href="minilangs.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-
   
-  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
   
@@ -33,7 +34,7 @@
           <div class="body" role="main">
             
   <section id="a-student-s-guide-to-git">
-<h1>A student’s guide to git<a class="headerlink" href="#a-student-s-guide-to-git" title="Link to this heading">¶</a></h1>
+<h1>A student’s guide to git<a class="headerlink" href="#a-student-s-guide-to-git" title="Permalink to this heading">¶</a></h1>
 <p>Making worthy software involves collaborating with others as a team. With such
 collaboration comes the complexity of managing who is working on what and when
 and how are they doing it. Changes happen to the system all the time. Maybe two
@@ -59,7 +60,7 @@ more detailed help. You can also do <code class="docutils literal notranslate"><
 same help.</p>
 </div>
 <section id="getting-started">
-<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this heading">¶</a></h2>
 <ol class="arabic">
 <li><p>Sign up for an account on <a class="reference external" href="https://github.com">github.com</a>. You’ll have to choose a short name
 to refer to your account which is usually called your “github handle”. Your
@@ -91,7 +92,7 @@ It’s a bit anachronistic term today, but it’s stuck with us.</p></li>
 </ol>
 </section>
 <section id="first-steps">
-<h2>First steps<a class="headerlink" href="#first-steps" title="Link to this heading">¶</a></h2>
+<h2>First steps<a class="headerlink" href="#first-steps" title="Permalink to this heading">¶</a></h2>
 <p>Once you’ve cloned <code class="docutils literal notranslate"><span class="pre">project350</span></code>, you’ll have a local folder with that same
 name. Using the shell <code class="docutils literal notranslate"><span class="pre">cd</span></code> command, change the present working directory to
 that folder. That will be  –</p>
@@ -147,7 +148,7 @@ You can see the sequence of changes using <code class="docutils literal notransl
 <figure class="align-center" id="id3">
 <img alt="Simple git tree" src="_images/simple-git-tree.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">This figure shows the beginnings of a repository with two branches in progress.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">This figure shows the beginnings of a repository with two branches in progress.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>In the figure above, note that the two branches share a couple of change sets,
@@ -186,17 +187,15 @@ back using –</p>
 <p>Yes, I’m saying it again just so you can internalize it. Any changes
 checked into your git repository won’t get “lost”. <a class="footnote-reference brackets" href="#fossil" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
 </div>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="fossil" role="doc-footnote">
+<aside class="footnote brackets" id="fossil" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>There is another git-like version system called “fossil” that does
 this better than git, but it is more advanced and with less widespread
 support.</p>
 </aside>
-</aside>
 </section>
 <section id="simple-workflow">
-<h2>Simple workflow<a class="headerlink" href="#simple-workflow" title="Link to this heading">¶</a></h2>
+<h2>Simple workflow<a class="headerlink" href="#simple-workflow" title="Permalink to this heading">¶</a></h2>
 <p>If you’re working on a series of changes towards a “feature” in your program,
 you should create a new branch for it using –</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>branch<span class="w"> </span>&lt;new_branch_name&gt;
@@ -246,7 +245,7 @@ conflicts when you run into them.</p>
 </div>
 </section>
 <section id="tagging">
-<h2>Tagging<a class="headerlink" href="#tagging" title="Link to this heading">¶</a></h2>
+<h2>Tagging<a class="headerlink" href="#tagging" title="Permalink to this heading">¶</a></h2>
 <p>You can mark a particular change-set with a label, called a “tag”, so that you
 can remember to pick that version of the code for some reference purpose such
 as for reporting a bug or fixing a bug.</p>
@@ -260,7 +259,7 @@ associated with appropriate “release notes”. Typical tag names are like
 version numbers – “v1.0.5”, “v2.1.0-alpha” and so on.</p>
 </section>
 <section id="debugging">
-<h2>Debugging<a class="headerlink" href="#debugging" title="Link to this heading">¶</a></h2>
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this heading">¶</a></h2>
 <p>Once of the nice things about having a series of granular change sets is that
 when you suddenly realize that there is a bug in your program that didn’t exist
 before, you can track down the specific change when it happened rather easily.</p>
@@ -272,16 +271,14 @@ it was introduced only after that “half way point”. If the bug is present, t
 you have to search the first half of the series of change sets only. You’ve
 eliminated half of the candidate change sets! This way, you can “bisect” and
 track down the specific set of changes that introduced the bug.</p>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="nonlinear" role="doc-footnote">
+<aside class="footnote brackets" id="nonlinear" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
 <p>It’s more complicated if the two tags are not part of the
 same branch.</p>
 </aside>
-</aside>
 </section>
 <section id="git-gui">
-<h2><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">gui</span></code><a class="headerlink" href="#git-gui" title="Link to this heading">¶</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">gui</span></code><a class="headerlink" href="#git-gui" title="Permalink to this heading">¶</a></h2>
 <p>Git comes with its own desktop GUI tool for managing commits. Depending on
 your system, you may already have it installed and if not you may have to
 install the <code class="docutils literal notranslate"><span class="pre">git-gui</span></code> package.</p>
@@ -296,6 +293,137 @@ than purely on the command line, though it is also possible to do it on the
 command line. Due to the human judgement involved in this step, there is little
 you can do to automate it anyway.</p>
 </section>
+<section id="using-ssh-keys-with-github-com">
+<h2>Using ssh keys with <a class="reference external" href="https://github.com">github.com</a><a class="headerlink" href="#using-ssh-keys-with-github-com" title="Permalink to this heading">¶</a></h2>
+<p>To simplify the process of development so you don’t have to type in your
+username and token every time you need to push some commits to your repository,
+set an “ssh key” for accessing github using the following steps. The original
+documentation is at the following two locations –</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">Generating a new SSH key and adding it to the ssh-agent</a></p></li>
+<li><p><a class="reference external" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account">Adding a new SSH key to your GitHub account</a></p></li>
+</ol>
+<p>You can follow those two links which have specific instructions for each
+platform. Since we’re standardized on unix systems (including WSL), here is an
+extract of the steps. The lines that start with <code class="docutils literal notranslate"><span class="pre">$</span></code> are commands that you
+should copy and paste into the shell (without the start <code class="docutils literal notranslate"><span class="pre">$</span></code> character, which
+is there as a placeholder for the prompt).</p>
+<p>Generate a new “key-pair”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ssh-keygen -t ed25519 -C &quot;your_email@example.com&quot;
+</pre></div>
+</div>
+<p>You’ll be asked for a file name like this –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">Enter</span> <span class="n">a</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">which</span> <span class="n">to</span> <span class="n">save</span> <span class="n">the</span> <span class="n">key</span> <span class="p">(</span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">YOU</span><span class="o">/.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_ed25519</span><span class="p">):</span> <span class="p">[</span><span class="n">Press</span> <span class="n">enter</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>If that file doesn’t exist already, you can press enter to continue. Otherwise
+type in a file name to which to write the key - such as
+<code class="docutils literal notranslate"><span class="pre">/Users/YOU/.ssh/github_key</span></code> Once you go through with that, two files will be
+created – a) <code class="docutils literal notranslate"><span class="pre">github_key</span></code> and b) <code class="docutils literal notranslate"><span class="pre">github_key.pub</span></code>. The former is the
+“private key” that you shouldn’t share and the latter is the public key
+intended for sharing.</p>
+<p>If you do <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">/Users/YOU/.ssh</span></code>, you may notice that the <code class="docutils literal notranslate"><span class="pre">github_key</span></code>
+file has fewer permissions (<code class="docutils literal notranslate"><span class="pre">-rw-------</span></code>) than the <code class="docutils literal notranslate"><span class="pre">github_key.pub</span></code> file
+(<code class="docutils literal notranslate"><span class="pre">-rw-r--r--</span></code>). That is as it should be.</p>
+<p>You’ll be prompted to enter a “passphrase”. For our purposes it is overkill and
+the simplicity of not having a passphrase is helpful. So just press ENTER when
+prompted like shown below -</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">Enter</span> <span class="n">passphrase</span> <span class="p">(</span><span class="n">empty</span> <span class="k">for</span> <span class="n">no</span> <span class="n">passphrase</span><span class="p">):</span> <span class="p">[</span><span class="n">Type</span> <span class="n">a</span> <span class="n">passphrase</span><span class="p">]</span>
+<span class="o">&gt;</span> <span class="n">Enter</span> <span class="n">same</span> <span class="n">passphrase</span> <span class="n">again</span><span class="p">:</span> <span class="p">[</span><span class="n">Type</span> <span class="n">passphrase</span> <span class="n">again</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Then start the “ssh agent” in the background like this -</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval &quot;$(ssh-agent -s)&quot;
+</pre></div>
+</div>
+<p>Now you need to tell the ssh agent the key you want to use when accessing github
+so it can use it automatically. You do this by creating/editing the file
+<code class="docutils literal notranslate"><span class="pre">~/.ssh/config</span></code>. Here <code class="docutils literal notranslate"><span class="pre">~</span></code> refers to your “home directory” – the place that
+the shell takes you when you run <code class="docutils literal notranslate"><span class="pre">cd</span></code> without any arguments. Often, <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$HOME</span></code>
+will also reveal your home directory. Create the “.ssh” directory in case it doesn’t
+exist already and then create the <code class="docutils literal notranslate"><span class="pre">config</span></code> file with the following contents.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Host</span> <span class="n">github</span><span class="o">.</span><span class="n">com</span>
+    <span class="n">AddKeysToAgent</span> <span class="n">yes</span>
+    <span class="n">IdentityFile</span> <span class="o">~/.</span><span class="n">ssh</span><span class="o">/</span><span class="n">github_key</span>
+</pre></div>
+</div>
+<p>Add the key to the ssh agent.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ssh-add ~/.ssh/github_key
+</pre></div>
+</div>
+<p>Now you need to add the key to your github account. To do this, first print
+the public key like this –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat ~/.ssh/github_key.pub
+</pre></div>
+</div>
+<p>You should see something like below -</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span><span class="o">-</span><span class="n">ed25519</span> <span class="n">AAAAC3NzaC1lZDI1NTE5AAAAICel5</span><span class="o">+</span><span class="mi">2</span><span class="n">FQUyquxyTJJjQzt5lSLaEKRaXTKPr1QbceunB</span> <span class="s2">&quot;your_email@example.com&quot;</span>
+</pre></div>
+</div>
+<p>Copy whatever was printed by the cat command to the clipboard. On MacOS, you can do that
+using the following command -</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>~/.ssh/github_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span>pbcopy
+</pre></div>
+</div>
+<p>Now you need to tell github about your public key so that it can ratify
+messages you send as being genuinely from you. (The below steps are from
+github’s docs … more or less)</p>
+<ul class="simple">
+<li><p>In the upper-right corner of any page on GitHub, click your profile photo,
+then click Settings.</p></li>
+<li><p>In the “Access” section of the sidebar, click  SSH and GPG keys.</p></li>
+<li><p>Click New SSH key or Add SSH key.</p></li>
+<li><p>In the “Title” field, add a descriptive label for the new key. For example,
+if you’re using a personal laptop, you might call this key “Personal laptop”.</p></li>
+<li><p>Select the type of key as “authentication key”. Signing keys are useful for
+larger scale collaborative projects where collaborators may be asked to sign
+their commits. (The Linux Kernel project uses this, for example).</p></li>
+<li><p>In the “Key” field, paste your public key. This is the contents of the “.pub”
+file that you copied to the clipboard above.</p></li>
+<li><p>Click “Add SSH key”.</p></li>
+<li><p>If prompted, confirm access to your account on GitHub. For more information,
+see <a class="reference external" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/sudo-mode">Sudo mode</a>.</p></li>
+</ul>
+<p><strong>The end result</strong> of all of this is that when you clone your private
+repositories or try to push changes to them and you have your email configured
+in the repository correctly, the <code class="docutils literal notranslate"><span class="pre">git</span></code> command like tool will not prompt you
+again for username/password/token and you can finally get into flow.</p>
+<section id="for-the-curious">
+<h3>For the curious<a class="headerlink" href="#for-the-curious" title="Permalink to this heading">¶</a></h3>
+<p>If you’re wondering what this whole “private key”, “public key” and “ssh” dance
+was all about, we just established a way for us to send a message to github to
+do some operations to our private repositories in a manner that github can
+verify that indeed those instructions did come from us and not from someone
+else. <strong>Only</strong> you can produce a “signature” (for a message you send to github)
+using your “private key”, which nobody else has. But <strong>any party</strong> who has your
+“public key” (such as github) can verify that indeed the given signature was
+produced by someone who possessed the corresponding private key.</p>
+<p>You can sign and verify an arbitrary piece of text like this –</p>
+<p>Make a message and store it in a file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ echo &quot;My message: hello world!&quot; &gt; /tmp/txt
+</pre></div>
+</div>
+<p>Sign the above message and store the signature in /tmp/sig</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat /tmp/txt | ssh-keygen -Y sign -n file -f /Users/YOU/.ssh/github_key &gt; /tmp/sig
+
+$ cat /tmp/sig
+# You&#39;ll see some random numbers and letters. This is the &quot;signature&quot;.
+</pre></div>
+</div>
+<p>Note who can sign</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ echo &quot;your_email@example.com $(cat /Users/YOU/.ssh/github_key.pub)&quot; &gt; /tmp/allowed-signers
+</pre></div>
+</div>
+<p>Verify that the signature is indeed that of the signer. Note that this step
+does not make use of the “private key” and only requires the “public key”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ echo /tmp/txt | ssh-keygen -Y verify -f /tmp/allowed-signers -I your_email@example.com -n file -s /tmp/sig
+</pre></div>
+</div>
+<p>The two “keys” are mathematically related to each other in hard-to-reproduce
+ways and are therefore referred to as “key pairs” in most documentation.</p>
+<p>You may study the innards of this mechanism if you take a cryptography course.</p>
+</section>
+</section>
 </section>
 
 
@@ -303,7 +431,7 @@ you can do to automate it anyway.</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
 
@@ -314,16 +442,7 @@ you can do to automate it anyway.</p>
 
 
 
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
@@ -337,6 +456,7 @@ you can do to automate it anyway.</p>
 <li class="toctree-l2"><a class="reference internal" href="#tagging">Tagging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#debugging">Debugging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#git-gui"><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">gui</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-ssh-keys-with-github-com">Using ssh keys with github.com</a></li>
 </ul>
 </li>
 </ul>
@@ -349,6 +469,16 @@ you can do to automate it anyway.</p>
   </ul></li>
 </ul>
 </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -362,11 +492,11 @@ you can do to automate it anyway.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2024, Srikumar K. S..
+      &copy;2024, Srikumar K. S..
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/git.rst.txt"
