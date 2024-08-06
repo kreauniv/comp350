@@ -55,6 +55,7 @@ Getting started
 
    I recommend you use the "ssh clone" URL so that you don't have to keep
    typing in your account password every time you want to contribute changes.
+   See :ref:`ssh-key-setup` to set this up.
 
 4. On `github.com`_, go to your ``project350`` repository settings and invite
    your team-mates as "collaborators". You can given them "developer" rights,
@@ -307,6 +308,8 @@ of changes made in order to form a commit. This task is better done visually
 than purely on the command line, though it is also possible to do it on the
 command line. Due to the human judgement involved in this step, there is little
 you can do to automate it anyway.
+
+.. _ssh-key-setup:
 
 Using ssh keys with `github.com`_
 ---------------------------------
