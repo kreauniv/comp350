@@ -261,8 +261,10 @@ as for reporting a bug or fixing a bug.
 
 You've already seen one kind of tag -- we called them "branches". The only
 difference between a "branch" and a "tag" is that a "tag" stays associated with
-the change-set forever whereas the change-set to which a branch label is
-associated will get updated every time you make a new commit to the branch.
+the change-set forever whereas the association between a branch label and a
+change-set will get updated every time you make a new commit to the branch. In
+other words, the branch label will get re-associated with the new change-set
+you committed to the branch.
 
 You could say a "tag" is an immutable "constant" and a branch is a "variable".
 
