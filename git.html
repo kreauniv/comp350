@@ -146,10 +146,10 @@ apply all the changes I made one by one till you come to the latest version”.
 Git works more efficiently than that, but in effect it is doing just that.
 You can see the sequence of changes using <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">log</span></code>.</p>
 </div>
-<figure class="align-center" id="id3">
+<figure class="align-center" id="id4">
 <img alt="Simple git tree" src="_images/simple-git-tree.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">This figure shows the beginnings of a repository with two branches in progress.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">This figure shows the beginnings of a repository with two branches in progress.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>In the figure above, note that the two branches share a couple of change sets,
@@ -335,10 +335,17 @@ prompted like shown below -</p>
 <span class="o">&gt;</span> <span class="n">Enter</span> <span class="n">same</span> <span class="n">passphrase</span> <span class="n">again</span><span class="p">:</span> <span class="p">[</span><span class="n">Type</span> <span class="n">passphrase</span> <span class="n">again</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Then start the “ssh agent” in the background like this -</p>
+<p>Then start the “ssh agent” in the background like this <a class="footnote-reference brackets" href="#sshagent" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> -</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval &quot;$(ssh-agent -s)&quot;
 </pre></div>
 </div>
+<aside class="footnote brackets" id="sshagent" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">3</a><span class="fn-bracket">]</span></span>
+<p>You may need to use the <code class="docutils literal notranslate"><span class="pre">sudo</span></code> command to run the
+<code class="docutils literal notranslate"><span class="pre">ssh-sgent</span></code>. See the similar portion of <a class="reference external" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">Generating a new SSH key and
+adding it to the ssh-agent</a> if have any permission issues running the above
+command (search that page for <code class="docutils literal notranslate"><span class="pre">ssh-agent</span></code> to find this spot).</p>
+</aside>
 <p>Now you need to tell the ssh agent the key you want to use when accessing github
 so it can use it automatically. You do this by creating/editing the file
 <code class="docutils literal notranslate"><span class="pre">~/.ssh/config</span></code>. Here <code class="docutils literal notranslate"><span class="pre">~</span></code> refers to your “home directory” – the place that
@@ -363,8 +370,9 @@ the public key like this –</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span><span class="o">-</span><span class="n">ed25519</span> <span class="n">AAAAC3NzaC1lZDI1NTE5AAAAICel5</span><span class="o">+</span><span class="mi">2</span><span class="n">FQUyquxyTJJjQzt5lSLaEKRaXTKPr1QbceunB</span> <span class="s2">&quot;your_email@example.com&quot;</span>
 </pre></div>
 </div>
-<p>Copy whatever was printed by the cat command to the clipboard. On MacOS, you can do that
-using the following command -</p>
+<p>Copy whatever was printed by the cat command to the clipboard. On MacOS, you
+can do that using the following command using <code class="docutils literal notranslate"><span class="pre">pbcopy</span></code> where “pb” stands for
+“pasteboard” a.k.a. “clipboard” -</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>~/.ssh/github_key.pub<span class="w"> </span><span class="p">|</span><span class="w"> </span>pbcopy
 </pre></div>
 </div>
@@ -374,7 +382,7 @@ github’s docs … more or less)</p>
 <ul class="simple">
 <li><p>In the upper-right corner of any page on GitHub, click your profile photo,
 then click Settings.</p></li>
-<li><p>In the “Access” section of the sidebar, click  SSH and GPG keys.</p></li>
+<li><p>In the “Access” section of the sidebar, click  “SSH and GPG keys”.</p></li>
 <li><p>Click New SSH key or Add SSH key.</p></li>
 <li><p>In the “Title” field, add a descriptive label for the new key. For example,
 if you’re using a personal laptop, you might call this key “Personal laptop”.</p></li>
@@ -391,6 +399,14 @@ see <a class="reference external" href="https://docs.github.com/en/authenticatio
 repositories or try to push changes to them and you have your email configured
 in the repository correctly, the <code class="docutils literal notranslate"><span class="pre">git</span></code> command like tool will not prompt you
 again for username/password/token and you can finally get into flow.</p>
+<p>Also, the clone URL for cloning using SSH will look different compared to a
+normal <code class="docutils literal notranslate"><span class="pre">https://</span></code> URL. It’ll look like this –
+<code class="docutils literal notranslate"><span class="pre">git&#64;github.com:{handle}/{reponame}.git</span></code> – and you clone it the same way like this –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:{</span><span class="n">handle</span><span class="p">}</span><span class="o">/</span><span class="p">{</span><span class="n">reponame</span><span class="p">}</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>… which will create a directory named <code class="docutils literal notranslate"><span class="pre">{reponame}</span></code> in the working directory
+where you ran the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code> command.</p>
 <section id="for-the-curious">
 <h3>For the curious<a class="headerlink" href="#for-the-curious" title="Permalink to this heading">¶</a></h3>
 <p>If you’re wondering what this whole “private key”, “public key” and “ssh” dance

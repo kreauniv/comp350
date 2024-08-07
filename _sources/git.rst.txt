@@ -366,12 +366,17 @@ prompted like shown below -
     > Enter passphrase (empty for no passphrase): [Type a passphrase]
     > Enter same passphrase again: [Type passphrase again]
 
-Then start the "ssh agent" in the background like this -
+Then start the "ssh agent" in the background like this [#sshagent]_ -
 
 .. code::
 
     $ eval "$(ssh-agent -s)"
 
+
+.. [#sshagent] You may need to use the ``sudo`` command to run the
+   ``ssh-sgent``. See the similar portion of `Generating a new SSH key and
+   adding it to the ssh-agent`_ if have any permission issues running the above
+   command (search that page for ``ssh-agent`` to find this spot).
 
 Now you need to tell the ssh agent the key you want to use when accessing github
 so it can use it automatically. You do this by creating/editing the file 
@@ -406,8 +411,9 @@ You should see something like below -
 
     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICel5+2FQUyquxyTJJjQzt5lSLaEKRaXTKPr1QbceunB "your_email@example.com"
 
-Copy whatever was printed by the cat command to the clipboard. On MacOS, you can do that
-using the following command -
+Copy whatever was printed by the cat command to the clipboard. On MacOS, you
+can do that using the following command using ``pbcopy`` where "pb" stands for
+"pasteboard" a.k.a. "clipboard" -
 
 .. code:: bash
 
@@ -420,7 +426,7 @@ github's docs ... more or less)
 * In the upper-right corner of any page on GitHub, click your profile photo,
   then click Settings.
 
-* In the "Access" section of the sidebar, click  SSH and GPG keys.
+* In the "Access" section of the sidebar, click  "SSH and GPG keys".
 
 * Click New SSH key or Add SSH key.
 
@@ -445,6 +451,17 @@ github's docs ... more or less)
 repositories or try to push changes to them and you have your email configured
 in the repository correctly, the ``git`` command like tool will not prompt you
 again for username/password/token and you can finally get into flow.
+
+Also, the clone URL for cloning using SSH will look different compared to a
+normal ``https://`` URL. It'll look like this --
+``git@github.com:{handle}/{reponame}.git`` -- and you clone it the same way like this --
+
+.. code::
+
+    git clone git@github.com:{handle}/{reponame}.git
+
+... which will create a directory named ``{reponame}`` in the working directory
+where you ran the ``git clone`` command.
 
 For the curious
 ~~~~~~~~~~~~~~~
