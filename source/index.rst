@@ -15,6 +15,7 @@ Welcome to Comp350: Software design
    regex
    minilangs
    git
+   tips
 
 
 Indices and tables
