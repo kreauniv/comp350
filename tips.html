@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Some utility tips to help you &#8212; Comp350: Software design v1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=3d3fbe02" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="A student’s guide to git" href="git.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="some-utility-tips-to-help-you">
+<h1>Some utility tips to help you<a class="headerlink" href="#some-utility-tips-to-help-you" title="Link to this heading">¶</a></h1>
+<section id="code-formatting">
+<h2>Code formatting<a class="headerlink" href="#code-formatting" title="Link to this heading">¶</a></h2>
+<p>Different programmers format code differently when they’re starting out. Once
+you begin working in a team and reading another person’s code becomes
+important, the team typically adopts common formatting conventions.</p>
+<p>There is a broad consensus in the python community on how to format python
+code. Thankfully you <strong>don’t</strong> have to learn these conventions, because there
+is tool that will automatically format your code for you - <a class="reference external" href="https://black.readthedocs.io/en/stable/index.html">black</a>. So install
+<code class="docutils literal notranslate"><span class="pre">black</span></code> using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">black</span></code> and run it on your python files before
+you commit them to git — like <code class="docutils literal notranslate"><span class="pre">black</span> <span class="pre">*.py</span></code>. Your team-mates will thank you.</p>
+<p>If this sounds like a chore, you ought to have guessed the next step – it must
+be <em>automated</em>! The package <a class="reference external" href="https://pre-commit.com/">pre-commit</a> can be used to setup what are called
+“git pre-commit hooks” that can be used to perform certain normalizing
+operations on your project files before committing to git (yes, even before
+pushing). Such “hooks” are not only used to format code, but they can also run
+your tests before committing. Go through the <a class="reference external" href="https://pre-commit.com/">pre-commit</a> documentation to see
+how to set it up for automatic python code formatting using <code class="docutils literal notranslate"><span class="pre">black</span></code> (if you
+want to automate it, that is).</p>
+<p>Even better, figure out how to automatically run <code class="docutils literal notranslate"><span class="pre">black</span></code> on your python file
+<strong>every time you save it</strong> in your editor. This varies from editor to editor.</p>
+<p>In the Javascript world, the corresponding tool is <a class="reference external" href="https://prettier.io/">prettier</a>.</p>
+<p><strong>Important</strong>: Don’t fiddle with the default configurations of these tools.
+They’re defaults for a good reason and instead adapt your style to the output
+of these tools gradually.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shell.html">The “shell”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regex.html">Basics of “regular expressions”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="minilangs.html">Many mini languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="git.html">A student’s guide to git</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Some utility tips to help you</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#code-formatting">Code formatting</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="git.html" title="previous chapter">A student’s guide to git</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Srikumar K. S..
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/tips.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
