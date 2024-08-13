@@ -16,6 +16,8 @@ Welcome to Comp350: Software design
    minilangs
    git
    tips
+   json
+   html
 
 
 Indices and tables
