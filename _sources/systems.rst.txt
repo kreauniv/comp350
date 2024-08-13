@@ -1,0 +1,48 @@
+Systems
+=======
+
+
+.. code:: hs
+
+
+    Input -> IO ()
+
+    Request -> Response
+
+    type Request = (URL, Headers, Body)
+    type Resolve = URL -> (Protocol, IPAdress, Port, Target)
+    type Target = (Path, Query)
+    type Headers = [(Name, Value)]
+    type Body = Text
+    type Response = (Protocol, Status, Headers, Body)
+
+    -- When network is involved
+    handleInput :: Input -> Request   -- Handled by "Frontend"
+    resolve :: URL -> (Server, Target)  -- Handled by Browser
+    serve :: (Target, Headers, Body) -> Data -> (Data, Response) -- Handled by server
+    update :: Response -> State -> (State, RenderInstrs) -- Handled by "Frontend"
+    render :: RenderInstrs -> IO () -- Handled by Browser
+
+    -- Alternative path that doesn't involve a network request
+    (State, Input) -> (State, RenderInstrs)
+    Input -> State -> State -- handled by your code
+    State -> HTML       -- handled by your code
+    HTML -> CurrHTML -> RenderInstrs -- handled by Elm/React
+    RenderInstrs -> IO () -- handled by the browser
+
+    data Input = Click El | MouseIn El | MouseOut El ...
+
+    type HandleInput = Input -> Request
+    data Input = Click URL | Form [(FieldName, Value)]
+    type URL = (Protocol, Domain, Port, Path, Query)
+    type Target = (Path, Query)
+    type Request = (Target, Headers, Body)
+    type Headers = [(Key, Value)]
+    type Body = Text
+
+    type Response = (Protocol, Status, Headers, Body)
+
+    Input -> Request -> Data -> (Data, Response)
+
+
+

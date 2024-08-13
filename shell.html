@@ -1,17 +1,19 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>The “shell” &#8212; Comp350: Software design v1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=3d3fbe02" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Basics of “regular expressions”" href="regex.html" />
@@ -19,9 +21,8 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-
   
-  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
   
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="the-shell">
-<h1>The “shell”<a class="headerlink" href="#the-shell" title="Link to this heading">¶</a></h1>
+<h1>The “shell”<a class="headerlink" href="#the-shell" title="Permalink to this heading">¶</a></h1>
 <p>The <strong>shell</strong> (a.k.a. the “command line”) has been given that name in line with
 the notion of the operating system <strong>kernel</strong> which serves as its core. The
 shell then offers a means of interacting with the kernel to use its services,
@@ -48,11 +49,11 @@ use that in place of the traditional Windows “command line”.</p>
 operations you need to perform. I’ll assume that you’re familiar with basic
 computer organization terms such as “file” and “folder” (a.k.a. “directory”).</p>
 <section id="basics-and-guidelines">
-<h2>Basics and Guidelines<a class="headerlink" href="#basics-and-guidelines" title="Link to this heading">¶</a></h2>
+<h2>Basics and Guidelines<a class="headerlink" href="#basics-and-guidelines" title="Permalink to this heading">¶</a></h2>
 <p>There are 3 main concepts you need to be familiar with to use the shell
 effectively.</p>
 <section id="running-a-command">
-<h3>Running a command<a class="headerlink" href="#running-a-command" title="Link to this heading">¶</a></h3>
+<h3>Running a command<a class="headerlink" href="#running-a-command" title="Permalink to this heading">¶</a></h3>
 <p>A “command” is (typically) a verb instruction given to the shell that identifies
 an operation to perform and takes arguments that control that operation. A command
 has the simple form of verb and arguments separated by one or more spaces. The number
@@ -94,7 +95,7 @@ arguments to the <code class="docutils literal notranslate"><span class="pre">ls
 </div>
 </section>
 <section id="redirecting-the-output-of-a-command">
-<h3>Redirecting the output of a command<a class="headerlink" href="#redirecting-the-output-of-a-command" title="Link to this heading">¶</a></h3>
+<h3>Redirecting the output of a command<a class="headerlink" href="#redirecting-the-output-of-a-command" title="Permalink to this heading">¶</a></h3>
 <p>We saw that commands send their output to their <em>stdout</em>. If we want to store
 whatever is sent to the command’s <em>stdout</em> to a file for later use, we can use
 the “redirection” operator <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> like this – <code class="docutils literal notranslate"><span class="pre">command</span> <span class="pre">arg1</span> <span class="pre">arg2</span> <span class="pre">...</span> <span class="pre">argN</span> <span class="pre">&gt;</span>
@@ -114,7 +115,7 @@ reboot your machine.</p>
 </div>
 </section>
 <section id="connecting-programs-via-pipes">
-<h3>Connecting programs via pipes<a class="headerlink" href="#connecting-programs-via-pipes" title="Link to this heading">¶</a></h3>
+<h3>Connecting programs via pipes<a class="headerlink" href="#connecting-programs-via-pipes" title="Permalink to this heading">¶</a></h3>
 <p>Since shell programs take their input from a <em>stdin</em> and output their results
 to an <em>stdout</em>, we can now think about combining programs by connecting the
 <em>stdout</em> of one command/program to the <em>stdin</em> of another command/program to
@@ -157,7 +158,7 @@ kernel facility called “process”.</p>
 </section>
 </section>
 <section id="useful-conventions-of-shell-programs">
-<h2>Useful conventions of shell programs<a class="headerlink" href="#useful-conventions-of-shell-programs" title="Link to this heading">¶</a></h2>
+<h2>Useful conventions of shell programs<a class="headerlink" href="#useful-conventions-of-shell-programs" title="Permalink to this heading">¶</a></h2>
 <p>You’d have seen argument of the form <code class="docutils literal notranslate"><span class="pre">-l</span></code> that kind of stand out from other
 “normal” arguments like file names. These are called “flags” or “switches” and
 give special instruction to the command. In the case of <code class="docutils literal notranslate"><span class="pre">ls</span></code>, adding a <code class="docutils literal notranslate"><span class="pre">-l</span></code>
@@ -169,13 +170,13 @@ These long flags always start with two hyphen characters and may take an
 additional associated value (depending on the situation) like <code class="docutils literal notranslate"><span class="pre">--flag=value</span></code>
 or equivalently <code class="docutils literal notranslate"><span class="pre">--flag</span> <span class="pre">value</span></code>.</p>
 <section id="help">
-<h3><code class="docutils literal notranslate"><span class="pre">--help</span></code><a class="headerlink" href="#help" title="Link to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">--help</span></code><a class="headerlink" href="#help" title="Permalink to this heading">¶</a></h3>
 <p>If you want some quick details of what a command does, you can often invoke it
 with the <code class="docutils literal notranslate"><span class="pre">--help</span></code> flag to get a short help. Sometimes, the short flag <code class="docutils literal notranslate"><span class="pre">-h</span></code>
 also works but <code class="docutils literal notranslate"><span class="pre">--help</span></code> is more common.</p>
 </section>
 <section id="man">
-<h3><code class="docutils literal notranslate"><span class="pre">man</span></code><a class="headerlink" href="#man" title="Link to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">man</span></code><a class="headerlink" href="#man" title="Permalink to this heading">¶</a></h3>
 <p>To get detailed help about a program’s function, you can consult its “manual
 pages” using the <code class="docutils literal notranslate"><span class="pre">man</span></code> command. For example, <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">ls</span></code> will bring up the
 manual page for the <code class="docutils literal notranslate"><span class="pre">ls</span></code> command giving details of all its parameters and
@@ -190,7 +191,7 @@ mastery.</p>
 </div>
 </section>
 <section id="google">
-<h3>Google<a class="headerlink" href="#google" title="Link to this heading">¶</a></h3>
+<h3>Google<a class="headerlink" href="#google" title="Permalink to this heading">¶</a></h3>
 <p>Of course, all such help is available via Google, so you can always google for
 help. In fact, all the man pages are also available on the internet and if you
 type “man &lt;something&gt;” in google, you’ll be taken to the appropriate linux man
@@ -203,14 +204,14 @@ a command using Google, I recommend you stick to referring to its <code class="d
 for the details.</p>
 </section>
 <section id="stackoverflow">
-<h3>Stackoverflow<a class="headerlink" href="#stackoverflow" title="Link to this heading">¶</a></h3>
+<h3>Stackoverflow<a class="headerlink" href="#stackoverflow" title="Permalink to this heading">¶</a></h3>
 <p>Once you’ve gained some fluency with the command line or some basics of a
 programming language and find yourself occasionally stuck on some task, you can
 also ask <a class="reference external" href="https://stackoverflow.com">stackoverflow.com</a>. You may find this useful
 only from about a month into this course.</p>
 </section>
 <section id="mozilla-developer-network-mdn">
-<h3>Mozilla Developer Network (MDN)<a class="headerlink" href="#mozilla-developer-network-mdn" title="Link to this heading">¶</a></h3>
+<h3>Mozilla Developer Network (MDN)<a class="headerlink" href="#mozilla-developer-network-mdn" title="Permalink to this heading">¶</a></h3>
 <p>For <strong>all</strong> details on <strong>HTML</strong>, <strong>CSS</strong> and <strong>Javascript</strong> functions and
 objects related details, use the “Mozilla Developer Network” or “MDN” for
 short. These are excellent, descriptive and non predatory pages that give you
@@ -226,13 +227,13 @@ errors, you can create an account and submit fixes to them.</p>
 </section>
 </section>
 <section id="cheat-sheet">
-<h2>Cheat sheet<a class="headerlink" href="#cheat-sheet" title="Link to this heading">¶</a></h2>
+<h2>Cheat sheet<a class="headerlink" href="#cheat-sheet" title="Permalink to this heading">¶</a></h2>
 <p>Here, if I give a word in <code class="docutils literal notranslate"><span class="pre">ALLCAPS</span></code>, it is a placeholder for an argument
 you have to supply. Paths (file and directory names) can either be relative
 to the current directory or refer to an absolute location on the file system.
 Absolute paths start with <code class="docutils literal notranslate"><span class="pre">/</span></code>.</p>
 <section id="working-with-folders-a-k-a-directories-and-files">
-<h3>Working with folders (a.k.a. directories) and files<a class="headerlink" href="#working-with-folders-a-k-a-directories-and-files" title="Link to this heading">¶</a></h3>
+<h3>Working with folders (a.k.a. directories) and files<a class="headerlink" href="#working-with-folders-a-k-a-directories-and-files" title="Permalink to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">mkdir</span> <span class="pre">DIRNAME</span></code> or <code class="docutils literal notranslate"><span class="pre">md</span> <span class="pre">DIRNAME</span></code> – “make directory” creates a new empty
 directory with the given name within the current directory.</p>
 <p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">DIRNAME</span></code> – “change directory” changes the “present working directory”
@@ -248,7 +249,7 @@ two files into a new file, you can use redirection like this – <code class="do
 <span class="pre">FILE2</span> <span class="pre">&gt;</span> <span class="pre">OUTFILE</span></code>.</p>
 </section>
 <section id="processing-line-by-line-formatted-data">
-<h3>Processing line-by-line formatted data<a class="headerlink" href="#processing-line-by-line-formatted-data" title="Link to this heading">¶</a></h3>
+<h3>Processing line-by-line formatted data<a class="headerlink" href="#processing-line-by-line-formatted-data" title="Permalink to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">sort</span></code> – sorts the contents sent to its <em>stdin</em> line by line in
 lexicographical order. There are other controls for the sort operation, which
 you can learn using <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">sort</span></code>.</p>
@@ -283,7 +284,7 @@ searching through source code, you can use a drop-in replacement program that’
 much more convenient for that purpose called <code class="docutils literal notranslate"><span class="pre">ripgrep</span></code> (abbreviated <code class="docutils literal notranslate"><span class="pre">rg</span></code>).</p>
 </section>
 <section id="utilities">
-<h3>Utilities<a class="headerlink" href="#utilities" title="Link to this heading">¶</a></h3>
+<h3>Utilities<a class="headerlink" href="#utilities" title="Permalink to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">&lt;arg1&gt;</span> <span class="pre">&lt;arg2&gt;</span> <span class="pre">...</span></code> – prints out the given arguments on the same line,
 separated by spaces. This is useful if you want to show the value of a “shell
 variable” like <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>. You can see the current set of search paths using
@@ -341,7 +342,7 @@ example, you can copy a list of files in the current directory using <code class
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
 
@@ -352,16 +353,7 @@ example, you can copy a list of files in the current directory using <code class
 
 
 
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
@@ -386,6 +378,16 @@ example, you can copy a list of files in the current directory using <code class
   </ul></li>
 </ul>
 </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -399,11 +401,11 @@ example, you can copy a list of files in the current directory using <code class
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2024, Srikumar K. S..
+      &copy;2024, Srikumar K. S..
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/shell.rst.txt"
