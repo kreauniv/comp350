@@ -82,8 +82,64 @@ is selected by some means such as a mouse-click.
 .. _elements of HTML: https://html.spec.whatwg.org/multipage/#toc-semantics
 
 One of the ways in which HTML differs from JSON is that HTML makes no
-particular note of "numnbers" as a type. Everything is a string of text and if
+particular note of "numbers" as a type. Everything is a string of text and if
 you want numbers, you need to store them as string values -- either as body
 content or as values of attributes.
 
+The Document Object Model - DOM
+-------------------------------
 
+The byte-stream representations of structured data we've seen in JSON and HTML
+are designed with a model of the data structures to be used to work with them
+in mind when processing the data in programs.
+
+For JSON, the in-program objects we work with involve numbers, strings, array
+of values, and a dictionary (a.k.a. "object" in Javascript) that maps string
+keys to values. The values themselves may be of any of these types and there is
+no constraint of uniformity of type for all members of a collection.
+
+Similar to that, there is an "object model" corresponding to the structure of a
+HTML document --- an in-program representation of the document that can be used to
+access and manipulate parts of the document programmatically. This is the DOM_.
+
+.. _DOM: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
+
+1. Individual tags such as ``<h1>..</h1>``, ``<p>..</p>`` are called "HTML
+   elements" and are mapped to the Javascript class named `HTMLElement`, which
+   inherits from a more generic ``Element`` which inherits from ``Node``. The
+   term of "node" comes from thinking of these elements and their parent-child
+   relationships forming a "tree of nodes".
+
+2. An element may have a number of attributes with string values. For example,
+   a "paragraph element" with the id ``my-para`` would look like ``<p
+   id="my-para">...</p>`` in the HTML file. If the corresponding
+   ``HTMLElement`` object were in the JS variable named ``el``, then you can
+   retrieve the value of the ``id`` attribute using ``el.getAttribute("id")``
+   and you'll get a string value if the attribute were present (See
+   getAttribute_). The object then also lets you modify the attribute of the
+   element using ``el.setAttribute("id", "new-value")`` (See setAttribute_).
+
+3. You can retrieve the immediate children of a given ``Element`` using
+   ``el.children`` which will be an iterable ``HTMLCollection`` object holding
+   the child **elements** (not all **nodes**, only **elements**) that you can
+   treat conceptually as a list of elements. Note that ``el.tagName`` gives you
+   the name of the tag corresponding to that element.
+
+The top level ``head`` and ``body`` elements can be accessed in JS simply
+as ``document.head`` and ``document.body``. So with just that much machinery,
+it would be possible to step down and walk the tree of elements to reach
+whatever element you need to for manipulations.
+
+Doing that is highly repetitive from a programming perspective and therefore
+there is a mini language called `CSS selectors`_ that you can use to address
+an element within the document by specifying some properties and asking the
+``document`` to search for those properties. The two primary methods you
+can use to query the document using CSS selectors are ``el.querySelector("..")``
+and ``el.querySelectorAll("...")``. The former will give you the first
+element that matches the selector specification and the latter will give
+you a (conceptual) list of all selectors that match the given specification.
+
+
+.. _CSS selectors: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors
+.. _getAttribute: https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute
+.. _setAttribute: https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute

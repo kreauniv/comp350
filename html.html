@@ -100,9 +100,54 @@ hallmark of the modern Internet. Descriptions of the various <a class="reference
 HTML</a>.</p>
 </div>
 <p>One of the ways in which HTML differs from JSON is that HTML makes no
-particular note of “numnbers” as a type. Everything is a string of text and if
+particular note of “numbers” as a type. Everything is a string of text and if
 you want numbers, you need to store them as string values – either as body
 content or as values of attributes.</p>
+<section id="the-document-object-model-dom">
+<h2>The Document Object Model - DOM<a class="headerlink" href="#the-document-object-model-dom" title="Permalink to this heading">¶</a></h2>
+<p>The byte-stream representations of structured data we’ve seen in JSON and HTML
+are designed with a model of the data structures to be used to work with them
+in mind when processing the data in programs.</p>
+<p>For JSON, the in-program objects we work with involve numbers, strings, array
+of values, and a dictionary (a.k.a. “object” in Javascript) that maps string
+keys to values. The values themselves may be of any of these types and there is
+no constraint of uniformity of type for all members of a collection.</p>
+<p>Similar to that, there is an “object model” corresponding to the structure of a
+HTML document — an in-program representation of the document that can be used to
+access and manipulate parts of the document programmatically. This is the <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model">DOM</a>.</p>
+<ol class="arabic simple">
+<li><p>Individual tags such as <code class="docutils literal notranslate"><span class="pre">&lt;h1&gt;..&lt;/h1&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;p&gt;..&lt;/p&gt;</span></code> are called “HTML
+elements” and are mapped to the Javascript class named <cite>HTMLElement</cite>, which
+inherits from a more generic <code class="docutils literal notranslate"><span class="pre">Element</span></code> which inherits from <code class="docutils literal notranslate"><span class="pre">Node</span></code>. The
+term of “node” comes from thinking of these elements and their parent-child
+relationships forming a “tree of nodes”.</p></li>
+<li><p>An element may have a number of attributes with string values. For example,
+a “paragraph element” with the id <code class="docutils literal notranslate"><span class="pre">my-para</span></code> would look like <code class="docutils literal notranslate"><span class="pre">&lt;p</span>
+<span class="pre">id=&quot;my-para&quot;&gt;...&lt;/p&gt;</span></code> in the HTML file. If the corresponding
+<code class="docutils literal notranslate"><span class="pre">HTMLElement</span></code> object were in the JS variable named <code class="docutils literal notranslate"><span class="pre">el</span></code>, then you can
+retrieve the value of the <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute using <code class="docutils literal notranslate"><span class="pre">el.getAttribute(&quot;id&quot;)</span></code>
+and you’ll get a string value if the attribute were present (See
+<a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute">getAttribute</a>). The object then also lets you modify the attribute of the
+element using <code class="docutils literal notranslate"><span class="pre">el.setAttribute(&quot;id&quot;,</span> <span class="pre">&quot;new-value&quot;)</span></code> (See <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute">setAttribute</a>).</p></li>
+<li><p>You can retrieve the immediate children of a given <code class="docutils literal notranslate"><span class="pre">Element</span></code> using
+<code class="docutils literal notranslate"><span class="pre">el.children</span></code> which will be an iterable <code class="docutils literal notranslate"><span class="pre">HTMLCollection</span></code> object holding
+the child <strong>elements</strong> (not all <strong>nodes</strong>, only <strong>elements</strong>) that you can
+treat conceptually as a list of elements. Note that <code class="docutils literal notranslate"><span class="pre">el.tagName</span></code> gives you
+the name of the tag corresponding to that element.</p></li>
+</ol>
+<p>The top level <code class="docutils literal notranslate"><span class="pre">head</span></code> and <code class="docutils literal notranslate"><span class="pre">body</span></code> elements can be accessed in JS simply
+as <code class="docutils literal notranslate"><span class="pre">document.head</span></code> and <code class="docutils literal notranslate"><span class="pre">document.body</span></code>. So with just that much machinery,
+it would be possible to step down and walk the tree of elements to reach
+whatever element you need to for manipulations.</p>
+<p>Doing that is highly repetitive from a programming perspective and therefore
+there is a mini language called <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors">CSS selectors</a> that you can use to address
+an element within the document by specifying some properties and asking the
+<code class="docutils literal notranslate"><span class="pre">document</span></code> to search for those properties. The two primary methods you
+can use to query the document using CSS selectors are <code class="docutils literal notranslate"><span class="pre">el.querySelector(&quot;..&quot;)</span></code>
+and <code class="docutils literal notranslate"><span class="pre">el.querySelectorAll(&quot;...&quot;)</span></code>. The former will give you the first
+element that matches the selector specification and the latter will give
+you a (conceptual) list of all selectors that match the given specification.</p>
+</section>
 </section>
 
 
@@ -131,7 +176,10 @@ content or as values of attributes.</p>
 <li class="toctree-l1"><a class="reference internal" href="git.html">A student’s guide to git</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tips.html">Some utility tips to help you</a></li>
 <li class="toctree-l1"><a class="reference internal" href="json.html">JSON</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">HTML/XHTML</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">HTML/XHTML</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-document-object-model-dom">The Document Object Model - DOM</a></li>
+</ul>
+</li>
 </ul>
 
 <div class="relations">
