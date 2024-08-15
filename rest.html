@@ -16,6 +16,7 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="A crash course in JS" href="js.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -94,8 +95,8 @@ directly or indirectly. This “internet core” does not distinguish between
 “server” and “client”. Every machine that is connected to some other machine is
 assigned an “IP address” that’s different from that machine so the two can
 address each other and send messages.</p>
-<div class="admonition-rabbit-hole-there admonition">
-<p class="admonition-title"><strong>Rabbit hole there</strong></p>
+<div class="admonition-rabbit-hole-here admonition">
+<p class="admonition-title"><strong>Rabbit hole here</strong></p>
 <p>There is far more to be talked about regarding the structure and function
 of the internet as a network than we can afford here. So I’ll leave it
 at that and we’ll learn the bits of importance to us as we go along.</p>
@@ -103,25 +104,252 @@ at that and we’ll learn the bits of importance to us as we go along.</p>
 <p>Since it is hard to remember lots of numbers so we can type them into the
 browser, the internet architecture also includes “Domain Name Service”
 (abbreviated DNS). These DNS servers help map names to specific IP addresses.
-So when you type</p>
+So when you type <code class="docutils literal notranslate"><span class="pre">https://dropbox.com</span></code>, your browser reaches out to a known
+DNS server (say <code class="docutils literal notranslate"><span class="pre">8.8.8.8</span></code>) and asks it for the IP address corresponding to
+the name <code class="docutils literal notranslate"><span class="pre">dropbox.com</span></code>. It then makes a connection to that IP address
+to make any further requests. Of course, the browser also performs some
+optimizations to speed things up, like caching the IP address for a while
+before making another request. The DNS server provides additional information
+such as “how long to wait before asking for a lookup again”.</p>
+<p>The key bit here for us to understand is that once a service is up and published,
+basically <strong>anyone</strong> on the internet can make requests to the service. OTOH
+machines that are behind “subnets” of service providers only have private
+IP addresses and therefore cannot run services reachable by the rest of the
+internet, though they can reach out to other known services.</p>
 </section>
-<section id="a-case-aws-s3">
-<h2>A case - AWS S3<a class="headerlink" href="#a-case-aws-s3" title="Permalink to this heading">¶</a></h2>
-<p>Rather than give a dry definition of REST and work from there, let’s first look
-at an example - Amazon’s “Simple Storage Service”, referred to as “S3” in short.</p>
-<div class="admonition-do-now admonition">
-<p class="admonition-title"><strong>Do now</strong></p>
-<p>Visit the <a class="reference external" href="https://docs.aws.amazon.com/AmazonS3/latest/API/Type_API_Reference.html">AWS S3 API reference</a> and browse around for a bit.
-Do you understand what it does? You can also checkout the <a class="reference external" href="https://docs.aws.amazon.com/AmazonS3/latest/userguide//Welcome.html">S3 user guide</a>.</p>
+<section id="simple-image-storage-service">
+<h2>Simple Image Storage Service<a class="headerlink" href="#simple-image-storage-service" title="Permalink to this heading">¶</a></h2>
+<p>Let’s consider an example of a service modeled on Amazon’s “Simple Storage Service”
+a.k.a. “S3” for short. AWS’s S3 has so many facets to it today that one may not
+consider it “simple” on first look, but it certainly <em>simplifies</em> storage
+by eliminating concerns of scale. Our version though is only going to be
+concerned with the rudiments of storing and retrieving image files we’ll call
+“SISS”.</p>
+<ol class="arabic simple">
+<li><p>The service will be available at <code class="docutils literal notranslate"><span class="pre">https://localhost:8080/siss/</span></code>.</p></li>
+<li><p>When we ask the service to store an image, we’ll get back a URL to the
+stored image of the form <code class="docutils literal notranslate"><span class="pre">https://localhost:8080/siss/2298651378563</span></code>,
+where the number is some unique identifier for the image file.</p></li>
+<li><p>We want to be able to retrieve a stored image in original form.</p></li>
+<li><p>We want to be able to retrieve a “thumbnail” version of the image stored.</p></li>
+<li><p>We want to be able to modify an already stored image.</p></li>
+<li><p>We want to be able to retrieve some “metadata” about the image such as
+dimensions, file size and file type.</p></li>
+<li><p>We want to be able to delete a stored image.</p></li>
+</ol>
+<p>How do we now design an “API” for this using the HTTP protocol?</p>
+<p>In the language of REST, we first identify the “resource(s)” being
+managed by our service. In this case, there is only one kind of
+“resource” – images.</p>
+</section>
+<section id="create-a-new-stored-image">
+<h2>Create a new stored image<a class="headerlink" href="#create-a-new-stored-image" title="Permalink to this heading">¶</a></h2>
+<p>Since we’ve identified the service end point for storing images as
+<code class="docutils literal notranslate"><span class="pre">https://localhost:8080/siss/</span></code> (which we’ll abbreviate to <code class="docutils literal notranslate"><span class="pre">/siss/</span></code>
+to reduce redundancy in this discussion), we’re now looking for
+a way to enable a user to create a new resource under that
+path that will look like <code class="docutils literal notranslate"><span class="pre">/siss/23952987654</span></code> which stands for
+our image.</p>
+<p>Remember that we can <strong>only</strong> make HTTP requests to our service.</p>
+<p>Such a creation of a new resource is done using a HTTP <code class="docutils literal notranslate"><span class="pre">POST</span></code>
+request. So our <code class="docutils literal notranslate"><span class="pre">POST</span></code> request will take the following
+form on the wire –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POST</span> <span class="o">/</span><span class="n">siss</span><span class="o">/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">image</span><span class="o">/</span><span class="n">png</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">237856</span>
+
+<span class="o">..</span><span class="mf">.237856</span> <span class="n">image</span><span class="o">-</span><span class="nb">bytes</span><span class="o">....</span>
+</pre></div>
 </div>
-<p>Maybe it should no longer be called “<strong>Simple</strong> Storage Service”, but it is not
-surprising that the documentation around it is overwhelming. It might even come
-as a surprise to you to know that at the core, the AWS S3 service is about
-storing chunks of bytes (which it calls “objects”) at specified “addresses” in
-specified “buckets”. These “objects” are what we might think of as “files” on
-our computer, except that S3 can, if you need it, provide Petabytes of storage
-on demand.</p>
-<p><a class="reference external" href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#CoreConcepts">How Amazon S3 works</a></p>
+<p>… and our server is then expected to respond with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">27</span>
+
+<span class="p">{</span><span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="s2">&quot;/siss/23875627835&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>The “200 OK” response indicates successful creation of the
+resource and the response body gives us some information
+about the resource — in this case, we get the URL of the
+resource with its unique ID.</p>
+</section>
+<section id="reading-back-a-stored-image">
+<h2>Reading back a stored image<a class="headerlink" href="#reading-back-a-stored-image" title="Permalink to this heading">¶</a></h2>
+<p>Once we have a few such images uploaded, we’ll want to get
+the images back — for what use is a storage service if
+we can’t get back what we stored?</p>
+<p>To retrieve the <code class="docutils literal notranslate"><span class="pre">/siss/23875627835</span></code> image we stored earlier,
+we make the following <code class="docutils literal notranslate"><span class="pre">GET</span></code> request to the server –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GET</span> <span class="o">/</span><span class="n">siss</span><span class="o">/</span><span class="mi">23875627835</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="n">Accept</span><span class="p">:</span> <span class="n">image</span><span class="o">/</span><span class="n">jpeg</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">GET</span></code> requests have no request body. Even if you supply any bytes
+in the body, servers will usually ignore it, or may even flag an error and
+disconnect you.</p>
+</div>
+<p>… and in response the server may send us this upon success –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">image</span><span class="o">/</span><span class="n">jpeg</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">987135</span>
+
+<span class="o">..</span><span class="mf">.987135</span> <span class="nb">bytes</span> <span class="n">of</span> <span class="n">the</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">JPEG</span> <span class="nb">format</span><span class="o">...</span>
+</pre></div>
+</div>
+<p>Pay attention to what we did here. When we created the resource (our image),
+we gave the service a PNG file, but when we retrieved the file, we said we
+wanted it in the JPEG format (using the <code class="docutils literal notranslate"><span class="pre">Accept</span></code> header). The server obliged
+us by sending the image in the JPEG format!</p>
+<p>This is an illustration of what we mean by a “representation of a resource
+being transferred”. We think of our “image” resource not as being identified by
+the specific sequence of bytes we sent the service, but as a <strong>content
+concept</strong>. The way the service represents this content may vary but we expect
+some consistency with what the image’s actual contents are about, in that if we
+upload a cat image png and ask for a jpeg, we don’t get a dog image as a
+response. Once the resource is created on the service, we can merely exchange
+<strong>representations</strong> of the resource and perhaps its state. The resource
+itself often cannot be transferred over wire in many cases.</p>
+<p>We may want to request a thumbnail version of the image we uploaded for
+some purpose. We might then make a request of the form –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>GET /siss/23875627835?size=thumbnail HTTP/1.1
+Accept: image/webp
+</pre></div>
+</div>
+<p>Here we’re requesting a “thumbnail” (leaving the exact details to the service),
+in the “WebP” format, to which the service may respond with –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">image</span><span class="o">/</span><span class="n">webp</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">776</span>
+
+<span class="o">...</span> <span class="mi">776</span> <span class="n">byte</span> <span class="n">thumbnail</span> <span class="n">image</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>The assumption here is that we can parse this image to find out its details.</p>
+<p>The service may also make other properties of the image available to us.
+For example, it may support an end point to get the pixel dimensions
+of the original image using a request like this —</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GET</span> <span class="o">/</span><span class="n">siss</span><span class="o">/</span><span class="mi">23875627835</span><span class="o">/</span><span class="n">dims</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+</pre></div>
+</div>
+<p>And it may respond with –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">27</span>
+
+<span class="p">{</span><span class="s2">&quot;width&quot;</span><span class="p">:</span><span class="mi">1024</span><span class="p">,</span><span class="s2">&quot;height&quot;</span><span class="p">:</span><span class="mi">768</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Note that the dimensions being a property of the image “resource”, the “dims”
+part of the URL is placed <strong>within</strong> the resource path. It is not hard
+to think of an alternative end point for this like <code class="docutils literal notranslate"><span class="pre">/dims/23875627835</span></code>
+and it is not that that wouldn’t get the job done. Suffixing the <code class="docutils literal notranslate"><span class="pre">dims</span></code>
+to the resource path is a better indicator of it being the property
+of the resource and helps a programmer discover the API. To permit
+such discovery, HTTP has a few other verbs like <code class="docutils literal notranslate"><span class="pre">HEAD</span></code> and <code class="docutils literal notranslate"><span class="pre">OPTIONS</span></code>.
+In this case, we could’ve sent an <code class="docutils literal notranslate"><span class="pre">OPTIONS</span></code> request to our end point
+to get a list of possible ways to get representations of our image.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OPTIONS</span> <span class="o">/</span><span class="n">siss</span><span class="o">/</span><span class="mi">23875627835</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+</pre></div>
+</div>
+<p>… with a possible server response being –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">176</span>
+
+<span class="p">[</span>
+   <span class="p">{</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;thumbnail&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;/siss/23875627835?size=thumbnail&quot;</span> <span class="p">},</span>
+   <span class="p">{</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;rotated&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;/siss/23875627835?rotation=90&quot;</span> <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="updating-an-image">
+<h2>Updating an image<a class="headerlink" href="#updating-an-image" title="Permalink to this heading">¶</a></h2>
+<p>So now we’ve stored an image we’re working on for a client (say I’m a designer)
+and we have the next iteration of the image and we want to update the
+service with this new version. Unlike when we created the image resource,
+we’re now trying to change a resource that already exists. We do this
+with a HTTP <code class="docutils literal notranslate"><span class="pre">PUT</span></code> request like this –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PUT</span> <span class="o">/</span><span class="n">siss</span><span class="o">/</span><span class="mi">23875627835</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">image</span><span class="o">/</span><span class="n">jpeg</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">2387627</span>
+
+<span class="o">...</span> <span class="mi">2387627</span> <span class="nb">bytes</span> <span class="n">of</span> <span class="n">the</span> <span class="n">joeg</span> <span class="n">image</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>and if the service accepts this request and successfully processes it, it may
+respond with the following (still keeping it “simple”) –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">27</span>
+
+<span class="p">{</span><span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="s2">&quot;/siss/23875627835&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="deleting-an-image">
+<h2>Deleting an image<a class="headerlink" href="#deleting-an-image" title="Permalink to this heading">¶</a></h2>
+<p>If we no longer require the service to hold this resource for us,
+we may instruct it to “delete” the resource. This is done using the
+HTTP <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> request like this –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DELETE</span> <span class="o">/</span><span class="n">siss</span><span class="o">/</span><span class="mi">23875627835</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+</pre></div>
+</div>
+<p>In this case, we may not have any more headers to add (we’ll come
+to some issues with this later), but DELETE requests do not have any
+body as well. The server may then respond with –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">35</span>
+
+<span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span><span class="s2">&quot;Successfully deleted&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="resource-crud">
+<h2>Resource CRUD<a class="headerlink" href="#resource-crud" title="Permalink to this heading">¶</a></h2>
+<p>The earlier four operations are often collectively referred to using the
+acronym “CRUD” - short for “Create, Read, Update, Delete”. When you’re
+designing a service “end point” that manages a resource, these are four primary
+operations you need to think about at the minimum. You may decide that the
+service forbids updating a resource, and that’s ok, but you still need to think
+about, document it and communicate it to your users.</p>
+</section>
+<section id="what-about-other-resource-types">
+<h2>What about other resource types?<a class="headerlink" href="#what-about-other-resource-types" title="Permalink to this heading">¶</a></h2>
+<p>The “image file as a resource” illustrates the idea of transferring
+representations over wire. While in this case it looks like it might
+well be possible to transfer the resource itself in its entirety in
+its original from, that is not possible in many cases.</p>
+<p>For example, a Facebook “post” may be thought of as a resource that Facebook
+manages on your behalf. A naive perspective may cause us to think “so what, I
+can get my post in its entirety, right?”, but the nature of the Facebook
+service is that once your post is submitted, it becomes entangled with other
+posts if some friends reposted it, and others have commented on your post or
+its reposts, your post may have gained “likes” or other reactions, and so on.
+It is no longer clear where “your post” starts and the where it ends. Of course,
+you can fetch what you originally wrote, but understand that that is merely
+one representation of the state of your post.</p>
+<p>The REST approach is to treat all services as providing the CRUD of a collection
+of resources that it maintains on your behalf and all interactions with
+other applications be constructed in terms of such HTTP protocol requests
+that work by transferring various representations of your resource’s state.</p>
+<p>Hence “Representational State Transfer”.</p>
+</section>
+<section id="caveats">
+<h2>Caveats<a class="headerlink" href="#caveats" title="Permalink to this heading">¶</a></h2>
+<p>While this is the general principle, as you work with services provided by
+other parties, you may encounter the principle not being met to the letter. You
+shouldn’t generally expect that to be the case in every little detail. By and
+large, this approach will be used with some small deviations in a few corners.</p>
+<p>Most mature services, though, will conform to this approach as it has many
+architectural benefits though. Therefore knowing the “REST language” is helpful
+to navigate the sea of services available to us today.</p>
 </section>
 </section>
 
@@ -143,7 +371,7 @@ on demand.</p>
 
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shell.html">The “shell”</a></li>
 <li class="toctree-l1"><a class="reference internal" href="regex.html">Basics of “regular expressions”</a></li>
@@ -153,12 +381,25 @@ on demand.</p>
 <li class="toctree-l1"><a class="reference internal" href="json.html">JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="html.html">HTML/XHTML</a></li>
 <li class="toctree-l1"><a class="reference internal" href="js.html">A crash course in JS</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Representational State Transfer (REST)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#preliminaries">Preliminaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simple-image-storage-service">Simple Image Storage Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-a-new-stored-image">Create a new stored image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reading-back-a-stored-image">Reading back a stored image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-an-image">Updating an image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deleting-an-image">Deleting an image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resource-crud">Resource CRUD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-about-other-resource-types">What about other resource types?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caveats">Caveats</a></li>
+</ul>
+</li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="js.html" title="previous chapter">A crash course in JS</a></li>
   </ul></li>
 </ul>
 </div>
