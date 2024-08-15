@@ -18,6 +18,7 @@ Welcome to Comp350: Software design
    tips
    json
    html
+   js
 
 
 Indices and tables
