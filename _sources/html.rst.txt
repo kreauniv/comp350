@@ -149,8 +149,8 @@ use in-browser via the ``document`` object.
    treat conceptually as a list of elements. Note that ``el.tagName`` gives you
    the name of the tag corresponding to that element.
 
-On CSS selectors
-----------------
+CSS selectors
+-------------
 
 The top level ``head`` and ``body`` elements can be accessed in JS simply
 as ``document.head`` and ``document.body``. So with just that much machinery,
@@ -205,20 +205,17 @@ you a (conceptual) list of all selectors that match the given specification.
 .. _removeAttribute: https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute
 .. _hasAttribute: https://developer.mozilla.org/en-US/docs/Web/API/Element/hasAttribute
 
-CSS selectors
--------------
-
-As mentioned in the previous section, when you're programming an interactive
-web page by manipulating the DOM tree, you do not have the luxury of asking the
-user to tell you which node they want manipulated, because .... well, they have
-no idea.
+As mentioned above, when you're programming an interactive web page by
+manipulating the DOM tree, you do not have the luxury of asking the user to
+tell you which node they want manipulated, because .... well, they have no
+idea.
 
 So you need a way to be able to specify using a declaration like "an element
 which ...". For example, "an element which has 'DIV' as its tag name", "an
 element whose ``id`` attribute is ``header``" and so on. `CSS selectors`_
 provide a mini language to describe elements in this manner. While the language
-has many aspects, the following are sufficient for you to know and handle more
-than 80% of use cases you'll encounter (easily more).
+has many more aspects, the following are sufficient for you to know and handle
+more than 80% of use cases in most web pages (easily more).
 
 1. "an element whose tagname is ``tag``" is specified as ``tag``. So
    ``document.querySelectorAll("tag")`` will return a list (technically an
@@ -319,29 +316,29 @@ part like so --
         ....
     </head>
 
- .. note:: Some HTML tags like ``<link>`` do not require matching closing tags
- and are considered to be "self closing". Most tags aren't self closing though
- and when in doubt, check the `HTML standard`_ to clarify.
+.. note:: Some HTML tags like ``<link>`` do not require matching closing tags
+   and are considered to be "self closing". Most tags aren't self closing
+   though and when in doubt, check the `HTML standard`_ to clarify.
 
- Javascript
- ----------
+Loading Javascript code
+-----------------------
 
- So far we played with Javascript right in the console. However when you're
- constructing interactive pages, this is not how you introduce Javascript code
- that manipulates the DOM. You include your code within ``<script>...</script>``
- tags in one of two ways --
+So far we played with Javascript right in the console. However when you're
+constructing interactive pages, this is not how you introduce Javascript code
+that manipulates the DOM. You include your code within ``<script>...</script>``
+tags in one of two ways --
 
- .. code::
+.. code::
 
-    <script>
-        ... your JS code ...
-    </script>
+   <script>
+       ... your JS code ...
+   </script>
 
- ... or as
+... or as
 
- .. code::
+.. code::
 
-    <script src="URL-to-myjscode.js"></script>
+   <script src="URL-to-myjscode.js"></script>
 
 The path given for the ``src`` attribute is a URL in its own right and not
 necessarily just a file name. All that is required is that when the browser

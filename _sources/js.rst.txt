@@ -1,8 +1,10 @@
 
 .. _js-crash-course:
 
-A crash course in for JS python familiars
-=========================================
+A crash course in for JS
+========================
+
+(for python familiars)
 
 Here is a subset of Javascript you should know about. There are more features,
 but since most of the value of Javascript lies in the DOM APIs that are exposed

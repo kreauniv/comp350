@@ -16,7 +16,7 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="A crash course in JS python familiars" href="js.html" />
+    <link rel="next" title="A crash course in for JS" href="js.html" />
     <link rel="prev" title="JSON" href="json.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -161,8 +161,8 @@ treat conceptually as a list of elements. Note that <code class="docutils litera
 the name of the tag corresponding to that element.</p></li>
 </ol>
 </section>
-<section id="on-css-selectors">
-<h2>On CSS selectors<a class="headerlink" href="#on-css-selectors" title="Permalink to this heading">¶</a></h2>
+<section id="css-selectors">
+<h2>CSS selectors<a class="headerlink" href="#css-selectors" title="Permalink to this heading">¶</a></h2>
 <p>The top level <code class="docutils literal notranslate"><span class="pre">head</span></code> and <code class="docutils literal notranslate"><span class="pre">body</span></code> elements can be accessed in JS simply
 as <code class="docutils literal notranslate"><span class="pre">document.head</span></code> and <code class="docutils literal notranslate"><span class="pre">document.body</span></code>. So with just that much machinery,
 it would be possible to step down and walk the tree of elements to reach
@@ -205,19 +205,16 @@ variable like <code class="docutils literal notranslate"><span class="pre">temp1
 methods that show up. Use the functions discussed above on this element and
 see what happens in the browser’s display. Note down your observations.</p>
 </div>
-</section>
-<section id="css-selectors">
-<h2>CSS selectors<a class="headerlink" href="#css-selectors" title="Permalink to this heading">¶</a></h2>
-<p>As mentioned in the previous section, when you’re programming an interactive
-web page by manipulating the DOM tree, you do not have the luxury of asking the
-user to tell you which node they want manipulated, because …. well, they have
-no idea.</p>
+<p>As mentioned above, when you’re programming an interactive web page by
+manipulating the DOM tree, you do not have the luxury of asking the user to
+tell you which node they want manipulated, because …. well, they have no
+idea.</p>
 <p>So you need a way to be able to specify using a declaration like “an element
 which …”. For example, “an element which has ‘DIV’ as its tag name”, “an
 element whose <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute is <code class="docutils literal notranslate"><span class="pre">header</span></code>” and so on. <a class="reference internal" href="#css-selectors">CSS selectors</a>
 provide a mini language to describe elements in this manner. While the language
-has many aspects, the following are sufficient for you to know and handle more
-than 80% of use cases you’ll encounter (easily more).</p>
+has many more aspects, the following are sufficient for you to know and handle
+more than 80% of use cases in most web pages (easily more).</p>
 <ol class="arabic simple">
 <li><p>“an element whose tagname is <code class="docutils literal notranslate"><span class="pre">tag</span></code>” is specified as <code class="docutils literal notranslate"><span class="pre">tag</span></code>. So
 <code class="docutils literal notranslate"><span class="pre">document.querySelectorAll(&quot;tag&quot;)</span></code> will return a list (technically an
@@ -297,35 +294,33 @@ bold because the CSS declaration says so.</p>
 <p>You can store such “CSS rules” in a separate file named “something.css” and
 apply it to a HTML document by including a <code class="docutils literal notranslate"><span class="pre">link</span></code> tag in the <code class="docutils literal notranslate"><span class="pre">&lt;head&gt;...&lt;/head&gt;</span></code>
 part like so –</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   &lt;head&gt;
-       ....
-       &lt;link rel=&quot;stylesheet&quot; src=&quot;mystyles.css&quot;&gt;
-       ....
-   &lt;/head&gt;
-
-.. note:: Some HTML tags like ``&lt;link&gt;`` do not require matching closing tags
-and are considered to be &quot;self closing&quot;. Most tags aren&#39;t self closing though
-and when in doubt, check the `HTML standard`_ to clarify.
-
-Javascript
-----------
-
-So far we played with Javascript right in the console. However when you&#39;re
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">head</span><span class="o">&gt;</span>
+    <span class="o">....</span>
+    <span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;mystyles.css&quot;</span><span class="o">&gt;</span>
+    <span class="o">....</span>
+<span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some HTML tags like <code class="docutils literal notranslate"><span class="pre">&lt;link&gt;</span></code> do not require matching closing tags
+and are considered to be “self closing”. Most tags aren’t self closing
+though and when in doubt, check the <a class="reference external" href="https://html.spec.whatwg.org/multipage/">HTML standard</a> to clarify.</p>
+</div>
+</section>
+<section id="loading-javascript-code">
+<h2>Loading Javascript code<a class="headerlink" href="#loading-javascript-code" title="Permalink to this heading">¶</a></h2>
+<p>So far we played with Javascript right in the console. However when you’re
 constructing interactive pages, this is not how you introduce Javascript code
-that manipulates the DOM. You include your code within ``&lt;script&gt;...&lt;/script&gt;``
-tags in one of two ways --
-
-.. code::
-
-   &lt;script&gt;
-       ... your JS code ...
-   &lt;/script&gt;
-
-... or as
-
-.. code::
-
-   &lt;script src=&quot;URL-to-myjscode.js&quot;&gt;&lt;/script&gt;
+that manipulates the DOM. You include your code within <code class="docutils literal notranslate"><span class="pre">&lt;script&gt;...&lt;/script&gt;</span></code>
+tags in one of two ways –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
+    <span class="o">...</span> <span class="n">your</span> <span class="n">JS</span> <span class="n">code</span> <span class="o">...</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>… or as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;URL-to-myjscode.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>The path given for the <code class="docutils literal notranslate"><span class="pre">src</span></code> attribute is a URL in its own right and not
@@ -373,7 +368,7 @@ that handle specific types of events. Javascript “event handlers” are plain 
 functions that take one argument which will be the <code class="docutils literal notranslate"><span class="pre">Event</span></code> object
 representing the event that needs to be handled. Below is a silly event handler
 that removes the “class” attribute of the tag that it is attached to when
-the handler is run. See  <a class="reference internal" href="js.html#js-crash-course"><span class="std std-ref">A crash course in JS python familiars</span></a>.</p>
+the handler is run. See  <a class="reference internal" href="js.html#js-crash-course"><span class="std std-ref">A crash course in for JS</span></a>.</p>
 <div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">function</span><span class="w"> </span><span class="nx">remove_class_attribute</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">removeAttribute</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">);</span>
 <span class="p">}</span>
@@ -436,13 +431,13 @@ level require unique names within their block scopes.</p>
 <li class="toctree-l1"><a class="reference internal" href="json.html">JSON</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">HTML/XHTML</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-document-object-model-dom">The Document Object Model - DOM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#on-css-selectors">On CSS selectors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#css-selectors">CSS selectors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#css-classes">CSS classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-javascript-code">Loading Javascript code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-event-loop">The “event loop”</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="js.html">A crash course in JS python familiars</a></li>
+<li class="toctree-l1"><a class="reference internal" href="js.html">A crash course in for JS</a></li>
 </ul>
 
 <div class="relations">
@@ -450,7 +445,7 @@ level require unique names within their block scopes.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="json.html" title="previous chapter">JSON</a></li>
-      <li>Next: <a href="js.html" title="next chapter">A crash course in JS python familiars</a></li>
+      <li>Next: <a href="js.html" title="next chapter">A crash course in for JS</a></li>
   </ul></li>
 </ul>
 </div>
