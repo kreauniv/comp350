@@ -45,13 +45,32 @@ the <code class="docutils literal notranslate"><span class="pre">&quot;</span></
 the <code class="docutils literal notranslate"><span class="pre">\</span></code> escape character like <code class="docutils literal notranslate"><span class="pre">&quot;some</span> <span class="pre">\&quot;character\&quot;</span> <span class="pre">sequence&quot;</span></code>.</p>
 <p><strong>Numbers</strong> - Pretty much the same as python. Covers signed/unsigned integers,
 numbers with fixed decimal places and “floating point” numbers. All numbers in
-JS are treated as double precision floating point values. So there is no separate
-“integer” type, so to speak.</p>
+JS are treated as double precision floating point values. So there is no
+separate “integer” type, so to speak. Mathematical functions in JS are placed
+within the <cite>Math</cite> object and are accessed as <code class="docutils literal notranslate"><span class="pre">Math.sin(x)</span></code>, <code class="docutils literal notranslate"><span class="pre">Math.tan(x)</span></code>
+etc. See <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math">Math</a> for more info.</p>
 <p><strong>Arrays</strong> - Notated <code class="docutils literal notranslate"><span class="pre">[val1,val2,...]</span></code> – i.e. comma separated sequence of
 values enclosed in <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
 <p><strong>Objects</strong> - These are key-value associations where the keys in a particular
 object are expected to be unique strings and the values can be any Javascript value
-(including functions, objects, arrays, etc.)</p>
+(including functions, objects, arrays, etc.). Objects are notated like this -</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;key1&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">value1</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s2">&quot;key2&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">value2</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">x</span></code> is a JS variable holding the above object as a value, then <code class="docutils literal notranslate"><span class="pre">x.key1</span></code> will
+give you <code class="docutils literal notranslate"><span class="pre">&lt;value1&gt;</span></code> and so will <code class="docutils literal notranslate"><span class="pre">x[&quot;key1&quot;]</span></code>. If a key is a valid identifier
+(a.k.a. variable name), you can omit the <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> around it when constructing the
+object, like this –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="n">key1</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">value1</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="n">key2</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">value2</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <p><strong>Expressions</strong> - Javascript expressions are like math expressions that are
 expected to evaluate to some Javascript value.</p>
 <p><strong>Special values</strong> - <code class="docutils literal notranslate"><span class="pre">null</span></code> and <code class="docutils literal notranslate"><span class="pre">undefined</span></code> are special values to indicate
@@ -116,7 +135,34 @@ function values. So you can do the following as well –</p>
 </pre></div>
 </div>
 <p>This means you can make lists of functions, dictionaries of functions
-and so on.</p>
+and so on. Consider the following object –</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="nx">point</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span>
+<span class="w">              </span><span class="nx">dist</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="nx">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">x</span><span class="o">*</span><span class="nx">x</span><span class="o">+</span><span class="nx">y</span><span class="o">*</span><span class="nx">y</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">            </span><span class="p">};</span>
+</pre></div>
+</div>
+<p>You can now calculate the distance of the “point” from the origin using
+<code class="code docutils literal notranslate"><span class="pre">point.dist(point.x,point.y)</span></code>. That looks cumbersome to write
+every time, especially since the arguments are already available
+within point. Maybe we could write it like this –</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="nx">point</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span>
+<span class="w">              </span><span class="nx">dist</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">            </span><span class="p">};</span>
+</pre></div>
+</div>
+<p>Now we can write <code class="code docutils literal notranslate"><span class="pre">point.dist(point)</span></code>. Even that feels redundant due to the
+repeated <code class="docutils literal notranslate"><span class="pre">point</span></code>. Javascript helps with this by making a special identifier
+available within functions – <code class="docutils literal notranslate"><span class="pre">this</span></code>, which refers to the object whose
+<code class="docutils literal notranslate"><span class="pre">.dist</span></code> you did to access the function. So we can write that even simpler as –</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="nx">point</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span>
+<span class="w">              </span><span class="nx">dist</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">            </span><span class="p">};</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">this</span></code> variable is comparable to python’s <code class="docutils literal notranslate"><span class="pre">self</span></code> argument typically given
+as the first argument of “methods” … except that in JS you don’t have to give
+that explicitly. So with the above code, you can write the distance calculation
+as <code class="code docutils literal notranslate"><span class="pre">point.dist()</span></code>, which removes the redundancy.</p>
 <p>Javascript functions are also proper closures. They any variable names not
 mentioned in  local <code class="docutils literal notranslate"><span class="pre">let</span></code> bindings or in argument list but are present in the
 enclosing context will be “closed over”. <strong>This is critical for its role in
@@ -147,7 +193,25 @@ simpler for small functions. For example, a function that squares a number can
 be expressed as <code class="docutils literal notranslate"><span class="pre">(x)</span> <span class="pre">=&gt;</span> <span class="pre">x*x</span></code>. If the body needs to be more complicated, you
 can use <code class="docutils literal notranslate"><span class="pre">(x,y,z)</span> <span class="pre">=&gt;</span> <span class="pre">{....;</span> <span class="pre">return</span> <span class="pre">&lt;resultval&gt;;}</span></code>. Again, this is an
 expression that produces a function value and you can therefore use it wherever
-a value is required.</p>
+a value is required. These kinds of functions are also referred to as
+“arrow functions”.</p>
+<div class="admonition-nuance-warning admonition">
+<p class="admonition-title"><strong>Nuance warning</strong></p>
+<p>The above kind of “arrow functions” have a slightly different behaviour
+from those declared using <code class="docutils literal notranslate"><span class="pre">function</span> <span class="pre">...</span></code> w.r.t. the <code class="docutils literal notranslate"><span class="pre">this</span></code> special
+identifier. With an arrow function, if you use <code class="docutils literal notranslate"><span class="pre">this</span></code> within the body,
+it would refer to whatever <code class="docutils literal notranslate"><span class="pre">this</span></code> meant in its <strong>surrounding</strong> context.
+So the following <strong>won’t work</strong> as you might expect it to –</p>
+<blockquote>
+<div><div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="nx">point</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span>
+<span class="w">              </span><span class="nx">dist</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+<span class="w">              </span><span class="p">}</span>
+<span class="w">            </span><span class="p">};</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
 <p><strong>Dynamic typing</strong> - Javascript is usually called a “dynamically typed” language
 (like Python). What it means in this context is that a particular variable is not
 required to always hold values of a certain type, but values carry information

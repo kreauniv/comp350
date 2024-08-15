@@ -17,15 +17,39 @@ the ``\`` escape character like ``"some \"character\" sequence"``.
 
 **Numbers** - Pretty much the same as python. Covers signed/unsigned integers,
 numbers with fixed decimal places and "floating point" numbers. All numbers in
-JS are treated as double precision floating point values. So there is no separate
-"integer" type, so to speak.
+JS are treated as double precision floating point values. So there is no
+separate "integer" type, so to speak. Mathematical functions in JS are placed
+within the `Math` object and are accessed as ``Math.sin(x)``, ``Math.tan(x)``
+etc. See Math_ for more info.
+
+.. _Math: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math
 
 **Arrays** - Notated ``[val1,val2,...]`` -- i.e. comma separated sequence of
 values enclosed in ``[]``.
 
 **Objects** - These are key-value associations where the keys in a particular
 object are expected to be unique strings and the values can be any Javascript value
-(including functions, objects, arrays, etc.)
+(including functions, objects, arrays, etc.). Objects are notated like this -
+
+.. code::
+
+    {
+        "key1": <value1>,
+        "key2": <value2>,
+        ...
+    }
+
+If ``x`` is a JS variable holding the above object as a value, then ``x.key1`` will
+give you ``<value1>`` and so will ``x["key1"]``. If a key is a valid identifier
+(a.k.a. variable name), you can omit the ``""`` around it when constructing the 
+object, like this --
+
+.. code::
+    
+    {
+        key1: <value1>,
+        key2: <value2>
+    }
 
 **Expressions** - Javascript expressions are like math expressions that are
 expected to evaluate to some Javascript value. 
@@ -97,7 +121,40 @@ function values. So you can do the following as well --
     let pyth = function (x, y) { return Math.sqrt(x * x + y * y); };
 
 This means you can make lists of functions, dictionaries of functions
-and so on.
+and so on. Consider the following object --
+
+.. code:: js
+
+    let point = { x: 2.0, y: 3.0,
+                  dist: function (x,y) { return Math.sqrt(x*x+y*y); }
+                };
+
+You can now calculate the distance of the "point" from the origin using
+:code:`point.dist(point.x,point.y)`. That looks cumbersome to write
+every time, especially since the arguments are already available
+within point. Maybe we could write it like this --
+
+.. code:: js
+
+    let point = { x: 2.0, y: 3.0,
+                  dist: function (p) { return Math.sqrt(p.x * p.x + p.y * p.y); }
+                };
+
+Now we can write :code:`point.dist(point)`. Even that feels redundant due to the
+repeated ``point``. Javascript helps with this by making a special identifier
+available within functions -- ``this``, which refers to the object whose
+``.dist`` you did to access the function. So we can write that even simpler as --
+
+.. code:: js
+
+    let point = { x: 2.0, y: 3.0,
+                  dist: function () { return Math.sqrt(this.x * this.x + this.y * this.y); }
+                };
+
+The ``this`` variable is comparable to python's ``self`` argument typically given
+as the first argument of "methods" ... except that in JS you don't have to give
+that explicitly. So with the above code, you can write the distance calculation
+as :code:`point.dist()`, which removes the redundancy.
 
 Javascript functions are also proper closures. They any variable names not
 mentioned in  local ``let`` bindings or in argument list but are present in the
@@ -132,7 +189,24 @@ simpler for small functions. For example, a function that squares a number can
 be expressed as ``(x) => x*x``. If the body needs to be more complicated, you
 can use ``(x,y,z) => {....; return <resultval>;}``. Again, this is an
 expression that produces a function value and you can therefore use it wherever
-a value is required.
+a value is required. These kinds of functions are also referred to as
+"arrow functions".
+
+.. admonition:: **Nuance warning**
+
+    The above kind of "arrow functions" have a slightly different behaviour
+    from those declared using ``function ...`` w.r.t. the ``this`` special
+    identifier. With an arrow function, if you use ``this`` within the body,
+    it would refer to whatever ``this`` meant in its **surrounding** context.
+    So the following **won't work** as you might expect it to --
+
+        .. code:: js
+
+            let point = { x: 2.0, y: 3.0,
+                          dist: () => {
+                            return Math.sqrt(this.x * this.x + this.y * this.y);
+                          }
+                        };
 
 **Dynamic typing** - Javascript is usually called a "dynamically typed" language
 (like Python). What it means in this context is that a particular variable is not
