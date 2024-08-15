@@ -19,6 +19,7 @@ Welcome to Comp350: Software design
    json
    html
    js
+   rest
 
 
 Indices and tables
