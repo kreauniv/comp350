@@ -1,8 +1,8 @@
 
 .. _js-crash-course:
 
-A crash course in for JS
-========================
+A crash course in JS
+====================
 
 (for python familiars)
 
