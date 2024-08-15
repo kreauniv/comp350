@@ -387,13 +387,15 @@ It is sitting "idle" like a car in neutral gear. This "idle state" is the
 
 When you do something on the web-page, including scrolling, mousing over
 elements, clicking links or text or buttons, typing within input fields, etc.,
-the browser generates "events" represented internally as ``Event`` objects. You
+the browser generates "events" represented internally as Event_ objects. You
 program interactivity in a web page by attaching "event handlers" to elements
 that handle specific types of events. Javascript "event handlers" are plain JS
-functions that take one argument which will be the ``Event`` object
+functions that take one argument which will be the Event_ object
 representing the event that needs to be handled. Below is a silly event handler
 that removes the "class" attribute of the tag that it is attached to when
 the handler is run. See  :ref:`js-crash-course`.
+
+.. _Event: https://developer.mozilla.org/en-US/docs/Web/Events
 
 .. code:: js
 
