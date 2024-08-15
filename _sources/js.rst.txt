@@ -156,9 +156,10 @@ as the first argument of "methods" ... except that in JS you don't have to give
 that explicitly. So with the above code, you can write the distance calculation
 as :code:`point.dist()`, which removes the redundancy.
 
-Javascript functions are also proper closures. They any variable names not
-mentioned in  local ``let`` bindings or in argument list but are present in the
-enclosing context will be "closed over". **This is critical for its role in
+Javascript functions are also proper closures. That means any variable names
+not mentioned in  local ``let`` bindings or in the argument list of the
+function declaration but are present in the enclosing context will be "closed
+over" a.k.a. "captured" by the function. **This is critical for its role in
 manipulating the DOM, so pay attention**. For example, consider the following
 ---
 
@@ -181,7 +182,34 @@ manipulating the DOM, so pay attention**. For example, consider the following
 
 If comparing to python, you **DO NOT** need declarations like ``global`` and
 ``nonlocal`` to get this kind of behaviour. It is the way things work already
-in JS.
+in JS. The place where this is useful and used a lot is in constructing event
+handlers that use some information in the context or manipulate some data
+structure available in the context of its declaration in response to an event
+triggered by the browser.
+
+.. code:: js
+
+    // An example of a counter display with a button to
+    // increment it.
+    let count = 1; // The internal "count" state.
+
+    // The button on clicking which the count must be incremented.
+    let button = document.querySelector("#incr");
+
+    // The element which displays the count value.
+    let countDisplay = document.querySelector("#count");
+
+    // Attach the "click event handler" to the button.
+    button.addEventListener("click", function (event) {
+        // Note that this "count" variable is being "closed over"
+        // from the lexical context of this function.
+        count += 1;
+
+        // The countDisplay variable which references the
+        // element that displays the count is also being
+        // closed over.
+        countDisplay.innerHTML = "" + count;
+    });
 
 **Anonymous functions** - while ``function {...}`` can be used in to make
 anonymous function values, another notation is available for these that is

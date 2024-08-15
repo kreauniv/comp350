@@ -1,0 +1,111 @@
+Representational State Transfer (REST)
+======================================
+
+About a couple of decades ago, an application or software product (online or
+offline) was generally conceived of and delivered in isolation, as an entity in
+its own right. We had text editors, internet search, Photoshop, Pro Tools, MS
+Word, MS Excel, MS Powerpoint, all could be thought of by the end user as
+existing in independent silos, with some bit of exchange facilitated by the
+operating system via the file system or the "clipboard".
+
+In the past decade or so, applications and products are no longer thought of in
+isolation. The attention to interoperability led to the rise of "software as a
+service" or SaaS platforms. Software such as payment systems may not
+necessarily be user facing for the core business, but might exist to facilitate
+payment for other businesses. Data storage systems such as Amazon's S3 exist
+not to serve the storage needs of end users, but as an online storage service
+that enterprises and other applications can be designed with. Even Google
+spreadsheets, which looks like it might still fit the old school definition of
+an "application", provides APIs that let other applications use a google sheet
+as a database of sorts, with their own applications such as Google forms
+building on top of it.
+
+In a way, this "new thing" is not really new -- as happens in the computing
+world all the time. The much older unix "command line programs" may look like
+they were designed in isolation, but they were actually designed to co-exist
+well in an ecosystem of tools via the common protocol of "piping" and the
+"standard I/O" streams that all applications were given by the OS. Any application
+that produced and consumed text via its standard I/O could delegate certain
+kinds of processing to the existence of other tools in the ecosystem. ``ls``
+does not need to implement what ``sort`` does as long as its output fit what
+``sort`` could handle.
+
+Another such mechanism was "Apple Events" on MacOS ... which actually is very
+closely related to REST which we'll discuss in this section. Mac applications
+can publish "vocabularies" that might send/receive and process events by other
+applications. Although these messages are called "events", they almost always
+take the form of some representation of an internal thing owned by an
+application that is shuttled to and fro other applications, which is the
+essence of REST.
+
+Today, applications can no longer be created in ignorance of the internet and
+we have a flexible communication mechanism and protocol in TCP/IP with HTTP
+layered on top of it, enabling applications to talk to each other in the common
+language of "resources" and their "representations". 
+
+.. note:: You might also hear the term "API" used to refer to these interfaces.
+   "API" stands for "Application Programming Interface" and can be used broadly
+   for any part of a software system that wishes to expose some functionality
+   to another part via some set of mechanisms and contracts. We therefore 
+   can talk of "C APIs", "C++ class APIs", "Windows APIs", "MacOS APIs",
+   in addition to "PayPal API", "Google sheet API" etc. Hence it is a broader
+   term, though heavily used today in the context of internet applications
+   to refer to "REST APIs".
+
+Preliminaries
+-------------
+
+Before we dive into an example API, it is important to understand the
+consequences of some of the design choices of the internet that affect these
+systems.
+
+What we call the "internet" today is a set of physical wired and wireless
+connections between machines, and a set of algorithms that help route
+information from any machine to any other machine that can be reached either
+directly or indirectly. This "internet core" does not distinguish between
+"server" and "client". Every machine that is connected to some other machine is
+assigned an "IP address" that's different from that machine so the two can
+address each other and send messages.
+
+.. admonition:: **Rabbit hole there**
+
+    There is far more to be talked about regarding the structure and function
+    of the internet as a network than we can afford here. So I'll leave it
+    at that and we'll learn the bits of importance to us as we go along.
+
+Since it is hard to remember lots of numbers so we can type them into the
+browser, the internet architecture also includes "Domain Name Service"
+(abbreviated DNS). These DNS servers help map names to specific IP addresses.
+So when you type 
+
+
+A case - AWS S3
+---------------
+
+Rather than give a dry definition of REST and work from there, let's first look
+at an example - Amazon's "Simple Storage Service", referred to as "S3" in short.
+
+.. admonition:: **Do now**
+
+    Visit the `AWS S3 API reference <s3_>`_ and browse around for a bit.
+    Do you understand what it does? You can also checkout the `S3 user guide`_.
+
+.. _S3 user guide: https://docs.aws.amazon.com/AmazonS3/latest/userguide//Welcome.html
+.. _s3: https://docs.aws.amazon.com/AmazonS3/latest/API/Type_API_Reference.html
+
+Maybe it should no longer be called "**Simple** Storage Service", but it is not
+surprising that the documentation around it is overwhelming. It might even come
+as a surprise to you to know that at the core, the AWS S3 service is about
+storing chunks of bytes (which it calls "objects") at specified "addresses" in
+specified "buckets". These "objects" are what we might think of as "files" on
+our computer, except that S3 can, if you need it, provide Petabytes of storage
+on demand.
+
+`How Amazon S3 works`_
+
+.. _How Amazon S3 works: https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#CoreConcepts
+
+
+
+
+

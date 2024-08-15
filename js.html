@@ -163,9 +163,10 @@ available within functions – <code class="docutils literal notranslate"><span 
 as the first argument of “methods” … except that in JS you don’t have to give
 that explicitly. So with the above code, you can write the distance calculation
 as <code class="code docutils literal notranslate"><span class="pre">point.dist()</span></code>, which removes the redundancy.</p>
-<p>Javascript functions are also proper closures. They any variable names not
-mentioned in  local <code class="docutils literal notranslate"><span class="pre">let</span></code> bindings or in argument list but are present in the
-enclosing context will be “closed over”. <strong>This is critical for its role in
+<p>Javascript functions are also proper closures. That means any variable names
+not mentioned in  local <code class="docutils literal notranslate"><span class="pre">let</span></code> bindings or in the argument list of the
+function declaration but are present in the enclosing context will be “closed
+over” a.k.a. “captured” by the function. <strong>This is critical for its role in
 manipulating the DOM, so pay attention</strong>. For example, consider the following
 —</p>
 <div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">function</span><span class="w"> </span><span class="nx">counter</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -186,7 +187,33 @@ manipulating the DOM, so pay attention</strong>. For example, consider the follo
 </div>
 <p>If comparing to python, you <strong>DO NOT</strong> need declarations like <code class="docutils literal notranslate"><span class="pre">global</span></code> and
 <code class="docutils literal notranslate"><span class="pre">nonlocal</span></code> to get this kind of behaviour. It is the way things work already
-in JS.</p>
+in JS. The place where this is useful and used a lot is in constructing event
+handlers that use some information in the context or manipulate some data
+structure available in the context of its declaration in response to an event
+triggered by the browser.</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="c1">// An example of a counter display with a button to</span>
+<span class="c1">// increment it.</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span><span class="w"> </span><span class="c1">// The internal &quot;count&quot; state.</span>
+
+<span class="c1">// The button on clicking which the count must be incremented.</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">button</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">&quot;#incr&quot;</span><span class="p">);</span>
+
+<span class="c1">// The element which displays the count value.</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">countDisplay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">&quot;#count&quot;</span><span class="p">);</span>
+
+<span class="c1">// Attach the &quot;click event handler&quot; to the button.</span>
+<span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Note that this &quot;count&quot; variable is being &quot;closed over&quot;</span>
+<span class="w">    </span><span class="c1">// from the lexical context of this function.</span>
+<span class="w">    </span><span class="nx">count</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// The countDisplay variable which references the</span>
+<span class="w">    </span><span class="c1">// element that displays the count is also being</span>
+<span class="w">    </span><span class="c1">// closed over.</span>
+<span class="w">    </span><span class="nx">countDisplay</span><span class="p">.</span><span class="nx">innerHTML</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">count</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
 <p><strong>Anonymous functions</strong> - while <code class="docutils literal notranslate"><span class="pre">function</span> <span class="pre">{...}</span></code> can be used in to make
 anonymous function values, another notation is available for these that is
 simpler for small functions. For example, a function that squares a number can

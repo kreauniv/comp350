@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Representational State Transfer (REST) &#8212; Comp350: Software design v1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="representational-state-transfer-rest">
+<h1>Representational State Transfer (REST)<a class="headerlink" href="#representational-state-transfer-rest" title="Permalink to this heading">¶</a></h1>
+<p>About a couple of decades ago, an application or software product (online or
+offline) was generally conceived of and delivered in isolation, as an entity in
+its own right. We had text editors, internet search, Photoshop, Pro Tools, MS
+Word, MS Excel, MS Powerpoint, all could be thought of by the end user as
+existing in independent silos, with some bit of exchange facilitated by the
+operating system via the file system or the “clipboard”.</p>
+<p>In the past decade or so, applications and products are no longer thought of in
+isolation. The attention to interoperability led to the rise of “software as a
+service” or SaaS platforms. Software such as payment systems may not
+necessarily be user facing for the core business, but might exist to facilitate
+payment for other businesses. Data storage systems such as Amazon’s S3 exist
+not to serve the storage needs of end users, but as an online storage service
+that enterprises and other applications can be designed with. Even Google
+spreadsheets, which looks like it might still fit the old school definition of
+an “application”, provides APIs that let other applications use a google sheet
+as a database of sorts, with their own applications such as Google forms
+building on top of it.</p>
+<p>In a way, this “new thing” is not really new – as happens in the computing
+world all the time. The much older unix “command line programs” may look like
+they were designed in isolation, but they were actually designed to co-exist
+well in an ecosystem of tools via the common protocol of “piping” and the
+“standard I/O” streams that all applications were given by the OS. Any application
+that produced and consumed text via its standard I/O could delegate certain
+kinds of processing to the existence of other tools in the ecosystem. <code class="docutils literal notranslate"><span class="pre">ls</span></code>
+does not need to implement what <code class="docutils literal notranslate"><span class="pre">sort</span></code> does as long as its output fit what
+<code class="docutils literal notranslate"><span class="pre">sort</span></code> could handle.</p>
+<p>Another such mechanism was “Apple Events” on MacOS … which actually is very
+closely related to REST which we’ll discuss in this section. Mac applications
+can publish “vocabularies” that might send/receive and process events by other
+applications. Although these messages are called “events”, they almost always
+take the form of some representation of an internal thing owned by an
+application that is shuttled to and fro other applications, which is the
+essence of REST.</p>
+<p>Today, applications can no longer be created in ignorance of the internet and
+we have a flexible communication mechanism and protocol in TCP/IP with HTTP
+layered on top of it, enabling applications to talk to each other in the common
+language of “resources” and their “representations”.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You might also hear the term “API” used to refer to these interfaces.
+“API” stands for “Application Programming Interface” and can be used broadly
+for any part of a software system that wishes to expose some functionality
+to another part via some set of mechanisms and contracts. We therefore
+can talk of “C APIs”, “C++ class APIs”, “Windows APIs”, “MacOS APIs”,
+in addition to “PayPal API”, “Google sheet API” etc. Hence it is a broader
+term, though heavily used today in the context of internet applications
+to refer to “REST APIs”.</p>
+</div>
+<section id="preliminaries">
+<h2>Preliminaries<a class="headerlink" href="#preliminaries" title="Permalink to this heading">¶</a></h2>
+<p>Before we dive into an example API, it is important to understand the
+consequences of some of the design choices of the internet that affect these
+systems.</p>
+<p>What we call the “internet” today is a set of physical wired and wireless
+connections between machines, and a set of algorithms that help route
+information from any machine to any other machine that can be reached either
+directly or indirectly. This “internet core” does not distinguish between
+“server” and “client”. Every machine that is connected to some other machine is
+assigned an “IP address” that’s different from that machine so the two can
+address each other and send messages.</p>
+<div class="admonition-rabbit-hole-there admonition">
+<p class="admonition-title"><strong>Rabbit hole there</strong></p>
+<p>There is far more to be talked about regarding the structure and function
+of the internet as a network than we can afford here. So I’ll leave it
+at that and we’ll learn the bits of importance to us as we go along.</p>
+</div>
+<p>Since it is hard to remember lots of numbers so we can type them into the
+browser, the internet architecture also includes “Domain Name Service”
+(abbreviated DNS). These DNS servers help map names to specific IP addresses.
+So when you type</p>
+</section>
+<section id="a-case-aws-s3">
+<h2>A case - AWS S3<a class="headerlink" href="#a-case-aws-s3" title="Permalink to this heading">¶</a></h2>
+<p>Rather than give a dry definition of REST and work from there, let’s first look
+at an example - Amazon’s “Simple Storage Service”, referred to as “S3” in short.</p>
+<div class="admonition-do-now admonition">
+<p class="admonition-title"><strong>Do now</strong></p>
+<p>Visit the <a class="reference external" href="https://docs.aws.amazon.com/AmazonS3/latest/API/Type_API_Reference.html">AWS S3 API reference</a> and browse around for a bit.
+Do you understand what it does? You can also checkout the <a class="reference external" href="https://docs.aws.amazon.com/AmazonS3/latest/userguide//Welcome.html">S3 user guide</a>.</p>
+</div>
+<p>Maybe it should no longer be called “<strong>Simple</strong> Storage Service”, but it is not
+surprising that the documentation around it is overwhelming. It might even come
+as a surprise to you to know that at the core, the AWS S3 service is about
+storing chunks of bytes (which it calls “objects”) at specified “addresses” in
+specified “buckets”. These “objects” are what we might think of as “files” on
+our computer, except that S3 can, if you need it, provide Petabytes of storage
+on demand.</p>
+<p><a class="reference external" href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#CoreConcepts">How Amazon S3 works</a></p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shell.html">The “shell”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regex.html">Basics of “regular expressions”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="minilangs.html">Many mini languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="git.html">A student’s guide to git</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Some utility tips to help you</a></li>
+<li class="toctree-l1"><a class="reference internal" href="json.html">JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="html.html">HTML/XHTML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="js.html">A crash course in JS</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Srikumar K. S..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/rest.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
