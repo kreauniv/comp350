@@ -16,6 +16,7 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="A crash course in JS python familiars" href="js.html" />
     <link rel="prev" title="JSON" href="json.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -111,16 +112,34 @@ in mind when processing the data in programs.</p>
 <p>For JSON, the in-program objects we work with involve numbers, strings, array
 of values, and a dictionary (a.k.a. “object” in Javascript) that maps string
 keys to values. The values themselves may be of any of these types and there is
-no constraint of uniformity of type for all members of a collection.</p>
+no constraint of uniformity of type for all members of a collection. The lure
+of JSON for many data exchange tasks that require flexible representation is
+that it maps more or less directly to data structures available in many common
+programming languages. All a language’s library needs to support is strings,
+numbers, arrays and dictionaries (hashtables/maps).</p>
 <p>Similar to that, there is an “object model” corresponding to the structure of a
-HTML document — an in-program representation of the document that can be used to
-access and manipulate parts of the document programmatically. This is the <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model">DOM</a>.</p>
-<ol class="arabic simple">
+HTML document — an in-program representation of the document that can be used
+to access and manipulate parts of the document programmatically. This is the
+<a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model">DOM</a>. Such documents are not direct maps to existing data structures in
+languages, but have some extra semantics to them such as “tag names”,
+“attributes”, “ids”, “classes” and such due to which languages provide
+libraries to work with such documents. In particular, because Javascript was
+designed to manipulate HTML documents, this facility is readily available for
+use in-browser via the <code class="docutils literal notranslate"><span class="pre">document</span></code> object.</p>
+<ol class="arabic">
 <li><p>Individual tags such as <code class="docutils literal notranslate"><span class="pre">&lt;h1&gt;..&lt;/h1&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;p&gt;..&lt;/p&gt;</span></code> are called “HTML
 elements” and are mapped to the Javascript class named <cite>HTMLElement</cite>, which
 inherits from a more generic <code class="docutils literal notranslate"><span class="pre">Element</span></code> which inherits from <code class="docutils literal notranslate"><span class="pre">Node</span></code>. The
 term of “node” comes from thinking of these elements and their parent-child
-relationships forming a “tree of nodes”.</p></li>
+relationships forming a “tree of nodes”. All <code class="docutils literal notranslate"><span class="pre">HTMLElement</span></code> objects are
+also of type <code class="docutils literal notranslate"><span class="pre">Node</span></code> but not vice versa.</p>
+<p><strong>Note</strong>: A “node” that isn’t a “html element” is the “text node” which
+holds essentially a string of characters and can have no “child nodes” and
+is hence a “leaf node” in the “DOM tree”. Also, <code class="docutils literal notranslate"><span class="pre">HTMLElement</span></code> type nodes
+are a special set of tags specified with particular semantics in the HTML
+specification. Most modern browsers though generalize this idea to also
+include any tag names you may define yourself within a HTML document.</p>
+</li>
 <li><p>An element may have a number of attributes with string values. For example,
 a “paragraph element” with the id <code class="docutils literal notranslate"><span class="pre">my-para</span></code> would look like <code class="docutils literal notranslate"><span class="pre">&lt;p</span>
 <span class="pre">id=&quot;my-para&quot;&gt;...&lt;/p&gt;</span></code> in the HTML file. If the corresponding
@@ -128,25 +147,264 @@ a “paragraph element” with the id <code class="docutils literal notranslate"
 retrieve the value of the <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute using <code class="docutils literal notranslate"><span class="pre">el.getAttribute(&quot;id&quot;)</span></code>
 and you’ll get a string value if the attribute were present (See
 <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute">getAttribute</a>). The object then also lets you modify the attribute of the
-element using <code class="docutils literal notranslate"><span class="pre">el.setAttribute(&quot;id&quot;,</span> <span class="pre">&quot;new-value&quot;)</span></code> (See <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute">setAttribute</a>).</p></li>
+element using <code class="docutils literal notranslate"><span class="pre">el.setAttribute(&quot;id&quot;,</span> <span class="pre">&quot;new-value&quot;)</span></code> (See <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute">setAttribute</a>).
+If you merely want to check whether an element has an attribute with
+a particular name, you can use <code class="docutils literal notranslate"><span class="pre">el.hasAttribute(&quot;&lt;attrname&gt;&quot;)</span></code> which
+evaluates to a boolean indicating the presence of such an attribute.
+<strong>Note:</strong> Element attribute names are expected to be unique. Multiple
+occurrences of the same attribute name in a HTML element’s text should
+be considered an error irrespective of how browsers treat them.</p></li>
 <li><p>You can retrieve the immediate children of a given <code class="docutils literal notranslate"><span class="pre">Element</span></code> using
 <code class="docutils literal notranslate"><span class="pre">el.children</span></code> which will be an iterable <code class="docutils literal notranslate"><span class="pre">HTMLCollection</span></code> object holding
 the child <strong>elements</strong> (not all <strong>nodes</strong>, only <strong>elements</strong>) that you can
 treat conceptually as a list of elements. Note that <code class="docutils literal notranslate"><span class="pre">el.tagName</span></code> gives you
 the name of the tag corresponding to that element.</p></li>
 </ol>
+</section>
+<section id="on-css-selectors">
+<h2>On CSS selectors<a class="headerlink" href="#on-css-selectors" title="Permalink to this heading">¶</a></h2>
 <p>The top level <code class="docutils literal notranslate"><span class="pre">head</span></code> and <code class="docutils literal notranslate"><span class="pre">body</span></code> elements can be accessed in JS simply
 as <code class="docutils literal notranslate"><span class="pre">document.head</span></code> and <code class="docutils literal notranslate"><span class="pre">document.body</span></code>. So with just that much machinery,
 it would be possible to step down and walk the tree of elements to reach
-whatever element you need to for manipulations.</p>
+whatever element you need to for manipulations. For example, here is such a
+“walker” function that visits all nodes in the sub-tree under <code class="docutils literal notranslate"><span class="pre">document.body</span></code>
+and calls a given function on the element.</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">function</span><span class="w"> </span><span class="nx">walk_domtree</span><span class="p">(</span><span class="nx">root</span><span class="p">,</span><span class="w"> </span><span class="nx">fn</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">fn</span><span class="p">(</span><span class="nx">root</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">root</span><span class="p">.</span><span class="nx">children</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">walk_domtree</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span><span class="w"> </span><span class="nx">fn</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You can use the above function, for example, to remove the “class” attribute
+of all the nodes in the DOM (just for fun, not that you want to do it).</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">walk_domtree</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">n</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">n</span><span class="p">.</span><span class="nx">removeAttribute</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
 <p>Doing that is highly repetitive from a programming perspective and therefore
-there is a mini language called <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors">CSS selectors</a> that you can use to address
+there is a mini language called <a class="reference internal" href="#css-selectors">CSS selectors</a> that you can use to address
 an element within the document by specifying some properties and asking the
 <code class="docutils literal notranslate"><span class="pre">document</span></code> to search for those properties. The two primary methods you
 can use to query the document using CSS selectors are <code class="docutils literal notranslate"><span class="pre">el.querySelector(&quot;..&quot;)</span></code>
 and <code class="docutils literal notranslate"><span class="pre">el.querySelectorAll(&quot;...&quot;)</span></code>. The former will give you the first
 element that matches the selector specification and the latter will give
 you a (conceptual) list of all selectors that match the given specification.</p>
+<div class="admonition-exercise admonition">
+<p class="admonition-title"><strong>Exercise</strong></p>
+<p>Open a web page like, say, <a class="reference external" href="https://kreauniv.github.io/comp350">https://kreauniv.github.io/comp350</a> ), right
+click on some element that catches your attention and choose “inspect”.
+This will take you to the dev console and highlight the specific node in
+the DOM tree corresponding to the element you selected. (See how the
+browser maintains a map between the visual location of a node and it’s
+position in the tree for it to be able to do this?) Now right click on the
+element and choose “Set as global variable”. This will make a new global
+variable like <code class="docutils literal notranslate"><span class="pre">temp1</span></code> and set it to refer to that particular
+<code class="docutils literal notranslate"><span class="pre">HTMLElement</span></code>. You can inspect its properties and methods by typing
+<code class="docutils literal notranslate"><span class="pre">temp1.</span></code> and scrolling through the menu of candidate properties and
+methods that show up. Use the functions discussed above on this element and
+see what happens in the browser’s display. Note down your observations.</p>
+</div>
+</section>
+<section id="css-selectors">
+<h2>CSS selectors<a class="headerlink" href="#css-selectors" title="Permalink to this heading">¶</a></h2>
+<p>As mentioned in the previous section, when you’re programming an interactive
+web page by manipulating the DOM tree, you do not have the luxury of asking the
+user to tell you which node they want manipulated, because …. well, they have
+no idea.</p>
+<p>So you need a way to be able to specify using a declaration like “an element
+which …”. For example, “an element which has ‘DIV’ as its tag name”, “an
+element whose <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute is <code class="docutils literal notranslate"><span class="pre">header</span></code>” and so on. <a class="reference internal" href="#css-selectors">CSS selectors</a>
+provide a mini language to describe elements in this manner. While the language
+has many aspects, the following are sufficient for you to know and handle more
+than 80% of use cases you’ll encounter (easily more).</p>
+<ol class="arabic simple">
+<li><p>“an element whose tagname is <code class="docutils literal notranslate"><span class="pre">tag</span></code>” is specified as <code class="docutils literal notranslate"><span class="pre">tag</span></code>. So
+<code class="docutils literal notranslate"><span class="pre">document.querySelectorAll(&quot;tag&quot;)</span></code> will return a list (technically an
+“iterable”) of elements in the current HTML document which have the tag name
+“tag”. (Substitute “tag” with “div”, “p”, “section”, “h1”, etc.)</p></li>
+<li><p>“an element whose id is <code class="docutils literal notranslate"><span class="pre">elemid</span></code>” is specified as <code class="docutils literal notranslate"><span class="pre">#elemid</span></code>. So
+<code class="docutils literal notranslate"><span class="pre">document.querySelector(&quot;#elemid&quot;)</span></code> will return the element whose id is
+<code class="docutils literal notranslate"><span class="pre">elemid</span></code>. While the specification places no constraint that element ids
+must be unique, in which case you can retrieve all of them using
+<code class="docutils literal notranslate"><span class="pre">querySelectorAll</span></code>, it is a good idea to obey that constraint to kep
+programming simple. Note that this places no constraint on the tag name.
+To combine this with a specific tag name, use <code class="docutils literal notranslate"><span class="pre">tagname#elemid</span></code>.</p></li>
+<li><p>“an element with a <code class="docutils literal notranslate"><span class="pre">class</span></code> attribute whose value contains the word
+<code class="docutils literal notranslate"><span class="pre">some_css_class</span></code>” is specified as <code class="docutils literal notranslate"><span class="pre">.some_css_class</span></code>. Again, like the
+case with <code class="docutils literal notranslate"><span class="pre">#elemid</span></code>, this will match against any tag that has such an
+attribute (like <code class="docutils literal notranslate"><span class="pre">&lt;div</span> <span class="pre">class=&quot;footer</span> <span class="pre">floatright&quot;&gt;...&lt;/div&gt;</span></code> will match
+<code class="docutils literal notranslate"><span class="pre">.footer</span></code> and <code class="docutils literal notranslate"><span class="pre">.floatright</span></code>). To constrain that to a specific tag name,
+you can use <code class="docutils literal notranslate"><span class="pre">tagname.some_css_class</span></code>. So the <code class="docutils literal notranslate"><span class="pre">div</span></code> just mentioned can be
+selected using <code class="docutils literal notranslate"><span class="pre">document.querySelector(&quot;div.footer&quot;)</span></code>.</p></li>
+<li><p>“a <code class="docutils literal notranslate"><span class="pre">span</span></code> element that is a descendant of a <code class="docutils literal notranslate"><span class="pre">div</span></code> element” is expressed
+as <code class="docutils literal notranslate"><span class="pre">div</span> <span class="pre">span</span></code>. So <code class="docutils literal notranslate"><span class="pre">document.querySelectorAll(&quot;div</span> <span class="pre">span&quot;)</span></code> will let you
+walk through all the <code class="docutils literal notranslate"><span class="pre">span</span></code> element anywhere in the tree of any <code class="docutils literal notranslate"><span class="pre">div</span></code>
+element in the document. To restrict this to “a <code class="docutils literal notranslate"><span class="pre">span</span></code> that’s an immediate
+child of a <code class="docutils literal notranslate"><span class="pre">div</span></code> element”, you write <code class="docutils literal notranslate"><span class="pre">div</span> <span class="pre">&gt;</span> <span class="pre">span</span></code>.</p></li>
+</ol>
+<p>Note that you can combine the above in the following ways —</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">div#elemid</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">div.some_css_class</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">div</span> <span class="pre">span#elemid</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">div</span> <span class="pre">span.some_css_class</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.some_css_class</span> <span class="pre">descendant_tag</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">#elemid</span> <span class="pre">descendant_tag</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">#elemid</span> <span class="pre">&gt;</span> <span class="pre">child_tag</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">#elemid</span> <span class="pre">&gt;</span> <span class="pre">child_tag.some_css_class</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">#elemid.classA</span> <span class="pre">&gt;</span> <span class="pre">child_tag.classB</span></code></p></li>
+<li><p>… and so on.</p></li>
+</ol>
+<p>So with just that much, the mini language of <a class="reference internal" href="#css-selectors">CSS selectors</a> already offers
+considerable expressive power to select and work with elements in the DOM tree.</p>
+<p>Next we’ll talk about what these “CSS classes” are all about.</p>
+</section>
+<section id="css-classes">
+<h2>CSS classes<a class="headerlink" href="#css-classes" title="Permalink to this heading">¶</a></h2>
+<p>While the HTML tag “language” is about describing document <strong>structure</strong>, the
+CSS language is about describing its <strong>appearance</strong>. The history of this
+language is very interesting in that, much like a lot of computing, the
+earliest implementation of this idea used a LiSP dialect, but I won’t go into
+that any further and you can you read up via google searches if you’re
+interested in that.</p>
+<p>Some HTML elements already have some appearance characteristics associated with
+them. For example, text enclosed by <code class="docutils literal notranslate"><span class="pre">&lt;b&gt;...&lt;/b&gt;</span></code> will appear in bold face,
+text enclosed in <code class="docutils literal notranslate"><span class="pre">&lt;em&gt;...&lt;/em&gt;</span></code> will be italicized (i.e. “emphasized”) and
+such. But in modern HTML+CSS, you can override all of that if you want to.</p>
+<p>The way CSS is used to specify appearance of entities in the documents is through
+clauses of the following form –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">css</span> <span class="n">selector</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="o">&lt;</span><span class="n">appearance</span> <span class="nb">property</span> <span class="n">name1</span><span class="o">&gt;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">value2</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="o">&lt;</span><span class="n">appearance</span> <span class="nb">property</span> <span class="n">name2</span><span class="o">&gt;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">value2</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For example, here is a CSS specification that says “all elements with the
+class “footer” must appear in bold face.”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">footer</span> <span class="p">{</span>
+    <span class="n">font</span><span class="o">-</span><span class="n">weight</span><span class="p">:</span> <span class="n">bold</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The advantage of specifying the above using CSS is that the browser will always
+maintain this condition even under changes to the DOM tree. For example, if you
+add a new element to the tree using <code class="docutils literal notranslate"><span class="pre">document.createElement</span></code>, and then set
+its <code class="docutils literal notranslate"><span class="pre">class</span></code> attribute to <code class="docutils literal notranslate"><span class="pre">footer</span></code> using <code class="docutils literal notranslate"><span class="pre">el.setAttribute(&quot;class&quot;,</span>
+<span class="pre">&quot;footer&quot;)</span></code>, the browser will automatically start displaying its contents in
+bold because the CSS declaration says so.</p>
+<p>You can store such “CSS rules” in a separate file named “something.css” and
+apply it to a HTML document by including a <code class="docutils literal notranslate"><span class="pre">link</span></code> tag in the <code class="docutils literal notranslate"><span class="pre">&lt;head&gt;...&lt;/head&gt;</span></code>
+part like so –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   &lt;head&gt;
+       ....
+       &lt;link rel=&quot;stylesheet&quot; src=&quot;mystyles.css&quot;&gt;
+       ....
+   &lt;/head&gt;
+
+.. note:: Some HTML tags like ``&lt;link&gt;`` do not require matching closing tags
+and are considered to be &quot;self closing&quot;. Most tags aren&#39;t self closing though
+and when in doubt, check the `HTML standard`_ to clarify.
+
+Javascript
+----------
+
+So far we played with Javascript right in the console. However when you&#39;re
+constructing interactive pages, this is not how you introduce Javascript code
+that manipulates the DOM. You include your code within ``&lt;script&gt;...&lt;/script&gt;``
+tags in one of two ways --
+
+.. code::
+
+   &lt;script&gt;
+       ... your JS code ...
+   &lt;/script&gt;
+
+... or as
+
+.. code::
+
+   &lt;script src=&quot;URL-to-myjscode.js&quot;&gt;&lt;/script&gt;
+</pre></div>
+</div>
+<p>The path given for the <code class="docutils literal notranslate"><span class="pre">src</span></code> attribute is a URL in its own right and not
+necessarily just a file name. All that is required is that when the browser
+tries to fetch the URL, it receives some Javascript code to load. Otherwise it
+will reject it.</p>
+<p>URLs can take one of two forms – “relative” or “absolute”.</p>
+<p><strong>Relative URLs</strong> look like a file path without a leading “/” character. For
+example, <code class="docutils literal notranslate"><span class="pre">myfile.js</span></code>, <code class="docutils literal notranslate"><span class="pre">js/myfile.js</span></code> and such are relative URLs. What are
+they “relative” to? They are relative to the URL of the document they appear in.
+So if the HTML document was loaded from, say, <code class="docutils literal notranslate"><span class="pre">https://somewhere.com/here/there/anywhere/file.html</span></code>,
+and it features a tag like <code class="docutils literal notranslate"><span class="pre">&lt;script</span> <span class="pre">src=&quot;dir/myfile.js&quot;&gt;&lt;/script&gt;</span></code> inside it,
+then the full URL (a.k.a. “absolute URL”) of that file is taken to be
+<code class="docutils literal notranslate"><span class="pre">https://somewhere.com/here/there/anywhere/dir/myfile.js</span></code>. So the last
+“file name” part of the URL is removed and replaced with the given “relative URL”.</p>
+<p><strong>Absolute Paths</strong> specify URLs relative to the current “origin” of the document
+it is used in. These start with a leading “/” character. For example, if
+<code class="docutils literal notranslate"><span class="pre">&lt;script</span> <span class="pre">src=&quot;/js/myfile.js&quot;&gt;&lt;/script&gt;</span></code> is used inside the same HTML file
+in the previous case, it would refer instead to <code class="docutils literal notranslate"><span class="pre">https://somewhere.com/js/myfile.js</span></code>.</p>
+<p><strong>Absolute URLs</strong> are specified in full like <code class="docutils literal notranslate"><span class="pre">https://.....</span></code> including the
+protocol name, the domain and any intervening paths leading to the “end point”.</p>
+<p>There is also a category of “protocol relative URLs” that start with a
+<code class="docutils literal notranslate"><span class="pre">//somewhere.com/...</span></code>, which are the auto-prefixed with the protocol of the
+document. If the protocol happened to be <code class="docutils literal notranslate"><span class="pre">http</span></code>, then it is taken to be
+<code class="docutils literal notranslate"><span class="pre">http://somewhere.com/...</span></code> and if it happened to be <code class="docutils literal notranslate"><span class="pre">https</span></code>, it is taken to
+be <code class="docutils literal notranslate"><span class="pre">https://somewhere.com/...</span></code>.</p>
+</section>
+<section id="the-event-loop">
+<h2>The “event loop”<a class="headerlink" href="#the-event-loop" title="Permalink to this heading">¶</a></h2>
+<p>When you’re reading a webpage, the browser is pretty much not doing anything.
+It is sitting “idle” like a car in neutral gear. This “idle state” is the
+“event loop” that in principle looks something like this –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">pseudo</span> <span class="n">Javascript</span> <span class="n">code</span> <span class="n">to</span> <span class="n">illustrate</span> <span class="n">the</span> <span class="n">idea</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">waitForEvent</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">let</span> <span class="n">event</span> <span class="o">=</span> <span class="n">getNextEvent</span><span class="p">();</span>
+    <span class="n">processEventHandlers</span><span class="p">(</span><span class="n">event</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When you do something on the web-page, including scrolling, mousing over
+elements, clicking links or text or buttons, typing within input fields, etc.,
+the browser generates “events” represented internally as <code class="docutils literal notranslate"><span class="pre">Event</span></code> objects. You
+program interactivity in a web page by attaching “event handlers” to elements
+that handle specific types of events. Javascript “event handlers” are plain JS
+functions that take one argument which will be the <code class="docutils literal notranslate"><span class="pre">Event</span></code> object
+representing the event that needs to be handled. Below is a silly event handler
+that removes the “class” attribute of the tag that it is attached to when
+the handler is run. See  <a class="reference internal" href="js.html#js-crash-course"><span class="std std-ref">A crash course in JS python familiars</span></a>.</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">function</span><span class="w"> </span><span class="nx">remove_class_attribute</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">removeAttribute</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You then attach such an event handler to the “click” event of an element like this -</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="nx">elem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">&quot;div.footer&quot;</span><span class="p">);</span>
+<span class="nx">elem</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">remove_class_attribute</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Now, when the user clicks the element, your function will run, which will result
+in the element’s class attribute being removed. Since functions are values, you
+can combine the above two like this —</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="nx">elem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">&quot;div.footer&quot;</span><span class="p">);</span>
+<span class="nx">elem</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">removeAttribute</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>Note that we’re using an anonymous function here. We can also use a
+named function as a value this way —</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="nx">elem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">&quot;div.footer&quot;</span><span class="p">);</span>
+<span class="nx">elem</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">remclass</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">removeAttribute</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>The advantage of giving a name is that if an error occurs, the stack trace will
+tell you the name of the function. The names of such “function values” have no
+uniqueness constraint. Only those named functions declared at block or global
+level require unique names within their block scopes.</p>
 </section>
 </section>
 
@@ -178,8 +436,13 @@ you a (conceptual) list of all selectors that match the given specification.</p>
 <li class="toctree-l1"><a class="reference internal" href="json.html">JSON</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">HTML/XHTML</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-document-object-model-dom">The Document Object Model - DOM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#on-css-selectors">On CSS selectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#css-selectors">CSS selectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#css-classes">CSS classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-event-loop">The “event loop”</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="js.html">A crash course in JS python familiars</a></li>
 </ul>
 
 <div class="relations">
@@ -187,6 +450,7 @@ you a (conceptual) list of all selectors that match the given specification.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="json.html" title="previous chapter">JSON</a></li>
+      <li>Next: <a href="js.html" title="next chapter">A crash course in JS python familiars</a></li>
   </ul></li>
 </ul>
 </div>
