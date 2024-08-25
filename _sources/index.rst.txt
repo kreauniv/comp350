@@ -21,6 +21,7 @@ Welcome to Comp350: Software design
    js
    rest
    data
+   par
 
 
 Indices and tables

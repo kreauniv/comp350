@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Concurrency and parallelism &#8212; Comp350: Software design v1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Data modelling" href="data.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="concurrency-and-parallelism">
+<h1>Concurrency and parallelism<a class="headerlink" href="#concurrency-and-parallelism" title="Permalink to this heading">¶</a></h1>
+<p>The internet’s architecture means that machines can (in general) talk to
+each other if they know each others’ IP address, which they can often
+get if they know the relevant domain names. This means that a “server”
+computer running an application as a service can be hit with a request
+from any number of “client” computers at any time.</p>
+<p>This poses some important questions to ask of our application and
+scenarios to test rigorously for production use.</p>
+<ol class="arabic simple">
+<li><p>What happens when our service handlers are hit “at the same time”
+by two different requests?</p></li>
+<li><p>If our service handler modifies some piece of data in our database,
+then what happens when another request comes in when the earlier
+request is in the process of being handled and the database is
+still working on the previous statement?</p></li>
+<li><p>What happens if our service request handler needs to make a request to
+another service to fulfil what was asked of it and that service is doing
+some destructive operation while another request comes in?</p></li>
+</ol>
+<p>You can see how the “simplicity” of what we’ve been doing in our backend code
+can cross over quickly into “damn, this is broken” territory in such a
+scenario!</p>
+<p>A number of approaches have evolved to deal with these concurrency issues
+over time while, for the most part, retaining programming simplicity.</p>
+<p>We look at two – coroutining on a single thread, and database transactions.</p>
+<section id="coroutining-on-a-single-thread">
+<h2>Coroutining on a single thread<a class="headerlink" href="#coroutining-on-a-single-thread" title="Permalink to this heading">¶</a></h2>
+<p>We know that our computers can multiple processes in parallel – as in two
+instructions from two programs can be in the process of execution by the
+processor <strong>at the same time</strong> because our processors have multiple “cores”,
+with each “core” usually capable of service two “threads”.</p>
+<p>In the early days of the internet, every request from a client would be handled
+by spawning off a process and these issues of concurrency were demonic to deal with
+without proper engineering and testing. These days though, there is general recognition
+that much of the hard work is delegated to other systems and the “server” process
+spends most of its time idling, waiting for a request, rather than servicing a
+request.</p>
+<p>To captialize on this observation, systems such as NodeJS and python now have
+frameworks which essentially handle requests in a single operating system thread.
+When we write our handlers as ordinary functions, this means that when one of
+our handler functions is working, any request that comes in is placed into a
+queue and will wait for the running handler to finish its job before the
+request gets handled. In this way, requests get “serialized”.</p>
+<p>That alone is not sufficient and describes only “single threaded operation” and
+no “coroutining”. If we now consider the scenario that the handler function
+might actually be twiddling its metaphorical thumbs waiting for a reply from
+another service from across the world, it would seem unfair to the request
+waiting in the queue that the thread is idle and yet it won’t process the
+request in the queue. Typically, such “thumb twiddling” happens during I/O
+requests, either to subsystems on the same computer such as the file system or
+GPU, or another process on the same system, or another process on another
+computer.</p>
+<p>To address this, Javascript and Python’s “async/await” mechanism puts the
+“event loop” (the “thumb twiddler” at the core) in control and turns the
+handlers into functions that can “return” multiple times. So a handler that
+needs to wait for another request to complete would do the following –</p>
+<ol class="arabic simple">
+<li><p>Create and send the request to the remote party.</p></li>
+<li><p>Ask the event loop to resume the handler once the remote party responds.</p></li>
+<li><p>Transfer control back to the event loop.</p></li>
+</ol>
+<p>Now, the event loop is free to handle the next request in the queue
+even though the earlier handler has not finished. To be clear, this
+still does not clear our plate of potential problems since the request
+the handler sent out could be destructive in some way and if another
+request for the same thing comes in (called a “race condition”), we’re
+still left with the question of what should actually happen.</p>
+<p>The concept of “generators” underlies the “async/await” mechanism by providing
+the ability to “return” from a function  multiple times while preserving its
+execution state, using a keyword such as <code class="docutils literal notranslate"><span class="pre">yield</span></code>.</p>
+<p>In python, coroutines are created using the keywords <code class="docutils literal notranslate"><span class="pre">async</span></code> (short for
+asynchronous) and paused for results from another asynchronous operation using
+the keyword <code class="docutils literal notranslate"><span class="pre">await</span></code>.</p>
+<figure class="align-center" id="id1">
+<img alt="Illustrates co-routining between two &quot;async&quot; functions" src="_images/coroutining.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">The sequence diagram illustrates how two routines (functions) cooperate
+via the event loop to yield time to other operations that need attention
+while within the same thread of control. Such “cooperating routines”
+are why they’re called “coroutines”, as opposed to a “routine” which
+takes up all the resources of a thread for itself.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="database-transactions">
+<h2>Database transactions<a class="headerlink" href="#database-transactions" title="Permalink to this heading">¶</a></h2>
+<p>If we now think of the database as a “service” and our application as its
+“client”, we can see how the database also needs to contend with potentially
+conflicting requests. While one request asks the DB to modify some set of rows
+in one way, another might come in and ask to modify an overlapping set of rows
+in another way. What is a DB to do in such a scenario?</p>
+<p>DB creators do what is best in such a circumstance – which is to provide
+the programmer with mechanisms using which they can dictate what is to happen.
+One such mechanism is the “transaction”.</p>
+<p>A “transaction” refers to a carved out <em>sequence</em> of operations, which when
+executed as unit, the database will guarantee some properties of the outcome –</p>
+<ol class="arabic simple">
+<li><p>The DB guarantees that either the transaction completes in its entirety,
+or fails entirely and will not leave the database in an intermediate
+“half done” state. Think about this a bit and you’ll see that it can take
+substantial machinery to ensure this property … called “Atomicity”.</p></li>
+<li><p>The DB guarantees that the transaction will complete and leave the database
+in a “consistent” state – where all the database constraints (such as inter-table
+relationships, index tables, etc.) are all consistent with the contents
+of the database. This property is referred to as “consistency”.</p></li>
+<li><p>Furthermore, the DB also guarantees that two concurrent transactions where
+one is writing to the DB and another is reading from it, won’t see
+each others’ intermediate states. Transactions are therefore said to be
+“isolated”.</p></li>
+<li><p>Once the DB declares a transaction to be complete, it guarantees that any
+data stored as a consequence will be retained in storage even if in that instant
+the database were to crash or the computer’s power be cut off (or imagine
+any other such violent interruptions). This is called “durability”.</p></li>
+</ol>
+<p>Databases which provide transactions with all four of these properties (which
+<a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a> and <a class="reference external" href="https://www.mysql.com/">MySQL</a> do as well as <a class="reference external" href="https://www.sqlite.org/index.html">SQLite3</a>) are said to provide “ACID
+transactions” where “ACID” is the common acronym for “Atomic, Consistent,
+Isolated and Durable” transactions.</p>
+<p>Unless you have a good reason not to, it is always good to execute your SQL
+queries within a “transaction”. With sqlite3, this is marked by the “begin”
+and “commit”/”rollback” statements. So your python code will look like -</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">do_transaction</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">cursor</span><span class="p">())</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;begin&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Run your SQL commands that must be run as a unit.</span>
+            <span class="c1"># cur.execute(&quot;...&quot;)</span>
+            <span class="c1"># cur.execute(&quot;...&quot;)</span>
+
+            <span class="c1"># Finally &quot;commit&quot; your transaction.</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;commit&quot;</span><span class="p">)</span>
+        <span class="n">catch</span> <span class="n">db</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+            <span class="c1"># In case some failure occurred during the transaction,</span>
+            <span class="c1"># we should &quot;rollback&quot; any changes that we happened to do</span>
+            <span class="c1"># so that the database stays consistent.</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;rollback&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With these, we’re still running our database queries synchronously and therefore
+need to address the question of “what happens when it takes a long time to
+respond to a query?”. The <a class="reference external" href="https://github.com/omnilib/aiosqlite">aiosqlite</a> package in python turns the DB calls into
+async calls and therefore returns frequently enough to the event loop to not block
+other requests to our server.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shell.html">The “shell”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regex.html">Basics of “regular expressions”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="minilangs.html">Many mini languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="git.html">A student’s guide to git</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Some utility tips to help you</a></li>
+<li class="toctree-l1"><a class="reference internal" href="json.html">JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="html.html">HTML/XHTML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="js.html">A crash course in JS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">Representational State Transfer (REST)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data modelling</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Concurrency and parallelism</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#coroutining-on-a-single-thread">Coroutining on a single thread</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#database-transactions">Database transactions</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="data.html" title="previous chapter">Data modelling</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Srikumar K. S..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/par.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
