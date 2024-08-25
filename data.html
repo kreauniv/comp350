@@ -69,8 +69,8 @@ know the <code class="docutils literal notranslate"><span class="pre">id</span><
 any new concepts beyond what we used for the above, so you can take that as an
 exercise to extend it with more information such as “creation date-time”,
 “completion date-time”, “priority” etc.</p>
-<table class="docutils align-default" id="id1">
-<caption><span class="caption-number">Table 1 </span><span class="caption-text">TODOList</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-number">Table 1 </span><span class="caption-text">TODOList</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>id</p></th>
 <th class="head"><p>text</p></th>
@@ -120,8 +120,8 @@ overhaul the table and change its schema (called a “schema migration”).</p>
 <p>Now that we’ve acknowledged that our app will evolve over time and so might
 our table “schema”, we should perhaps keep some metadata about our schema
 – its “version number” to start with.</p>
-<table class="docutils align-default" id="id2">
-<caption><span class="caption-number">Table 2 </span><span class="caption-text">metadata</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-number">Table 2 </span><span class="caption-text">metadata</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>schema</p></th>
 <th class="head"><p>version</p></th>
@@ -152,13 +152,13 @@ is a ubiquitous language used in describing data and interacting with
 relational databases. The advantage of SQL is that it abstracts the details of
 how the data is actually stored by a given database, and thus permits the
 programmer to think and work at the level of the data they need to work with.</p>
-<p><a href="#id3"><span class="problematic" id="id4">SQLite_</span></a> is a ubiquitous, simple yet powerful such database which stores all its
+<p><a class="reference external" href="https://www.sqlite.org/index.html">SQLite</a> is a ubiquitous, simple yet powerful such database which stores all its
 data in a single file and makes it available for manipulation via SQL.
 Different databases have slightly different variations of the SQL language they
 support, but these differences are far less important than the substantial
 commonality that exists between them.</p>
-<p>Other common larger scale databases in use include <a href="#id5"><span class="problematic" id="id6">PostgreSQL_</span></a> and <a href="#id7"><span class="problematic" id="id8">MySQL_</span></a>. In
-my opinion, of the relational databases available today, <a href="#id9"><span class="problematic" id="id10">PostgreSQL_</span></a> is perhaps
+<p>Other common larger scale databases in use include <a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a> and <a class="reference external" href="https://www.mysql.com/">MySQL</a>. In
+my opinion, of the relational databases available today, <a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a> is perhaps
 the best of the cadre w.r.t. its engineering and the ecosystem of extensions
 available for it.</p>
 <p>There are also a class of databases called “NoSQL” databases which came up
@@ -167,14 +167,14 @@ complexity of SQL databases. Our general advice is that if you don’t know
 enough to choose a database, choose one which has a SQL interface and don’t
 choose a “NoSQL” database (such as “MongoDB”).</p>
 </section>
-<section id="sqlite3">
-<h2>SQLite3<a class="headerlink" href="#sqlite3" title="Permalink to this heading">¶</a></h2>
+<section id="id1">
+<h2>SQLite3<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
 <p>As mentioned, we’ll be using the “SQLite v3” as a simple database storage for
 our todolist app’s backend.</p>
 <p>Python comes with the <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> package preinstalled usually. In case your
 installation does not have it, you can always install it with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span>
 <span class="pre">sqlite3</span></code>.</p>
-<p>The <a href="#id11"><span class="problematic" id="id12">`sqlite3 documentation`_</span></a> is the canonical place to go to for information
+<p>The <a class="reference external" href="https://www.sqlite.org/index.html">sqlite3 documentation</a> is the canonical place to go to for information
 about the supported commands. Its documentation is excellent even for beginners
 and it provides “railroad diagrams” that illustrate the syntax.</p>
 <div class="admonition note">
@@ -287,16 +287,18 @@ be marked as <code class="docutils literal notranslate"><span class="pre">comple
 constraints. All of them will be updated by the statement. In our case
 though, since <code class="docutils literal notranslate"><span class="pre">id</span></code> is the “primary key” for the table, the value <code class="docutils literal notranslate"><span class="pre">5</span></code> is
 guaranteed to uniquely identify one row, if it exists.</p>
-<blockquote>
-<div><p>In general, beware when you make update statements which they’re
+<div class="admonition-warning admonition">
+<p class="admonition-title"><strong>Warning</strong></p>
+<p>In general, beware when you make update statements which they’re
 destructive updates and you might accidentally match more rows than you
-intended to. Remember the “precision” and “recall” concepts. You want high
-precision <strong>and</strong> recall for your update statements, but the precision is
-more important than the recall, since you can find out about rows that have
-not been modified and issue new commands to modify them. If your selection
-is has low precision though, you’ll have modified some rows unintentionally
-and it can be hard to determine which rows were affected.</p>
-</div></blockquote>
+intended to. Remember the “precision” and “recall” concepts. You want
+high precision <strong>and</strong> recall for your update statements, but the
+precision is more important than the recall, since you can find out
+about rows that have not been modified and issue new commands to modify
+them. If your selection is has low precision though, you’ll have
+modified some rows unintentionally and it can be hard to determine
+which rows were affected.</p>
+</div>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">update</span></code> statements cannot add or remove columns. That is considered a
 change in schema and must not be done without careful thought.</p></li>
@@ -475,7 +477,7 @@ instead of the global variable <code class="docutils literal notranslate"><span 
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data modelling</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#tables">Tables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sql">SQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#sqlite3">SQLite3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">SQLite3</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#insert-data">Insert data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#retrieve-rows">Retrieve rows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#update-rows">Update rows</a></li>

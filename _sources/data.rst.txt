@@ -104,10 +104,18 @@ Different databases have slightly different variations of the SQL language they
 support, but these differences are far less important than the substantial
 commonality that exists between them.
 
+
+.. _sqlite3 documentation:
+.. _sqlite3:
+.. _sqlite: https://www.sqlite.org/index.html 
+
 Other common larger scale databases in use include PostgreSQL_ and MySQL_. In
 my opinion, of the relational databases available today, PostgreSQL_ is perhaps
 the best of the cadre w.r.t. its engineering and the ecosystem of extensions
 available for it.
+
+.. _PostgreSQL: https://www.postgresql.org/
+.. _MySQL: https://www.mysql.com/
 
 There are also a class of databases called "NoSQL" databases which came up
 during a period of (in my opinion) irrational backlash against the perceived
@@ -264,16 +272,17 @@ Note the following --
    though, since ``id`` is the "primary key" for the table, the value ``5`` is
    guaranteed to uniquely identify one row, if it exists. 
 
-    .. admonition:: **Warning**
+   .. admonition:: **Warning**
 
-    In general, beware when you make update statements which they're
-    destructive updates and you might accidentally match more rows than you
-    intended to. Remember the "precision" and "recall" concepts. You want high
-    precision **and** recall for your update statements, but the precision is
-    more important than the recall, since you can find out about rows that have
-    not been modified and issue new commands to modify them. If your selection
-    is has low precision though, you'll have modified some rows unintentionally
-    and it can be hard to determine which rows were affected.
+        In general, beware when you make update statements which they're
+        destructive updates and you might accidentally match more rows than you
+        intended to. Remember the "precision" and "recall" concepts. You want
+        high precision **and** recall for your update statements, but the
+        precision is more important than the recall, since you can find out
+        about rows that have not been modified and issue new commands to modify
+        them. If your selection is has low precision though, you'll have
+        modified some rows unintentionally and it can be hard to determine
+        which rows were affected.
 
 3. ``update`` statements cannot add or remove columns. That is considered a
    change in schema and must not be done without careful thought.
