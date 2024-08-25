@@ -184,11 +184,12 @@ the keyword ``await``.
    :align: center
    :alt: Illustrates co-routining between two "async" functions
 
-   The sequence diagram illustrates how two routines (functions) cooperate
-   via the event loop to yield time to other operations that need attention
-   while within the same thread of control. Such "cooperating routines"
-   are why they're called "coroutines", as opposed to a "routine" which
-   takes up all the resources of a thread for itself.
+   The sequence diagram illustrates how two routines (functions) cooperate via
+   the event loop to yield time to other operations that need attention while
+   within the same thread of control. You can see how at any time only one of
+   the three are active. Such "cooperating routines" are why they're called
+   "coroutines", as opposed to a "routine" which takes up all the resources of
+   a thread for itself.
 
 Database transactions
 ---------------------
