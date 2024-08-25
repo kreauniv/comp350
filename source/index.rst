@@ -23,6 +23,7 @@ Welcome to Comp350: Software design
    data
    par
    pim
+   trust
 
 
 Indices and tables
