@@ -22,6 +22,7 @@ Welcome to Comp350: Software design
    rest
    data
    par
+   pim
 
 
 Indices and tables
