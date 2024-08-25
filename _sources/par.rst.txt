@@ -278,7 +278,7 @@ message on a channel (a message is an arbitrary piece of data in this case) and
 uses it to advance its computation until it needs to either send or receive
 another message.
 
-Erlang_ and Elixir_ (based on Erlang) are languages that are provide first
+Erlang_ and Elixir_ (based on Erlang) are languages that provide first
 class runtimes that use this model to organize resilient concurrent computation
 at scale.
 
