@@ -142,17 +142,19 @@ and it provides "railroad diagrams" that illustrate the syntax.
 The process for opening a sqlite3 database and sending it commands to manipulate
 and query data is as follows --
 
-1. "Connect" to the database. The language used here generalizes difference 
-   locations for the database -- a) in-memory, b) on disk or c) on another computer
-   over the network. This step gets you a database connection.
+1. "Connect" to the database. The language used here generalizes different
+   locations for the database -- a) in-memory, b) on disk or c) on another
+   computer over the network. This step gets you a database connection.
 
-2. When you want to do something with the database, you create a "cursor" object
-   and ask it to execute your SQL commands given as a string.
+2. When you want to do something with the database, you create a "cursor"
+   object from the connection and ask it to execute your SQL commands given as
+   a string.
 
 3. Once you're done with the cursor object you created, you close the cursor.
 
-The above is the simplest of usage scenarios. The process will vary a bit, for
-example, when you have to deal with a long running "transaction".
+The above is the simplest of usage scenarios and is a common mode of usage
+across different databases. The process might vary a bit, for example, when you
+have to deal with a long running "transaction".
 
 .. admonition:: **sqlite3 repl**
 
