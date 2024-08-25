@@ -20,6 +20,7 @@ Welcome to Comp350: Software design
    html
    js
    rest
+   data
 
 
 Indices and tables
