@@ -197,11 +197,12 @@ the keyword <code class="docutils literal notranslate"><span class="pre">await</
 <figure class="align-center" id="id3">
 <img alt="Illustrates co-routining between two &quot;async&quot; functions" src="_images/coroutining.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 5 </span><span class="caption-text">The sequence diagram illustrates how two routines (functions) cooperate
-via the event loop to yield time to other operations that need attention
-while within the same thread of control. Such “cooperating routines”
-are why they’re called “coroutines”, as opposed to a “routine” which
-takes up all the resources of a thread for itself.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-number">Fig. 5 </span><span class="caption-text">The sequence diagram illustrates how two routines (functions) cooperate via
+the event loop to yield time to other operations that need attention while
+within the same thread of control. You can see how at any time only one of
+the three are active. Such “cooperating routines” are why they’re called
+“coroutines”, as opposed to a “routine” which takes up all the resources of
+a thread for itself.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
