@@ -164,7 +164,10 @@ have to deal with a long running "transaction".
     ``sqlite3`` comes with a repl you can run from the shell using ``sqlite3``.
     You can run SQL commands as well as what are called "meta commands" which
     start with a period "." character. When writing SQL on the repl, the SQL statements
-    can be multi-line and are terminated by a ";".
+    can be multi-line and are terminated by a ";". See `sqlite3 command line interface`_
+    documentation.
+
+.. _sqlite3 command line interface: https://sqlite.org/cli.html
 
 .. code:: SQL
 
