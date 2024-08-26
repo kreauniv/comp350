@@ -140,7 +140,9 @@ The `sqlite3 documentation`_ is the canonical place to go to for information
 about the supported commands. Its documentation is excellent even for beginners
 and it provides "railroad diagrams" that illustrate the syntax.
 
-.. note:: SQL syntax is not case sensitive for its keywords.
+.. note:: SQL syntax is not case sensitive for its keywords. The syntax is also
+   not sensitive to white space, in that one or more of space/tab/newline
+   is equivalent to a single space character everywhere in the syntax.
 
 The process for opening a sqlite3 database and sending it commands to manipulate
 and query data is as follows --
