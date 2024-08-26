@@ -121,7 +121,10 @@ There are also a class of databases called "NoSQL" databases which came up
 during a period of (in my opinion) irrational backlash against the perceived
 complexity of SQL databases. Our general advice is that if you don't know
 enough to choose a database, choose one which has a SQL interface and don't
-choose a "NoSQL" database (such as "MongoDB").
+choose a "NoSQL" database (such as "MongoDB"). This advice has become stronger
+since PostgreSQL_, SQLite3_ and MySQL_ all have facilities today to work with
+"document models" -- a "document" is basically a JSON structure with supposedly
+variable schema which actually has fixed schema in practice.
 
 SQLite3
 -------
