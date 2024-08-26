@@ -59,11 +59,11 @@ Clicking on the "edit" button will take you to the "particle editor".
 Feature space
 -------------
 
-While we've asked for a lot, to make progress on the application, do not try
-to build everything at one go. Start by trimming down and prioritizing
-(literally "choosing which one comes first") what we want so we can have a
-working version as early as possible and iterate from there. This "early working
-version" is what we'd call a "minimum viable product". In general, there is 
+While we've asked for a lot, to make progress on the application, do not try to
+build everything at one go. Start by trimming down and prioritizing what we
+want (literally "choosing which one comes first") so we can have a working
+version as early as possible and iterate from there. This "early working
+version" is what we'd call a "minimum viable product". In general, there is
 much more to be done for "viability" in the market, but in our case, we can be
 quite lenient. For example, we could do a bare-bones, no-live interactions UI
 that only consists of forms and click links for starters.
