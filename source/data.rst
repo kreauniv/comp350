@@ -53,10 +53,10 @@ exercise to extend it with more information such as "creation date-time",
 
 Notice that in the above table, we're considering our "id" column to be an
 integer, the "text" column to have, well, text values and the "status" column
-to also have text value with only two values allowed -- "complete" or
+to also have a text value with only two possibilities allowed -- "complete" or
 "pending". The "status" column is a effectively a boolean and could also have
-been modelled as an integer with ``0`` standing for "incomplete" and ``1``
-standing for "completeyes". Similarly, you may want to use a string as an
+been modelled as an integer with ``0`` standing for "pending" and ``1``
+standing for "completed". Similarly, you may want to use a string as an
 identifier for a todo item as well, instead of an integer. Such a description
 of the table is called its "schema".
 
