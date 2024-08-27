@@ -1,28 +1,27 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>PIM app &#8212; Comp350: Software design v1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=3d3fbe02" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Trust issues" href="trust.html" />
-    <link rel="prev" title="Concurrency and parallelism" href="par.html" />
+    <link rel="prev" title="Concurrency" href="conc.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -35,20 +34,20 @@
           <div class="body" role="main">
             
   <section id="pim-app">
-<h1>PIM app<a class="headerlink" href="#pim-app" title="Permalink to this heading">¶</a></h1>
+<h1>PIM app<a class="headerlink" href="#pim-app" title="Link to this heading">¶</a></h1>
 <p>This chapter describes a practice app you can build from scratch to exercise
 all facets of programming an application.</p>
 <p>PIM stands for “personal information manager”. A simple personal note keeping app
 that offers fast retrieval. We’ll save our notes, which we call “particles” with
 a title and body text composed using Markdown.</p>
 <section id="design-sketch">
-<h2>Design sketch<a class="headerlink" href="#design-sketch" title="Permalink to this heading">¶</a></h2>
+<h2>Design sketch<a class="headerlink" href="#design-sketch" title="Link to this heading">¶</a></h2>
 <p>The app is “personal”, and so has a login page. Even if you’re only running it
 locally, it might help to have it be password protected.</p>
 <figure class="align-center" id="id1">
 <img alt="PIM login page" src="_images/pim-login.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 6 </span><span class="caption-text">PIM login view</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p><span class="caption-number">Fig. 6 </span><span class="caption-text">PIM login view</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>The main entry point after login is the search page, which also offers a quick
@@ -58,7 +57,7 @@ in near-realtime.</p>
 <figure class="align-center" id="id2">
 <img alt="PIM search page" src="_images/pim-search.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 7 </span><span class="caption-text">PIM search page</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p><span class="caption-number">Fig. 7 </span><span class="caption-text">PIM search page</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Clicking on a title in the search results will expand/collapse the particle
@@ -66,26 +65,26 @@ in-line.</p>
 <figure class="align-center" id="id3">
 <img alt="PIM search results list" src="_images/pim-list.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 8 </span><span class="caption-text">PIM search results list and in-place viewer</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-number">Fig. 8 </span><span class="caption-text">PIM search results list and in-place viewer</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Clicking on the “view” button will take you to the full “particle viewer”.</p>
 <figure class="align-center" id="id4">
 <img alt="PIM particle viewer" src="_images/pim-viewer.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 9 </span><span class="caption-text">PIM particle viewer</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p><span class="caption-number">Fig. 9 </span><span class="caption-text">PIM particle viewer</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Clicking on the “edit” button will take you to the “particle editor”.</p>
 <figure class="align-center" id="id5">
 <img alt="PIM particle editor" src="_images/pim-editor.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 10 </span><span class="caption-text">PIM particle editor</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<p><span class="caption-number">Fig. 10 </span><span class="caption-text">PIM particle editor</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="feature-space">
-<h2>Feature space<a class="headerlink" href="#feature-space" title="Permalink to this heading">¶</a></h2>
+<h2>Feature space<a class="headerlink" href="#feature-space" title="Link to this heading">¶</a></h2>
 <p>While we’ve asked for a lot, to make progress on the application, do not try to
 build everything at one go. Start by trimming down and prioritizing what we
 want (literally “choosing which one comes first”) so we can have a working
@@ -102,7 +101,7 @@ The ability to do such a paring down is a valuable skill.</p>
 for the MVP.</p>
 </section>
 <section id="todos">
-<h2>TODOs<a class="headerlink" href="#todos" title="Permalink to this heading">¶</a></h2>
+<h2>TODOs<a class="headerlink" href="#todos" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
 <li><p>[done] Design sketch with some indicative features is given</p></li>
 <li><p>[todo] API design for the service using REST approach</p></li>
@@ -122,7 +121,7 @@ for the MVP.</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
 
@@ -133,7 +132,16 @@ for the MVP.</p>
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
@@ -147,7 +155,7 @@ for the MVP.</p>
 <li class="toctree-l1"><a class="reference internal" href="js.html">A crash course in JS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rest.html">Representational State Transfer (REST)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data modelling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="par.html">Concurrency and parallelism</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conc.html">Concurrency</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">PIM app</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#design-sketch">Design sketch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#feature-space">Feature space</a></li>
@@ -161,21 +169,11 @@ for the MVP.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="par.html" title="previous chapter">Concurrency and parallelism</a></li>
+      <li>Previous: <a href="conc.html" title="previous chapter">Concurrency</a></li>
       <li>Next: <a href="trust.html" title="next chapter">Trust issues</a></li>
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -189,11 +187,11 @@ for the MVP.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2024, Srikumar K. S..
+      &#169;2024, Srikumar K. S..
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/pim.rst.txt"
