@@ -1,5 +1,7 @@
-Concurrency and parallelism
-===========================
+Concurrency
+===========
+
+(... vs "parallelism")
 
 The internet's architecture means that machines can (in general) talk to
 each other if they know each others' IP address, which they can often
