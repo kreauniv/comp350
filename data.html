@@ -407,9 +407,14 @@ We’re creating our “todolist table” in this step using the <a class="refer
 </pre></div>
 </div>
 <p>Here is an example of how we would typically write functions that call into the
-database to retrieve items. We do not construct SQL statements using string
-concatenation. Instead we mark the variable parts of the statements using <cite>?</cite>
-and supply arguments using a separate python list of arguments.</p>
+database to retrieve items.</p>
+<div class="admonition-important admonition">
+<p class="admonition-title"><strong>Important</strong></p>
+<p>We do not construct SQL statements using string concatenation. Instead we
+mark the variable parts of the statements using <cite>?</cite> (or named parameters
+like <cite>:status</cite>) and supply arguments using a separate python list (or
+dictionary) of arguments.</p>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">items_by_status</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">cursor</span><span class="p">())</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;select text, status from todolist where status = ?&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">status</span><span class="p">])</span>
