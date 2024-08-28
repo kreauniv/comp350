@@ -137,8 +137,8 @@ generator as a "hash function", for instance).
 Commonly used hash functions today include SHA1_, SHA256_ and SHA512_. Note
 that SHA256 is the same as SHA512 whose output is truncated. SHA1 hashes are
 used in git and you'd have already seen strings of hexadecimal numbers like
-code:`27b1260f03b20f463596f2a927cc16c3cb17c0bb` when you look at your code:`git
-log`. SHA1 hashes are 20 bytes (i.e. 160 bits) long, SHA256 hashes are 32 bytes
+``27b1260f03b20f463596f2a927cc16c3cb17c0bb`` when you look at your ``git
+log``. SHA1 hashes are 20 bytes (i.e. 160 bits) long, SHA256 hashes are 32 bytes
 long and SHA512 hashes are 64 bytes long. The longer the hash the harder it is
 to "crack" it. SHA1 is secure enough for many applications (such as git), but
 at least SHA256 is recommended going forward.
@@ -164,14 +164,14 @@ This is because you want to protect your users passwords in case your applicatio
 gets hacked. So how can you store a user's password in an attack-resistant
 manner? You hash it.
 
-But a simple code:`sha512(username + password)` is not going to cut it since a
+But a simple ``sha512(username + password)`` is not going to cut it since a
 malicious entity can try every combination of letters (assuming the user is not
 going to choose a super long password) and generate every possible SHA512
 output and figure out from your database what they password of a particular
 user is. (This is called a "dictionary attack".)
 
-One possible way around this is to use a random string of bytes code:`R` and
-store code:`R + hash(R + username + password)` in the password table
+One possible way around this is to use a random string of bytes ``R`` and
+store ``R + hash(R + username + password)`` in the password table
 corresponding to the username. Now to check whether the password is correct,
 you can retrieve the stored ``R``, compute ``R + hash(R + username +
 password)`` using the given password and check whether it matches what you've
@@ -200,8 +200,8 @@ server can establish for itself whether a token is authentic -- i.e. something
 the server has created.
 
 One method for this is the HMAC_ function, which is computed on a message ``m``
-and a secret key ``K`` roughly like this -- code:`HMAC(K,m) = hash(hash(K) +
-hash(k + m))` (with some nuances like padding elided for simplicity), where
+and a secret key ``K`` roughly like this -- ``HMAC(K,m) = hash(hash(K) +
+hash(k + m))`` (with some nuances like padding elided for simplicity), where
 ``+`` indicates string/bytearray concatenation and the ``hash`` is some strong
 hash function like (at least) SHA256_.
 
@@ -212,7 +212,7 @@ When the server issues a token with details like "your name is XYZ and you have
 level N membership that expires on YYYY-MM-DD", the HMAC function can be used
 create a signature for this message that is easy for the server to check. So
 the token then becomes something like --
-code:`<R>+<card-contents>+HMAC(K,<R>+<card_contents>)`. Given such a token, the
+``<card-contents>+HMAC(K,<card_contents>)``. Given such a token, the
 card contents are easy to separate out, the server knows its ``K`` and it can
 compute the HMAC part and confirm whether it is the same as what is in the
 token.
@@ -239,12 +239,15 @@ following --
    avail of some service.
 
 The conventional way in which a server hands out such bearer tokens to
-browser-based clients is as a code:`Cookie:` header. Browsers know what to do
+browser-based clients is as a ``Cookie:`` header. Browsers know what to do
 with these "cookie" strings. In particular, the next time the user visits the
 site, the browser will automatically send any such saved cookies earlier
 presented by the server -- i.e. they are associated with the "domain of
 origin". The cookies set by site A will only be sent back to site A and not to
 another site B.
+
+For services accessing other services via API calls, it is customary to pass
+such a bearer token in the ``Authorization: Bearer <token>`` header.
 
 Cross site requests
 -------------------
@@ -293,17 +296,17 @@ Python libraries
 ----------------
 
 secrets_: Used to generate cryptographically secure random numbers for use in
-tokens, etc. Example code:`secrets.token_urlsafe(<nbytes>)`.
+tokens, etc. Example ``secrets.token_urlsafe(<nbytes>)``.
 
 hashlib_: Secure hashes for various algorithms. Example:
-code:`hashlib.sha256(<byte-string>).hexdigest()`.
+``hashlib.sha256(<byte-string>).hexdigest()``.
 
 `hmac <hmacpy_>`_: Keyed - message authentication hash discussed above. Example:
-code:`hmac.digest(b"key-byte-string", b"byte-message", "sha512").hex()`.
+``hmac.digest(b"key-byte-string", b"byte-message", "sha512").hex()``.
 
-`bcrypt <bcryptgh_>`_: For password hashing. Example: code:`hashed =
-bcrypt.hashpw(password, bcrypt.gensalt())` and for checking,
-code:`bcrypt.checkpw(password, hashed)`.
+`bcrypt <bcryptgh_>`_: For password hashing. Example: ``hashed =
+bcrypt.hashpw(password, bcrypt.gensalt())`` and for checking,
+``bcrypt.checkpw(password, hashed)``.
 
 .. _bcryptgh: https://github.com/pyca/bcrypt/
 .. _secrets: https://docs.python.org/3/library/secrets.html
