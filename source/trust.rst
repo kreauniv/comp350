@@ -42,10 +42,10 @@ a.k.a. Authentication.
    Are they who they claim they are? How does the server authenticate its
    users?
 
-So the first user walks in and makes a request. You'll first want to ascertain
-whether the user is a member already. There are two possibilities at this
-point -- either the user is a member already, or the user is not and wishes
-to sign up for membership. 
+So a user walks into the library and makes a request. You'll first want to
+ascertain whether the user is a member already. There are two possibilities at
+this point -- either the user is a member already, or the user is not and
+wishes to sign up for membership. 
 
 How might a user prove to you that they're a member? You might ask them to
 show a "membership card" -- one that you've issued them. Due to the scale
@@ -77,7 +77,7 @@ What can the user do?
    Should the server grant them access to the data?
 
 The card presented by a member may contain additional information like the
-membership privileges you have at the library. For example, "level 1" member
+membership privileges they have at the library. For example, "level 1" member
 may be allowed to borrow 2 books and a "level 2" member may be allowed to
 borrow 4 books at a time, and a "privileged member" may be allowed to borrow 10
 books at a time and can avail of free home delivery and pickup. You can either
