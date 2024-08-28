@@ -408,9 +408,14 @@ We're creating our "todolist table" in this step using the `create table`_ comma
 
 
 Here is an example of how we would typically write functions that call into the
-database to retrieve items. We do not construct SQL statements using string
-concatenation. Instead we mark the variable parts of the statements using `?`
-and supply arguments using a separate python list of arguments. 
+database to retrieve items. 
+
+.. admonition:: **Important**
+
+   We do not construct SQL statements using string concatenation. Instead we
+   mark the variable parts of the statements using `?` (or named parameters
+   like `:status`) and supply arguments using a separate python list (or
+   dictionary) of arguments. 
 
 .. code:: python
 
