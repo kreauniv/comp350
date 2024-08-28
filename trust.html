@@ -134,6 +134,19 @@ all” approach. That said, users have become accustomed to some commonly used
 mechanisms that they’re comfortable using and it is good to leverage these the
 most before inventing schemes of  your own (which is almost always a bad idea,
 unless you’re a security expert).</p>
+<p>Remember that the server is always suspicious of the user/client. So it is
+natural for the server programmer to think – “what if the user repeatedly
+pummels my server with a sequence of requests testing every combination of user
+and password until one succeeds?”. To mitigate such a scenario, a common UX
+pattern used is to exponentially increase the time interval the user has to
+wait between unsuccessful attempts. Usually, sites simplify this by permitting,
+say, 3 attempts followed by which the user will have to wait for, say, 15
+minutes before trying again. On the iPad/iPhone, keying in the wrong pin for a
+few times will lock you out for a minute. If you fail again, you’ll be locked
+for 5 minutes and if you fail once more you’ll be locked out for 10 minutes and
+so on. This kind of a strategy broadly goes under the term <strong>exponential
+backoff</strong> and is an approach usable in a number of scenarios beyond just
+security.</p>
 </section>
 <section id="techniques">
 <h2>Techniques<a class="headerlink" href="#techniques" title="Permalink to this heading">¶</a></h2>
