@@ -154,8 +154,8 @@ generator as a “hash function”, for instance).</p>
 <p>Commonly used hash functions today include <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-1">SHA1</a>, <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-2">SHA256</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-2">SHA512</a>. Note
 that SHA256 is the same as SHA512 whose output is truncated. SHA1 hashes are
 used in git and you’d have already seen strings of hexadecimal numbers like
-code:<cite>27b1260f03b20f463596f2a927cc16c3cb17c0bb</cite> when you look at your code:<cite>git
-log</cite>. SHA1 hashes are 20 bytes (i.e. 160 bits) long, SHA256 hashes are 32 bytes
+<code class="docutils literal notranslate"><span class="pre">27b1260f03b20f463596f2a927cc16c3cb17c0bb</span></code> when you look at your <code class="docutils literal notranslate"><span class="pre">git</span>
+<span class="pre">log</span></code>. SHA1 hashes are 20 bytes (i.e. 160 bits) long, SHA256 hashes are 32 bytes
 long and SHA512 hashes are 64 bytes long. The longer the hash the harder it is
 to “crack” it. SHA1 is secure enough for many applications (such as git), but
 at least SHA256 is recommended going forward.</p>
@@ -173,13 +173,13 @@ Wrong!</p>
 This is because you want to protect your users passwords in case your application
 gets hacked. So how can you store a user’s password in an attack-resistant
 manner? You hash it.</p>
-<p>But a simple code:<cite>sha512(username + password)</cite> is not going to cut it since a
+<p>But a simple <code class="docutils literal notranslate"><span class="pre">sha512(username</span> <span class="pre">+</span> <span class="pre">password)</span></code> is not going to cut it since a
 malicious entity can try every combination of letters (assuming the user is not
 going to choose a super long password) and generate every possible SHA512
 output and figure out from your database what they password of a particular
 user is. (This is called a “dictionary attack”.)</p>
-<p>One possible way around this is to use a random string of bytes code:<cite>R</cite> and
-store code:<cite>R + hash(R + username + password)</cite> in the password table
+<p>One possible way around this is to use a random string of bytes <code class="docutils literal notranslate"><span class="pre">R</span></code> and
+store <code class="docutils literal notranslate"><span class="pre">R</span> <span class="pre">+</span> <span class="pre">hash(R</span> <span class="pre">+</span> <span class="pre">username</span> <span class="pre">+</span> <span class="pre">password)</span></code> in the password table
 corresponding to the username. Now to check whether the password is correct,
 you can retrieve the stored <code class="docutils literal notranslate"><span class="pre">R</span></code>, compute <code class="docutils literal notranslate"><span class="pre">R</span> <span class="pre">+</span> <span class="pre">hash(R</span> <span class="pre">+</span> <span class="pre">username</span> <span class="pre">+</span>
 <span class="pre">password)</span></code> using the given password and check whether it matches what you’ve
@@ -201,8 +201,8 @@ Often no.</p>
 server can establish for itself whether a token is authentic – i.e. something
 the server has created.</p>
 <p>One method for this is the <a class="reference external" href="https://docs.python.org/3/library/hmac.html">HMAC</a> function, which is computed on a message <code class="docutils literal notranslate"><span class="pre">m</span></code>
-and a secret key <code class="docutils literal notranslate"><span class="pre">K</span></code> roughly like this – code:<cite>HMAC(K,m) = hash(hash(K) +
-hash(k + m))</cite> (with some nuances like padding elided for simplicity), where
+and a secret key <code class="docutils literal notranslate"><span class="pre">K</span></code> roughly like this – <code class="docutils literal notranslate"><span class="pre">HMAC(K,m)</span> <span class="pre">=</span> <span class="pre">hash(hash(K)</span> <span class="pre">+</span>
+<span class="pre">hash(k</span> <span class="pre">+</span> <span class="pre">m))</span></code> (with some nuances like padding elided for simplicity), where
 <code class="docutils literal notranslate"><span class="pre">+</span></code> indicates string/bytearray concatenation and the <code class="docutils literal notranslate"><span class="pre">hash</span></code> is some strong
 hash function like (at least) <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-2">SHA256</a>.</p>
 <p>The key <code class="docutils literal notranslate"><span class="pre">K</span></code> is kept as a secret by the server and not revealed to the user.
@@ -210,7 +210,7 @@ When the server issues a token with details like “your name is XYZ and you hav
 level N membership that expires on YYYY-MM-DD”, the HMAC function can be used
 create a signature for this message that is easy for the server to check. So
 the token then becomes something like –
-code:<cite>&lt;R&gt;+&lt;card-contents&gt;+HMAC(K,&lt;R&gt;+&lt;card_contents&gt;)</cite>. Given such a token, the
+<code class="docutils literal notranslate"><span class="pre">&lt;card-contents&gt;+HMAC(K,&lt;card_contents&gt;)</span></code>. Given such a token, the
 card contents are easy to separate out, the server knows its <code class="docutils literal notranslate"><span class="pre">K</span></code> and it can
 compute the HMAC part and confirm whether it is the same as what is in the
 token.</p>
@@ -235,12 +235,14 @@ noted time interval) somewhere safe.</p></li>
 avail of some service.</p></li>
 </ol>
 <p>The conventional way in which a server hands out such bearer tokens to
-browser-based clients is as a code:<cite>Cookie:</cite> header. Browsers know what to do
+browser-based clients is as a <code class="docutils literal notranslate"><span class="pre">Cookie:</span></code> header. Browsers know what to do
 with these “cookie” strings. In particular, the next time the user visits the
 site, the browser will automatically send any such saved cookies earlier
 presented by the server – i.e. they are associated with the “domain of
 origin”. The cookies set by site A will only be sent back to site A and not to
 another site B.</p>
+<p>For services accessing other services via API calls, it is customary to pass
+such a bearer token in the <code class="docutils literal notranslate"><span class="pre">Authorization:</span> <span class="pre">Bearer</span> <span class="pre">&lt;token&gt;</span></code> header.</p>
 </section>
 <section id="cross-site-requests">
 <h2>Cross site requests<a class="headerlink" href="#cross-site-requests" title="Permalink to this heading">¶</a></h2>
@@ -277,14 +279,14 @@ such links or code.</p>
 <section id="python-libraries">
 <h2>Python libraries<a class="headerlink" href="#python-libraries" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://docs.python.org/3/library/secrets.html">secrets</a>: Used to generate cryptographically secure random numbers for use in
-tokens, etc. Example code:<cite>secrets.token_urlsafe(&lt;nbytes&gt;)</cite>.</p>
+tokens, etc. Example <code class="docutils literal notranslate"><span class="pre">secrets.token_urlsafe(&lt;nbytes&gt;)</span></code>.</p>
 <p><a class="reference external" href="https://docs.python.org/3/library/hashlib.html">hashlib</a>: Secure hashes for various algorithms. Example:
-code:<cite>hashlib.sha256(&lt;byte-string&gt;).hexdigest()</cite>.</p>
+<code class="docutils literal notranslate"><span class="pre">hashlib.sha256(&lt;byte-string&gt;).hexdigest()</span></code>.</p>
 <p><a class="reference external" href="https://docs.python.org/3/library/hmac.html">hmac</a>: Keyed - message authentication hash discussed above. Example:
-code:<cite>hmac.digest(b”key-byte-string”, b”byte-message”, “sha512”).hex()</cite>.</p>
-<p><a class="reference external" href="https://github.com/pyca/bcrypt/">bcrypt</a>: For password hashing. Example: code:<cite>hashed =
-bcrypt.hashpw(password, bcrypt.gensalt())</cite> and for checking,
-code:<cite>bcrypt.checkpw(password, hashed)</cite>.</p>
+<code class="docutils literal notranslate"><span class="pre">hmac.digest(b&quot;key-byte-string&quot;,</span> <span class="pre">b&quot;byte-message&quot;,</span> <span class="pre">&quot;sha512&quot;).hex()</span></code>.</p>
+<p><a class="reference external" href="https://github.com/pyca/bcrypt/">bcrypt</a>: For password hashing. Example: <code class="docutils literal notranslate"><span class="pre">hashed</span> <span class="pre">=</span>
+<span class="pre">bcrypt.hashpw(password,</span> <span class="pre">bcrypt.gensalt())</span></code> and for checking,
+<code class="docutils literal notranslate"><span class="pre">bcrypt.checkpw(password,</span> <span class="pre">hashed)</span></code>.</p>
 </section>
 </section>
 
