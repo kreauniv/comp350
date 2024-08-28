@@ -1,26 +1,27 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Trust issues &#8212; Comp350: Software design v1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=3d3fbe02" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="PIM app" href="pim.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-
   
-  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
   
@@ -33,14 +34,258 @@
           <div class="body" role="main">
             
   <section id="trust-issues">
-<h1>Trust issues<a class="headerlink" href="#trust-issues" title="Link to this heading">¶</a></h1>
+<h1>Trust issues<a class="headerlink" href="#trust-issues" title="Permalink to this heading">¶</a></h1>
 <p>You’re by now used to typing in a username and password to identify yourself to
 a website. Different websites also employ different means to make this happen.
 This chapter is about the various aspects and mechanisms used to implement
 “authentication” (identifying a user) and “authorization” (granting permissions
-to users). We’ll look at some basic data structures and cryptographic
-principles used to address these issues.</p>
-<p>TODO</p>
+to users). We’ll look at some basic principles which help think about trust
+issues with web applications, and some common techniques.</p>
+<section id="what-s-the-issue">
+<h2>What’s the issue?<a class="headerlink" href="#what-s-the-issue" title="Permalink to this heading">¶</a></h2>
+<p>The internet is, as you know, a wild place. When a server announces its service
+to the world – with its domain name bound to its IP address on some DNS
+service – any other computer connected to the internet can make a request to
+the service, at any time, and any number of them can make requests as well.</p>
+<p>So a published service needs to guard its resources and data both in order to
+serve its intended users, as well as to protect itself and its users from
+malicious actors. Designing the security and privacy aspects of a service is
+therefore an important activity to be done up front.</p>
+</section>
+<section id="a-mental-model">
+<h2>A mental model<a class="headerlink" href="#a-mental-model" title="Permalink to this heading">¶</a></h2>
+<p>To try to understand the security environment under which a service operates,
+it is useful to anthropomorphize the actors in the network. Think of your
+service as a person with an open shop front who services specific users (like
+with, say, a lending library) and browsers and such clients as persons who
+visit the shop to avail of the service.</p>
+</section>
+<section id="who-is-the-user">
+<h2>Who is the user?<a class="headerlink" href="#who-is-the-user" title="Permalink to this heading">¶</a></h2>
+<p>a.k.a. Authentication.</p>
+<figure class="align-center" id="id2">
+<img alt="Who are they?" src="_images/who-are-they.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 11 </span><span class="caption-text">Are they who they claim they are? How does the server authenticate its
+users?</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>So the first user walks in and makes a request. You’ll first want to ascertain
+whether the user is a member already. There are two possibilities at this
+point – either the user is a member already, or the user is not and wishes
+to sign up for membership.</p>
+<p>How might a user prove to you that they’re a member? You might ask them to
+show a “membership card” – one that you’ve issued them. Due to the scale
+at which services might need to handle requests, they should always assume
+that only <strong>authenticated</strong> users can make requests, and only those requests
+that they’re <strong>authorized</strong> to make. For example, after a user shows you their
+library membership card, they can borrow books, but cannot buy them from the
+library.</p>
+<p>The notion of a “membership card” is usually called a “bearer token” –
+something that a user produces to prove to you that they are who they say they
+are. The conventional “username + password” combination is one such “bearer
+token”. The important thing for the service (you the library owner) is that
+you have some means by which you can establish the authenticity of the bearer
+token. By looking at the card, there is something in it that you can use to
+be <strong>sure enough</strong> for yourself that the user has not produced a counterfeit.
+In other words, you need a way to identify that the card (token) has been
+issued by you and by nobody else.</p>
+</section>
+<section id="what-can-the-user-do">
+<h2>What can the user do?<a class="headerlink" href="#what-can-the-user-do" title="Permalink to this heading">¶</a></h2>
+<p>… a.k.a. Authorization.</p>
+<figure class="align-center" id="id3">
+<img alt="Should the server grant them access to the data?" src="_images/is-authorized.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 12 </span><span class="caption-text">Should the server grant them access to the data?</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>The card presented by a member may contain additional information like the
+membership privileges you have at the library. For example, “level 1” member
+may be allowed to borrow 2 books and a “level 2” member may be allowed to
+borrow 4 books at a time, and a “privileged member” may be allowed to borrow 10
+books at a time and can avail of free home delivery and pickup. You can either
+use the information in the card, or if you don’t trust your card that much, you
+can pull this information from your rolodeck (database) of users.</p>
+<p>The card typically also carries an <strong>expiration date</strong> for the membership. This
+could either be tied to the period for which the user has paid their
+subscription fees to you, or simply to help limit potential for making
+counterfeit membership cards – the longer a card is out there, the more likely
+it becomes duplicable at some point.</p>
+<p>So a user’s membership lasts only until a set date, after which they have to
+re-engage and create another membership with the library to avail of its
+services. (“Your password has expired. Set your new password now!”)</p>
+</section>
+<section id="security-ux">
+<h2>Security UX<a class="headerlink" href="#security-ux" title="Permalink to this heading">¶</a></h2>
+<p>Security measures always place an experience burden on users. So whatever
+measures you choose needs to be carefully traded off against inconvenience of
+users. For example, if your application keeps notes on behalf of users, there
+will be some expectation of privacy and they may not mind, say, if they get
+auto-logged out after an hour of inactivity. If your application is like
+Wikipedia and the user is an editor, there is not much of a need to log out the
+user at such a short interval since Wikipedia publicly records who edited what,
+when and what exact change did they make. Wikipedia editors might spend long
+hours on the site and would be annoyed if they were asked to login so
+frequently.</p>
+<p>Beyond the “re-authentication interval”, the balance of UX and security needs
+to be considered on a per-application basis and there is no “one solution fits
+all” approach. That said, users have become accustomed to some commonly used
+mechanisms that they’re comfortable using and it is good to leverage these the
+most before inventing schemes of  your own (which is almost always a bad idea,
+unless you’re a security expert).</p>
+</section>
+<section id="techniques">
+<h2>Techniques<a class="headerlink" href="#techniques" title="Permalink to this heading">¶</a></h2>
+<p>“Cryptographic hash functions” – a.k.a. “message digests” – are a workhorse
+tool for organizing security protocols between applications and users. While
+the mathematics of these functions is beyond the scope of this course and
+chapter, using them is relatively easy to understand, and essential to
+constructing secure applications.</p>
+<p>A <strong>hash function</strong> or <strong>message digest</strong> is a function that takes a sequence
+of bytes and constructs a fixed length sequence of bytes (say 32 bytes) –
+called the “hash” or “digest” – with the specific property that it is
+computationally easy to go one way (from message to hash) but inordinately
+expensive to determine the message when given the hash, to the point of being
+nearly impossible to do so. A key constraint is that the output hash is
+completely determined by the input message and the function must always produce
+the same hash for the same message (so, you can’t have a random number
+generator as a “hash function”, for instance).</p>
+<p>Commonly used hash functions today include <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-1">SHA1</a>, <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-2">SHA256</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-2">SHA512</a>. Note
+that SHA256 is the same as SHA512 whose output is truncated. SHA1 hashes are
+used in git and you’d have already seen strings of hexadecimal numbers like
+code:<cite>27b1260f03b20f463596f2a927cc16c3cb17c0bb</cite> when you look at your code:<cite>git
+log</cite>. SHA1 hashes are 20 bytes (i.e. 160 bits) long, SHA256 hashes are 32 bytes
+long and SHA512 hashes are 64 bytes long. The longer the hash the harder it is
+to “crack” it. SHA1 is secure enough for many applications (such as git), but
+at least SHA256 is recommended going forward.</p>
+<div class="admonition-warning admonition">
+<p class="admonition-title"><strong>Warning</strong></p>
+<p>The MD5 hash algorithm is considered deprecated for most uses
+and is not considered to be cryptographically safe any more.</p>
+</div>
+<p>Let’s see how such a function can be used to authenticate a user.</p>
+<p>So a user comes to your application and provides a username and password. You
+take that and go check whether that combination is valid and has been recorded
+in your database. If yes, admit the user and no, send them away. Right? ….
+Wrong!</p>
+<p>It is never a good idea to store your user’s passwords in the raw in your database.
+This is because you want to protect your users passwords in case your application
+gets hacked. So how can you store a user’s password in an attack-resistant
+manner? You hash it.</p>
+<p>But a simple code:<cite>sha512(username + password)</cite> is not going to cut it since a
+malicious entity can try every combination of letters (assuming the user is not
+going to choose a super long password) and generate every possible SHA512
+output and figure out from your database what they password of a particular
+user is. (This is called a “dictionary attack”.)</p>
+<p>One possible way around this is to use a random string of bytes code:<cite>R</cite> and
+store code:<cite>R + hash(R + username + password)</cite> in the password table
+corresponding to the username. Now to check whether the password is correct,
+you can retrieve the stored <code class="docutils literal notranslate"><span class="pre">R</span></code>, compute <code class="docutils literal notranslate"><span class="pre">R</span> <span class="pre">+</span> <span class="pre">hash(R</span> <span class="pre">+</span> <span class="pre">username</span> <span class="pre">+</span>
+<span class="pre">password)</span></code> using the given password and check whether it matches what you’ve
+stored in your DB. An attacker will have to do a whole lot more work now as
+they have to pretty much start from scratch to crack each password. The
+random part <code class="docutils literal notranslate"><span class="pre">R</span></code> is also referred to as “salt”.</p>
+<p>Even this is not considered enough in general and repeated application (called
+“rounds”) of such a hash or encryption function is used to increase the cost
+for an attacker. Fortunately, these functions are readily available to a
+programmer – <a class="reference external" href="https://github.com/pyca/bcrypt/">bcrypt</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/Scrypt">scrypt</a>.</p>
+</section>
+<section id="tokens">
+<h2>Tokens<a class="headerlink" href="#tokens" title="Permalink to this heading">¶</a></h2>
+<p>Username/password combination may be ok for users, but when applications
+need to authenticate themselves to other services, do they do the same?
+Often no.</p>
+<p>Applications are usually issued what are called “bearer tokens” (their
+“membership card”) which is constructed by the server in a manner in which the
+server can establish for itself whether a token is authentic – i.e. something
+the server has created.</p>
+<p>One method for this is the <a class="reference external" href="https://docs.python.org/3/library/hmac.html">HMAC</a> function, which is computed on a message <code class="docutils literal notranslate"><span class="pre">m</span></code>
+and a secret key <code class="docutils literal notranslate"><span class="pre">K</span></code> roughly like this – code:<cite>HMAC(K,m) = hash(hash(K) +
+hash(k + m))</cite> (with some nuances like padding elided for simplicity), where
+<code class="docutils literal notranslate"><span class="pre">+</span></code> indicates string/bytearray concatenation and the <code class="docutils literal notranslate"><span class="pre">hash</span></code> is some strong
+hash function like (at least) <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-2">SHA256</a>.</p>
+<p>The key <code class="docutils literal notranslate"><span class="pre">K</span></code> is kept as a secret by the server and not revealed to the user.
+When the server issues a token with details like “your name is XYZ and you have
+level N membership that expires on YYYY-MM-DD”, the HMAC function can be used
+create a signature for this message that is easy for the server to check. So
+the token then becomes something like –
+code:<cite>&lt;R&gt;+&lt;card-contents&gt;+HMAC(K,&lt;R&gt;+&lt;card_contents&gt;)</cite>. Given such a token, the
+card contents are easy to separate out, the server knows its <code class="docutils literal notranslate"><span class="pre">K</span></code> and it can
+compute the HMAC part and confirm whether it is the same as what is in the
+token.</p>
+<p>This technique is useful for any piece of information that a server hands out
+to its clients that at a later point it needs to check that it was indeed
+generated by the server.</p>
+</section>
+<section id="login">
+<h2>Login<a class="headerlink" href="#login" title="Permalink to this heading">¶</a></h2>
+<p>The login process for a web application therefore is a sequence like the
+following –</p>
+<ol class="arabic simple">
+<li><p>The client presents “username” and “password”.</p></li>
+<li><p>The server checks it against its database (using <a class="reference external" href="https://github.com/pyca/bcrypt/">bcrypt</a>, for example).</p></li>
+<li><p>The server issues a “bearer token” which can be an opaque and random
+looking sequence of bytes (which it uses as a key to store parseable
+information in its database internally) or a readable sequence of
+bytes.</p></li>
+<li><p>The client receives and saves this bearer token (set to expire after some
+noted time interval) somewhere safe.</p></li>
+<li><p>The client presents the bearer token to the server whenever it wants to
+avail of some service.</p></li>
+</ol>
+<p>The conventional way in which a server hands out such bearer tokens to
+browser-based clients is as a code:<cite>Cookie:</cite> header. Browsers know what to do
+with these “cookie” strings. In particular, the next time the user visits the
+site, the browser will automatically send any such saved cookies earlier
+presented by the server – i.e. they are associated with the “domain of
+origin”. The cookies set by site A will only be sent back to site A and not to
+another site B.</p>
+</section>
+<section id="cross-site-requests">
+<h2>Cross site requests<a class="headerlink" href="#cross-site-requests" title="Permalink to this heading">¶</a></h2>
+<p>Say website A provides services to its users and checks their credentials
+using cookies sent by the browser when their users visit the site.</p>
+<p>Say there is another website that presents a page containing elements that
+refer to website A and requests need to go to website A to fetch those
+elements. Now, the browser would send those cookies to website A, even though
+the content is appearing on behalf of website B. This way, it is possible for
+website B to hijack the experience of website A and even act in some malicious
+ways. Such a request across websites is called a “cross-site request” and
+websites will mostly want to protect themselves against such “forgery” (<a class="reference external" href="https://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF</a>).</p>
+<p>The way they protect themselves is to issue one-time-use random strings with
+every page containing hidden information called a “CSR token” which if not
+returned to the user along with form data the website will reject the request.
+A server can also indicate in its response headers whether cross-site requests
+are permitted (for some services, they may be legitimate requests).</p>
+<p>The warning here is that the server shouldn’t trust the browser too much.</p>
+</section>
+<section id="cross-site-scripting">
+<h2>Cross-site scripting<a class="headerlink" href="#cross-site-scripting" title="Permalink to this heading">¶</a></h2>
+<p>On the flip side, a user shouldn’t trust a website too much, in case the site
+exploits the trust and sends malicious requests (or replays of earlier
+requests) to other services used by the user without their knowledge.</p>
+<p>Since these requests typically are sent using Javascript code behind the
+scenes, they are referred to as <a class="reference external" href="https://en.wikipedia.org/wiki/Cross-site_scripting">cross-site scripting</a> vulnerability.</p>
+<p>With this type, the server may be lax about sanitizing content provided by the
+user before incorporating the content in any response web pages. We already saw
+one instance of this behaviour when we discussed “SQL injection attacks”. Here
+potentially malicious content can get permanently injected into a user’s
+experience of a website via a carefully constructed link URL or web page with
+such links or code.</p>
+</section>
+<section id="python-libraries">
+<h2>Python libraries<a class="headerlink" href="#python-libraries" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference external" href="https://docs.python.org/3/library/secrets.html">secrets</a>: Used to generate cryptographically secure random numbers for use in
+tokens, etc. Example code:<cite>secrets.token_urlsafe(&lt;nbytes&gt;)</cite>.</p>
+<p><a class="reference external" href="https://docs.python.org/3/library/hashlib.html">hashlib</a>: Secure hashes for various algorithms. Example:
+code:<cite>hashlib.sha256(&lt;byte-string&gt;).hexdigest()</cite>.</p>
+<p><a class="reference external" href="https://docs.python.org/3/library/hmac.html">hmac</a>: Keyed - message authentication hash discussed above. Example:
+code:<cite>hmac.digest(b”key-byte-string”, b”byte-message”, “sha512”).hex()</cite>.</p>
+<p><a class="reference external" href="https://github.com/pyca/bcrypt/">bcrypt</a>: For password hashing. Example: code:<cite>hashed =
+bcrypt.hashpw(password, bcrypt.gensalt())</cite> and for checking,
+code:<cite>bcrypt.checkpw(password, hashed)</cite>.</p>
+</section>
 </section>
 
 
@@ -48,7 +293,7 @@ principles used to address these issues.</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
 
@@ -59,16 +304,7 @@ principles used to address these issues.</p>
 
 
 
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
@@ -84,7 +320,20 @@ principles used to address these issues.</p>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conc.html">Concurrency</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pim.html">PIM app</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Trust issues</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Trust issues</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-the-issue">What’s the issue?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-mental-model">A mental model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#who-is-the-user">Who is the user?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-can-the-user-do">What can the user do?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#security-ux">Security UX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#techniques">Techniques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens">Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#login">Login</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cross-site-requests">Cross site requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cross-site-scripting">Cross-site scripting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-libraries">Python libraries</a></li>
+</ul>
+</li>
 </ul>
 
 <div class="relations">
@@ -95,6 +344,16 @@ principles used to address these issues.</p>
   </ul></li>
 </ul>
 </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -108,11 +367,11 @@ principles used to address these issues.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2024, Srikumar K. S..
+      &copy;2024, Srikumar K. S..
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/trust.rst.txt"

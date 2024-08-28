@@ -1,17 +1,19 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Basics of “regular expressions” &#8212; Comp350: Software design v1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=3d3fbe02" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Many mini languages" href="minilangs.html" />
@@ -19,9 +21,8 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-
   
-  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
   
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="basics-of-regular-expressions">
-<h1>Basics of “regular expressions”<a class="headerlink" href="#basics-of-regular-expressions" title="Link to this heading">¶</a></h1>
+<h1>Basics of “regular expressions”<a class="headerlink" href="#basics-of-regular-expressions" title="Permalink to this heading">¶</a></h1>
 <p>When computing, we often come across situations where we want to describe some
 action to be taken on textual data that matches certain patterns. Regular
 expressions (abbr. “regex”) are a common pattern description language based on
@@ -48,7 +49,7 @@ in small ways due to the context of usage. We’ll concern ourselves with
 the <a class="reference external" href="https://www.gnu.org/software/grep/manual/grep.html">grep man page</a> including all the component constructs of the language,
 but I offer a commonly used subset here to give you a flavour of how to use it.</p>
 <section id="searching-for-words-and-phrases">
-<h2>Searching for words and phrases<a class="headerlink" href="#searching-for-words-and-phrases" title="Link to this heading">¶</a></h2>
+<h2>Searching for words and phrases<a class="headerlink" href="#searching-for-words-and-phrases" title="Permalink to this heading">¶</a></h2>
 <p>To search for the exact phrase “King Kong versus Godzilla” in a movie script text
 file, you simply do <code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">'King</span> <span class="pre">Kong</span> <span class="pre">versus</span> <span class="pre">Godzilla'</span> <span class="pre">FILENAME</span></code>. The first argument
 of <code class="docutils literal notranslate"><span class="pre">grep</span></code> is the regular expression or “pattern” to search for. If the <code class="docutils literal notranslate"><span class="pre">FILENAME</span></code>
@@ -68,7 +69,7 @@ and <code class="docutils literal notranslate"><span class="pre">Godzilla</span>
 </ol>
 </section>
 <section id="precision-and-recall">
-<h2>Precision and Recall<a class="headerlink" href="#precision-and-recall" title="Link to this heading">¶</a></h2>
+<h2>Precision and Recall<a class="headerlink" href="#precision-and-recall" title="Permalink to this heading">¶</a></h2>
 <p>When you’re constructing a search pattern, you may want to have the concepts
 of “precision” and “recall” clear in your minds and construct patterns such
 that both precision and recall are as close to 1.0 as necessary for your problem
@@ -116,7 +117,7 @@ four possibilities listed about and ensure that the “false negative” and
 </div>
 </section>
 <section id="wildcard">
-<h2>Wildcard<a class="headerlink" href="#wildcard" title="Link to this heading">¶</a></h2>
+<h2>Wildcard<a class="headerlink" href="#wildcard" title="Permalink to this heading">¶</a></h2>
 <p>The “<code class="docutils literal notranslate"><span class="pre">.</span></code>” (period) character in a pattern will match against any character
 including white space. So the pattern <code class="docutils literal notranslate"><span class="pre">King</span> <span class="pre">Kong.versus.Godzilla</span></code> will match
 against <code class="docutils literal notranslate"><span class="pre">King</span> <span class="pre">Kong-versus-Godzilla</span></code> also, <code class="docutils literal notranslate"><span class="pre">King</span> <span class="pre">KongSversusOGodzilla</span></code> as
@@ -136,7 +137,7 @@ well. For example “<code class="docutils literal notranslate"><span class="pre
 character.</p>
 </section>
 <section id="character-sets">
-<h2>Character sets<a class="headerlink" href="#character-sets" title="Link to this heading">¶</a></h2>
+<h2>Character sets<a class="headerlink" href="#character-sets" title="Permalink to this heading">¶</a></h2>
 <p>Supposing I wish to match “King Kong” as well as “Ping pong”. Can I describe
 both using a single regex pattern? Yes. You do it by first noticing the common
 parts – i.e. “_ing _ong” and then look at what are the options for the “blank”
@@ -159,7 +160,7 @@ you place the “^” character at the start of the character set – i.e.
 “<code class="docutils literal notranslate"><span class="pre">[^0-9]</span></code>” will match any character <strong>other than</strong> a decimal digit.</p>
 </section>
 <section id="alternatives">
-<h2>Alternatives<a class="headerlink" href="#alternatives" title="Link to this heading">¶</a></h2>
+<h2>Alternatives<a class="headerlink" href="#alternatives" title="Permalink to this heading">¶</a></h2>
 <p>If you want to match “either the word ‘Dolphin’ or the word ‘Orca’”, you can express
 that idea using the “or” operator – “<code class="docutils literal notranslate"><span class="pre">\|</span></code>”. Note that special meaning is being
 imparted to “<code class="docutils literal notranslate"><span class="pre">|</span></code>” by the prefix “<code class="docutils literal notranslate"><span class="pre">\</span></code>”.</p>
@@ -168,7 +169,7 @@ the (longer) pattern – “<code class="docutils literal notranslate"><span cla
 “‘King Kong’ or ‘Ping pong’”.</p>
 </section>
 <section id="repeated-matches">
-<h2>Repeated matches<a class="headerlink" href="#repeated-matches" title="Link to this heading">¶</a></h2>
+<h2>Repeated matches<a class="headerlink" href="#repeated-matches" title="Permalink to this heading">¶</a></h2>
 <p>We’re often interested in searching for patterns such as “a decimal number” which
 may have more than one decimal digit and we don’t know in advance how many to expect.
 There are some constructs that help describe such patterns.</p>
@@ -192,8 +193,7 @@ character for it “<code class="docutils literal notranslate"><span class="pre"
 characters as possible. So if you have a text “xxxxx” and you’re using “<code class="docutils literal notranslate"><span class="pre">x\+</span></code>” to
 match it, though the notion of “one or more xs” includes the idea of “3 xs”, it will
 match the whole run of them <strong>eagerly</strong>.</p>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="esc" role="doc-footnote">
+<aside class="footnote brackets" id="esc" role="note">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
 <p>In other situations, the “+” and “*” is usually not escaped like
@@ -201,10 +201,9 @@ that. In the context of <code class="docutils literal notranslate"><span class="
 character and so “+” is needed to impart the special meaning of “one or
 more” to the preceding item.</p>
 </aside>
-</aside>
 </section>
 <section id="grouping">
-<h2>Grouping<a class="headerlink" href="#grouping" title="Link to this heading">¶</a></h2>
+<h2>Grouping<a class="headerlink" href="#grouping" title="Permalink to this heading">¶</a></h2>
 <p>You may have come across <a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier">UUIDs</a> which are identifiers usually written out
 like - <code class="docutils literal notranslate"><span class="pre">4a1df6b0-f626-40d2-95ad-f7f2f8f8d1fd</span></code>. Can we, and if so how do we,
 describe such UUIDs using a regular expression?</p>
@@ -242,7 +241,7 @@ strictly (i.e. with greater precision)?</p>
 </div>
 </section>
 <section id="invisible-characters">
-<h2>Invisible characters<a class="headerlink" href="#invisible-characters" title="Link to this heading">¶</a></h2>
+<h2>Invisible characters<a class="headerlink" href="#invisible-characters" title="Permalink to this heading">¶</a></h2>
 <p>The special character “^” matches the “start of the line”. This isn’t visible
 as a character in the text, but represents the cursor position at the start of
 the line <strong>before</strong> the first character on the line.</p>
@@ -252,7 +251,7 @@ position <strong>after</strong> the last character on the line.</p>
 a pattern like – “<code class="docutils literal notranslate"><span class="pre">^-\+$</span></code>”.</p>
 </section>
 <section id="there-s-more">
-<h2>There’s more<a class="headerlink" href="#there-s-more" title="Link to this heading">¶</a></h2>
+<h2>There’s more<a class="headerlink" href="#there-s-more" title="Permalink to this heading">¶</a></h2>
 <p>Regex libraries offer a lot more than what I’ve described here, including
 special support for character classes, unicode characters, back references,
 look-ahead and look-behind, other invisible character positions such as “word
@@ -275,7 +274,7 @@ pointed to earlier.</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
 
@@ -286,16 +285,7 @@ pointed to earlier.</p>
 
 
 
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
@@ -334,6 +324,16 @@ pointed to earlier.</p>
   </ul></li>
 </ul>
 </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -347,11 +347,11 @@ pointed to earlier.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2024, Srikumar K. S..
+      &copy;2024, Srikumar K. S..
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/regex.rst.txt"
