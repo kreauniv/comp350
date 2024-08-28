@@ -290,7 +290,8 @@ user before incorporating the content in any response web pages. We already saw
 one instance of this behaviour when we discussed "SQL injection attacks". Here
 potentially malicious content can get permanently injected into a user's
 experience of a website via a carefully constructed link URL or web page with
-such links or code.
+such links or code, causing the user to, perhaps, inadvertently send private
+information to parties they did not intend to share it with.
 
 Python libraries
 ----------------
