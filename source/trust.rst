@@ -328,4 +328,9 @@ bcrypt.hashpw(password, bcrypt.gensalt())`` and for checking,
 .. _hashlib: https://docs.python.org/3/library/hashlib.html
 .. _hmacpy: https://docs.python.org/3/library/hmac.html
 
+Advanced topics
+---------------
+
+* Access Control Lists
+* Capability Based Security
 
