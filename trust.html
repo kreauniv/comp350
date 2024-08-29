@@ -121,12 +121,11 @@ services. (“Your password has expired. Set your new password now!”)</p>
 measures you choose needs to be carefully traded off against inconvenience of
 users. For example, if your application keeps notes on behalf of users, there
 will be some expectation of privacy and they may not mind, say, if they get
-auto-logged out after an hour of inactivity. If your application is like
+auto-logged-out after an hour of inactivity. If your application is like
 Wikipedia and the user is an editor, there is not much of a need to log out the
 user at such a short interval since Wikipedia publicly records who edited what,
-when and what exact change did they make. Wikipedia editors might spend long
-hours on the site and would be annoyed if they were asked to login so
-frequently.</p>
+when and what exact change they made. Wikipedia editors might spend long hours
+on the site and would be annoyed if they were asked to login frequently.</p>
 <p>Beyond the “re-authentication interval”, the balance of UX and security needs
 to be considered on a per-application basis and there is no “one solution fits
 all” approach. That said, users have become accustomed to some commonly used
@@ -140,8 +139,8 @@ and password until one succeeds?”. To mitigate such a scenario, a common UX
 pattern used is to exponentially increase the time interval the user has to
 wait between unsuccessful attempts. Usually, sites simplify this by permitting,
 say, 3 attempts followed by which the user will have to wait for, say, 15
-minutes before trying again. On the iPad/iPhone, keying in the wrong pin for a
-few times will lock you out for a minute. If you fail again, you’ll be locked
+minutes before trying again. On the iPad/iPhone, keying in the wrong pin a few
+times will lock you out for a minute. If you fail again, you’ll be locked out
 for 5 minutes and if you fail once more you’ll be locked out for 10 minutes and
 so on. This kind of a strategy broadly goes under the term <strong>exponential
 backoff</strong> and is an approach usable in a number of scenarios beyond just
@@ -150,9 +149,10 @@ security.</p>
 <section id="techniques">
 <h2>Techniques<a class="headerlink" href="#techniques" title="Link to this heading">¶</a></h2>
 <p>“Cryptographic hash functions” – a.k.a. “message digests” – are a workhorse
-tool for organizing security protocols between applications and users. While
-the mathematics of these functions is beyond the scope of this course and
-chapter, using them is relatively easy to understand, and essential to
+tool for organizing security protocols between applications and users, whether
+these users are people operating browsers, or applications making HTTP calls.
+While the mathematics of these functions is beyond the scope of this chapter and
+course, they are not too hard to understand and use, and they are essential to
 constructing secure applications.</p>
 <p>A <strong>hash function</strong> or <strong>message digest</strong> is a function that takes a sequence
 of bytes and constructs a fixed length sequence of bytes (say 32 bytes) –
