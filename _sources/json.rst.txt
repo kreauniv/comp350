@@ -57,7 +57,7 @@ where the double-quote characters themselves are not a part of the string.
     characters. Can you read the "railroad diagrams" there? Express in your
     own railroad diagram 
 
-JSON is a flexible serialization format for some kinds of data. It's structure
+JSON is a flexible serialization format for some kinds of data. Its structure
 is designed to map conveniently to common data structures used in programming
 applications. However, it is not always clear which particular way data "ought
 to be" represented in JSON. The software/system designer needs to take various
