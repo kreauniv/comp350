@@ -10,8 +10,8 @@ The role of a "source code management system" or "source control system" is to
 help coordinate these changes as a project progresses, and beyond release and
 during maintenance too ... as software is never truly "done".
 
-There is another collaborator who is often ignore and that is oneself. Even
-if a piece of software is being worked on by a solo developer, that developer
+There is another "collaborator" who is often ignored and that is oneself. Even
+if a piece of software is being worked on by a solo programmer, that programmer
 also undergoes change as understanding of the problem being worked on changes
 over time and as new learning is acquired. So a programmer has to collaborate
 with their future selves.
