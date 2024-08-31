@@ -203,7 +203,7 @@ produce the next response appropriate in the thread ---
   }
 
 `GitHub.com`_ exposes some of its functionality via "API"s which you can talk
-to by sending JSON forms and receiving replies in JSON forms. For examples, you
+to by sending JSON forms and receiving replies in JSON forms. For example, you
 can programmatically retrieve github "issues" as shown here -
 https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#list-issues-assigned-to-the-authenticated-user
 
