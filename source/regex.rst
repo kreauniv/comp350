@@ -225,7 +225,7 @@ occurrences of (hyphen followed by hexdigits)", where we've placed the group
 like "-f626" in parentheses to indicate it needs to be considered as a "unit".
 
 ``grep`` lets you specify such groupings using "``\(``"/"``\)``" matched pairs.
-The "\" escape character is needed because "(" and ")" will match literally
+The "``\``" escape character is needed because "(" and ")" will match literally
 those characters.
 
 Using that we can express the "(hyphen followed by hexdigits)" part as --
@@ -274,11 +274,26 @@ many common needs.
 .. admonition:: **Important**
 
    While the language is richer than described here, do not underestimate the
-   value of **composing** the above features. For example, you can provides
+   value of **composing** the above features. For example, you can provide
    options ("``\|``") within groups ("``\(\)``") and ask for at least 2
    occurrences ("``{2,}``"), and so on.
 
 To learn about the other features, you can refer to the `grep man page`_ 
 pointed to earlier.
+
+Regex in programming languages
+------------------------------
+
+I'd mentioned earlier that programming language standard libraries often offer
+regex capability. However, the syntax of these will differ in the following
+ways from the regex supported by ``grep`` due to differences in the usage
+context.
+
+1. ``(`` and ``)`` become the grouping characters and don't need escaping.
+2. ``+`` and ``*`` also don't need escaping.
+3. The "or" operator ``|`` also doesn't need to be escaped. 
+
+To match against the above characters literally, either escape them using ``\``
+or place them within a character set, like ``[)]``.
 
 .. _UUIDs: https://en.wikipedia.org/wiki/Universally_unique_identifier
