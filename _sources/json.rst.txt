@@ -2,7 +2,7 @@ JSON
 ====
 
 The `JavaScript Object Notation <JSON_>`_ (acronymized as JSON_) has in the
-recent year become the data stream format of choice for communication between
+recent years become the data stream format of choice for communication between
 servers and systems that use the services provided by the servers such as
 Browsers and other servers. JSON_ came out of a need to simplify communication
 formats at a time when the complexity of XML based formats such as SOAP ended
