@@ -134,16 +134,23 @@ blank may be occupied by either "K" or "p" (lower case). This notion of "set of
 allowed characters" is specified using square brackets like this -- "``[KP]ing
 [Kp]ong``".
 
-The characters listed within "``[]``" form a "character set" and will match a
-single character that occurs in the specified set. You can, for example, match
-"any decimal digit" using "``[0123456789]``". It can get tedious to put that
-long expression whenever you need to idea of "any decimal digit", so that can
-also be abbreviated as "``[0-9]``", which means exactly the same thing. You can
-similarly specify character ranges as well -- like "``[A-Za-z]``" which will
-match any capitalized or lower case alphabetical character. If you want your
-character set to include the "``-``" character, you'll have to place it at the
-start like this "``[-0-9\s]``" (which matches "any decimal digit or hyphen or
-any white space character").
+The characters listed within "``[]``" form a **character set** and will match a
+single character that occurs in the specified set. 
+
+.. admonition:: **Pause and think**
+
+    Examine the ``[KP]ing [Kp]ong`` pattern w.r.t. its precision and recall
+    characteristics (relative to some text of your own imagination). In particular,
+    does it only admit ``King Kong`` and ``Ping pong``?
+
+You can, for example, match "any decimal digit" using "``[0123456789]``". It
+can get tedious to put that long expression whenever you need to idea of "any
+decimal digit", so that can also be abbreviated as "``[0-9]``", which means
+exactly the same thing. You can similarly specify character ranges as well --
+like "``[A-Za-z]``" which will match any capitalized or lower case alphabetical
+character. If you want your character set to include the "``-``" character,
+you'll have to place it at the start like this "``[-0-9\s]``" (which matches
+"any decimal digit or hyphen or any white space character").
 
 **Negation**: To express the idea of "any character that is not in this set",
 you place the "^" character at the start of the character set -- i.e.
