@@ -224,7 +224,7 @@ regex pattern “<code class="docutils literal notranslate"><span class="pre">[0
 occurrences of (hyphen followed by hexdigits)”, where we’ve placed the group
 like “-f626” in parentheses to indicate it needs to be considered as a “unit”.</p>
 <p><code class="docutils literal notranslate"><span class="pre">grep</span></code> lets you specify such groupings using “<code class="docutils literal notranslate"><span class="pre">\(</span></code>“/”<code class="docutils literal notranslate"><span class="pre">\)</span></code>” matched pairs.
-The “&quot; escape character is needed because “(” and “)” will match literally
+The “<code class="docutils literal notranslate"><span class="pre">\</span></code>” escape character is needed because “(” and “)” will match literally
 those characters.</p>
 <p>Using that we can express the “(hyphen followed by hexdigits)” part as –
 “<code class="docutils literal notranslate"><span class="pre">\(-[0-9a-f]\+\)</span></code>”. To now apply the “one or more of” to that entire group,
@@ -266,12 +266,26 @@ many common needs.</p>
 <div class="admonition-important admonition">
 <p class="admonition-title"><strong>Important</strong></p>
 <p>While the language is richer than described here, do not underestimate the
-value of <strong>composing</strong> the above features. For example, you can provides
+value of <strong>composing</strong> the above features. For example, you can provide
 options (”<code class="docutils literal notranslate"><span class="pre">\|</span></code>”) within groups (”<code class="docutils literal notranslate"><span class="pre">\(\)</span></code>”) and ask for at least 2
 occurrences (”<code class="docutils literal notranslate"><span class="pre">{2,}</span></code>”), and so on.</p>
 </div>
 <p>To learn about the other features, you can refer to the <a class="reference external" href="https://www.gnu.org/software/grep/manual/grep.html">grep man page</a>
 pointed to earlier.</p>
+</section>
+<section id="regex-in-programming-languages">
+<h2>Regex in programming languages<a class="headerlink" href="#regex-in-programming-languages" title="Permalink to this heading">¶</a></h2>
+<p>I’d mentioned earlier that programming language standard libraries often offer
+regex capability. However, the syntax of these will differ in the following
+ways from the regex supported by <code class="docutils literal notranslate"><span class="pre">grep</span></code> due to differences in the usage
+context.</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">(</span></code> and <code class="docutils literal notranslate"><span class="pre">)</span></code> become the grouping characters and don’t need escaping.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">+</span></code> and <code class="docutils literal notranslate"><span class="pre">*</span></code> also don’t need escaping.</p></li>
+<li><p>The “or” operator <code class="docutils literal notranslate"><span class="pre">|</span></code> also doesn’t need to be escaped.</p></li>
+</ol>
+<p>To match against the above characters literally, either escape them using <code class="docutils literal notranslate"><span class="pre">\</span></code>
+or place them within a character set, like <code class="docutils literal notranslate"><span class="pre">[)]</span></code>.</p>
 </section>
 </section>
 
@@ -306,6 +320,7 @@ pointed to earlier.</p>
 <li class="toctree-l2"><a class="reference internal" href="#grouping">Grouping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#invisible-characters">Invisible characters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#there-s-more">There’s more</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#regex-in-programming-languages">Regex in programming languages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="minilangs.html">Many mini languages</a></li>
