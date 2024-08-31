@@ -5,7 +5,9 @@ In the practice of computing, language is a primary "technology" using which we
 get computing done. I believe a reason for this is that language is pretty much
 the only tool in our arsenal that can let us specify with sufficient precision
 *what* it is that we want done, and *how* we want it to be done, though there
-is no clear boundary that separates the *what* from the *how* in practice.
+is no clear boundary that separates the *what* from the *how* in practice. More
+importantly, languages permit "composition" of simple features to express more
+complex ideas in ways other means are usually lacking.
 
 So, in the course of your computing journey, you'll encounter several mini
 languages and as you write more programs you'll make some yourself to solve
