@@ -1,17 +1,19 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Concurrency &#8212; Comp350: Software design v1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=3d3fbe02" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="PIM app" href="pim.html" />
@@ -19,9 +21,8 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-
   
-  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
   
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="concurrency">
-<h1>Concurrency<a class="headerlink" href="#concurrency" title="Link to this heading">¶</a></h1>
+<h1>Concurrency<a class="headerlink" href="#concurrency" title="Permalink to this heading">¶</a></h1>
 <p>(… vs “parallelism”)</p>
 <p>The internet’s architecture means that machines can (in general) talk to
 each other if they know each others’ IP address, which they can often
@@ -47,7 +48,7 @@ from any number of “client” computers at any time.</p>
 <p><span class="caption-number">Fig. 3 </span><span class="caption-text">Each double-ended arrow depicts a stream of messages that can
 happen at any time concurrently with each other and the server
 and database need to do their job and service these requests
-while maintaining expectations of the service.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+while maintaining expectations of the service.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>This poses some important questions to ask of our application and
@@ -72,7 +73,7 @@ issues over time while, for the most part, retaining programming simplicity. In
 this chapter, we look at two – coroutining on a single thread, and database
 transactions.</p>
 <section id="terminology">
-<h2>Terminology<a class="headerlink" href="#terminology" title="Link to this heading">¶</a></h2>
+<h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this heading">¶</a></h2>
 <dl>
 <dt><strong>Concurrency</strong> versus <strong>parallelism</strong></dt><dd><p>For our purposes, “concurrency” refers to activities that can happen on
 independent timelines either logically or literally. “Parallelism” refers
@@ -139,7 +140,7 @@ a button in a Javascript driven UI –</p>
 </dl>
 </section>
 <section id="coroutining-on-a-single-thread">
-<h2>Coroutining on a single thread<a class="headerlink" href="#coroutining-on-a-single-thread" title="Link to this heading">¶</a></h2>
+<h2>Coroutining on a single thread<a class="headerlink" href="#coroutining-on-a-single-thread" title="Permalink to this heading">¶</a></h2>
 <p>We know that our computers can run multiple processes in parallel – as in two
 instructions from two programs can be in the process of execution by the
 processor <strong>at the same time</strong> because our processors have multiple “cores”,
@@ -162,7 +163,7 @@ request gets handled. In this way, requests get “serialized”.</p>
 <p><span class="caption-number">Fig. 4 </span><span class="caption-text">As different types of events come in from various sub-systems, they’re
 added to a queue for processing. When the event loop gains control, it
 picks an event from the FIFO queue, calls the designed “handler” function,
-and then moves on to the next event once it regains control.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+and then moves on to the next event once it regains control.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>That alone is not sufficient and describes only “single threaded operation” and
@@ -203,12 +204,12 @@ the event loop to yield time to other operations that need attention while
 within the same thread of control. You can see how at any time only one of
 the three are active. Such “cooperating routines” are why they’re called
 “coroutines”, as opposed to a “routine” which takes up all the resources of
-a thread for itself.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+a thread for itself.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="database-transactions">
-<h2>Database transactions<a class="headerlink" href="#database-transactions" title="Link to this heading">¶</a></h2>
+<h2>Database transactions<a class="headerlink" href="#database-transactions" title="Permalink to this heading">¶</a></h2>
 <p>If we now think of the database as a “service” and our application as its
 “client”, we can see how the database also needs to contend with potentially
 conflicting requests. While one request asks the DB to modify some set of rows
@@ -268,7 +269,7 @@ async calls and therefore returns frequently enough to the event loop to not blo
 other requests to our server.</p>
 </section>
 <section id="communicating-sequential-processes-csp">
-<h2>Communicating Sequential Processes (CSP)<a class="headerlink" href="#communicating-sequential-processes-csp" title="Link to this heading">¶</a></h2>
+<h2>Communicating Sequential Processes (CSP)<a class="headerlink" href="#communicating-sequential-processes-csp" title="Permalink to this heading">¶</a></h2>
 <p>CSP offers a way to organize concurrent computation that’s gained significant
 adoption of late, in addition to the “async/await” based approaches. In this
 model, logically isolated processes cooperate to accomplish a task by sending
@@ -283,7 +284,7 @@ at scale.</p>
 also offers the CSP model.</p>
 </section>
 <section id="promises-and-futures">
-<h2>Promises and Futures<a class="headerlink" href="#promises-and-futures" title="Link to this heading">¶</a></h2>
+<h2>Promises and Futures<a class="headerlink" href="#promises-and-futures" title="Permalink to this heading">¶</a></h2>
 <p>The “async/await” mechanisms in Javascript and Python provide the notion of
 “Promise” (in Javascript) and “Future”) in python, where both those terms refer
 to the same concept.</p>
@@ -309,7 +310,7 @@ Promises/Futures.</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
 
@@ -320,16 +321,7 @@ Promises/Futures.</p>
 
 
 
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
@@ -364,6 +356,16 @@ Promises/Futures.</p>
   </ul></li>
 </ul>
 </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -377,11 +379,11 @@ Promises/Futures.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2024, Srikumar K. S..
+      &copy;2024, Srikumar K. S..
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/conc.rst.txt"
