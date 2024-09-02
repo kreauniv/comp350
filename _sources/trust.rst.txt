@@ -328,6 +328,148 @@ bcrypt.hashpw(password, bcrypt.gensalt())`` and for checking,
 .. _hashlib: https://docs.python.org/3/library/hashlib.html
 .. _hmacpy: https://docs.python.org/3/library/hmac.html
 
+The Cookie mechanism
+--------------------
+
+There are many approaches to storing small quantities of client data associated
+with a particular online service within the browser's sandboxed storage areas.
+Three mechanisms for small data are used for a variety of purposes --
+
+1. The "cookie" mechanism is used for very small amounts of data (typically
+   like a "session id" or "token"), and some flags. This data is typically less
+   than about a line of text. The cookie store can be written to by the server
+   without any client-side javascript, and the browser will automatically send
+   any cookie data associated with a service (called an "origin") identified by
+   the tuple ``(protocol, domain, port)``. Cookies can be assigned (optional)
+   expiry dates and persist until they expire, or if no expiry date is set,
+   they can persist foreve until the user explicitly deletes them.
+
+2. "Session storage" is a key-value store, also for small amounts of data,
+   where the data is kept alive for the duration of a browser session
+   (associated with a "tab" or "window", even between page refreshes) and
+   deleted when the tab or window is closed. (See `MDN session storage`_)
+
+3. "Local storage" is a key-value store similar to session storage, except that
+   it lives forever until the user explicitly deletes it. (See `MDN local storage`_)
+
+.. _MDN session storage: https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
+.. _MDN local storage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+
+The local and session stores can only be accessed using browser-side
+Javascript. All three forms of storage are intended only for storing "small"
+amounts of data. In particular, since cookies are sent to the service
+automatically by the browser, storing large data in a cookie will increase the
+network load on each request. However, local and session storage are not sent
+to the server but are managed by browser-side Javascript code.
+
+Here, we'll look only at the cookie mechanism.
+
+Storing cookies
+~~~~~~~~~~~~~~~
+
+Whenever your client (browser or other programs) makes a request to your
+service via the HTTP protocol, your service will respond with a HTTP status
+message, headers and a body.
+
+If your service includes the header named ``Set-Cookie`` (case insensitive),
+the browser sees the header and stores the given data into its private storage
+area and remembers to send this data back to your service on the next request.
+You can refer to the full syntax here -- `MDN Set-Cookie header`_ -- but
+the following possible ``Set-Cookie`` values are useful to know about --
+
+.. code::
+
+    Set-Cookie: <cookie-name>=<cookie-value>
+    # The above associates the cookie name with the value permanently until the
+    # user clears the cookies in their browser.
+    # Ex:
+    # Set-Cookie: sessionid=iq8h7f3bn47h3
+
+    Set-Cookie: <cookie-name>=<cookie-value>; Max-Age=<seconds>
+    # Sets a cookie and marks it for expiry after ``<seconds>`` seconds.
+    # Ex: Causes session to expire after 90 minutes
+    # Set-Cookie: sessionid=2nt89h1ot481; Max-Age=5400
+
+    Set-Cookie: <cookie-name>=<cookie-value>; Expires=<date>
+    # Similar to `Max-Age`, but gives an explicit date-time after which
+    # the cookie should expire. The Date is in the "HTTP-Date" format
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
+
+    # Adding "; Secure" to the above will ensure that the cookie is
+    # only sent to the service if it is being accessed via the HTTPS
+    # protocol.
+
+
+.. _MDN Set-Cookie header: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
+
+In your FastAPI handler, if you want to set a cookie on the client,
+you can set it on the ``Response`` object like this --
+
+.. code:: python
+
+    from fastapi import FastAPI
+    from fastapi.responses import JSONResponse, HTMLResponse
+
+    app = FastAPI()
+
+    @app.post("/somewhere/{subpath}")
+    async def handler(subpath : str):
+        # ... your code....
+        response = JSONResponse(key=value)
+        response.set_cookie(sessionid="1j9h348noh4g")
+        return response
+
+
+Reading cookies
+~~~~~~~~~~~~~~~
+
+The client-side and the server-side dont need to do anything to read
+the cookies from the client and get it on the server side. The browser
+will do it automatically, as long as the cookie was set by the origin 
+to which the request is being made.
+
+On the server side, a cookie is received using the ``Cookie:`` header.
+(See `MDN Cookie header`_)
+
+.. _MDN Cookie header: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cookie
+
+.. code::
+
+    # Ex:
+    Cookie: sessionid=o87ht9823gt; userid=meow@catsrus.com
+
+Server libraries typically provide simple functions or classes to read
+and parse these key-value pairs from such ``Cookie:`` headers.
+
+Note that both ``Set-Cookie:`` and ``Cookie:`` headers can occur multiple
+times in a response or request respectively.
+
+Your FastAPI handler for a request can access a cookie whose key is, say, ``sessionid``
+by declaring a ``Cookie`` parameter as follows --
+
+.. code:: python
+
+    from typing import Annotated
+    from fastapi import Cookie, FastAPI
+
+    app = FastAPI()
+
+    @app.get("/somepath/{subpath}")
+    async def handler(subpath : str, sessionid: Annotated[str | None, Cookie()]):
+        #....your code...
+
+The above declaration will instruct FastAPI to read ``Cookie`` headers in the
+response and extract the value of the cookie named ``sessionid`` and pass it as the
+second argument (in this case). Note that since we haven't given a default value
+for the ``sessionid`` parameter, the cookie **must** be present or the server will
+generate an error. To specify an optional cookie, provide a default value for the
+cookie parameter.
+
+In browser-side Javascript code, cookies set by the server can be accessed
+using `document.cookie`_. It's not usually needed, so we won't go into it further.
+
+.. _document.cookie: https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+
 Advanced topics
 ---------------
 

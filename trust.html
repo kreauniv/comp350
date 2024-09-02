@@ -302,6 +302,119 @@ tokens, etc. Example <code class="docutils literal notranslate"><span class="pre
 <span class="pre">bcrypt.hashpw(password,</span> <span class="pre">bcrypt.gensalt())</span></code> and for checking,
 <code class="docutils literal notranslate"><span class="pre">bcrypt.checkpw(password,</span> <span class="pre">hashed)</span></code>.</p>
 </section>
+<section id="the-cookie-mechanism">
+<h2>The Cookie mechanism<a class="headerlink" href="#the-cookie-mechanism" title="Permalink to this heading">¶</a></h2>
+<p>There are many approaches to storing small quantities of client data associated
+with a particular online service within the browser’s sandboxed storage areas.
+Three mechanisms for small data are used for a variety of purposes –</p>
+<ol class="arabic simple">
+<li><p>The “cookie” mechanism is used for very small amounts of data (typically
+like a “session id” or “token”), and some flags. This data is typically less
+than about a line of text. The cookie store can be written to by the server
+without any client-side javascript, and the browser will automatically send
+any cookie data associated with a service (called an “origin”) identified by
+the tuple <code class="docutils literal notranslate"><span class="pre">(protocol,</span> <span class="pre">domain,</span> <span class="pre">port)</span></code>. Cookies can be assigned (optional)
+expiry dates and persist until they expire, or if no expiry date is set,
+they can persist foreve until the user explicitly deletes them.</p></li>
+<li><p>“Session storage” is a key-value store, also for small amounts of data,
+where the data is kept alive for the duration of a browser session
+(associated with a “tab” or “window”, even between page refreshes) and
+deleted when the tab or window is closed. (See <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage">MDN session storage</a>)</p></li>
+<li><p>“Local storage” is a key-value store similar to session storage, except that
+it lives forever until the user explicitly deletes it. (See <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">MDN local storage</a>)</p></li>
+</ol>
+<p>The local and session stores can only be accessed using browser-side
+Javascript. All three forms of storage are intended only for storing “small”
+amounts of data. In particular, since cookies are sent to the service
+automatically by the browser, storing large data in a cookie will increase the
+network load on each request. However, local and session storage are not sent
+to the server but are managed by browser-side Javascript code.</p>
+<p>Here, we’ll look only at the cookie mechanism.</p>
+<section id="storing-cookies">
+<h3>Storing cookies<a class="headerlink" href="#storing-cookies" title="Permalink to this heading">¶</a></h3>
+<p>Whenever your client (browser or other programs) makes a request to your
+service via the HTTP protocol, your service will respond with a HTTP status
+message, headers and a body.</p>
+<p>If your service includes the header named <code class="docutils literal notranslate"><span class="pre">Set-Cookie</span></code> (case insensitive),
+the browser sees the header and stores the given data into its private storage
+area and remembers to send this data back to your service on the next request.
+You can refer to the full syntax here – <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie">MDN Set-Cookie header</a> – but
+the following possible <code class="docutils literal notranslate"><span class="pre">Set-Cookie</span></code> values are useful to know about –</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Set</span><span class="o">-</span><span class="n">Cookie</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">cookie</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;=&lt;</span><span class="n">cookie</span><span class="o">-</span><span class="n">value</span><span class="o">&gt;</span>
+<span class="c1"># The above associates the cookie name with the value permanently until the</span>
+<span class="c1"># user clears the cookies in their browser.</span>
+<span class="c1"># Ex:</span>
+<span class="c1"># Set-Cookie: sessionid=iq8h7f3bn47h3</span>
+
+<span class="n">Set</span><span class="o">-</span><span class="n">Cookie</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">cookie</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;=&lt;</span><span class="n">cookie</span><span class="o">-</span><span class="n">value</span><span class="o">&gt;</span><span class="p">;</span> <span class="n">Max</span><span class="o">-</span><span class="n">Age</span><span class="o">=&lt;</span><span class="n">seconds</span><span class="o">&gt;</span>
+<span class="c1"># Sets a cookie and marks it for expiry after ``&lt;seconds&gt;`` seconds.</span>
+<span class="c1"># Ex: Causes session to expire after 90 minutes</span>
+<span class="c1"># Set-Cookie: sessionid=2nt89h1ot481; Max-Age=5400</span>
+
+<span class="n">Set</span><span class="o">-</span><span class="n">Cookie</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">cookie</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;=&lt;</span><span class="n">cookie</span><span class="o">-</span><span class="n">value</span><span class="o">&gt;</span><span class="p">;</span> <span class="n">Expires</span><span class="o">=&lt;</span><span class="n">date</span><span class="o">&gt;</span>
+<span class="c1"># Similar to `Max-Age`, but gives an explicit date-time after which</span>
+<span class="c1"># the cookie should expire. The Date is in the &quot;HTTP-Date&quot; format</span>
+<span class="c1"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date</span>
+
+<span class="c1"># Adding &quot;; Secure&quot; to the above will ensure that the cookie is</span>
+<span class="c1"># only sent to the service if it is being accessed via the HTTPS</span>
+<span class="c1"># protocol.</span>
+</pre></div>
+</div>
+<p>In your FastAPI handler, if you want to set a cookie on the client,
+you can set it on the <code class="docutils literal notranslate"><span class="pre">Response</span></code> object like this –</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span><span class="p">,</span> <span class="n">HTMLResponse</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/somewhere/</span><span class="si">{subpath}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">subpath</span> <span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="c1"># ... your code....</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">sessionid</span><span class="o">=</span><span class="s2">&quot;1j9h348noh4g&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+</pre></div>
+</div>
+</section>
+<section id="reading-cookies">
+<h3>Reading cookies<a class="headerlink" href="#reading-cookies" title="Permalink to this heading">¶</a></h3>
+<p>The client-side and the server-side dont need to do anything to read
+the cookies from the client and get it on the server side. The browser
+will do it automatically, as long as the cookie was set by the origin
+to which the request is being made.</p>
+<p>On the server side, a cookie is received using the <code class="docutils literal notranslate"><span class="pre">Cookie:</span></code> header.
+(See <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cookie">MDN Cookie header</a>)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ex:</span>
+<span class="n">Cookie</span><span class="p">:</span> <span class="n">sessionid</span><span class="o">=</span><span class="n">o87ht9823gt</span><span class="p">;</span> <span class="n">userid</span><span class="o">=</span><span class="n">meow</span><span class="nd">@catsrus</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+</div>
+<p>Server libraries typically provide simple functions or classes to read
+and parse these key-value pairs from such <code class="docutils literal notranslate"><span class="pre">Cookie:</span></code> headers.</p>
+<p>Note that both <code class="docutils literal notranslate"><span class="pre">Set-Cookie:</span></code> and <code class="docutils literal notranslate"><span class="pre">Cookie:</span></code> headers can occur multiple
+times in a response or request respectively.</p>
+<p>Your FastAPI handler for a request can access a cookie whose key is, say, <code class="docutils literal notranslate"><span class="pre">sessionid</span></code>
+by declaring a <code class="docutils literal notranslate"><span class="pre">Cookie</span></code> parameter as follows –</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Annotated</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">Cookie</span><span class="p">,</span> <span class="n">FastAPI</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/somepath/</span><span class="si">{subpath}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">subpath</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sessionid</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Cookie</span><span class="p">()]):</span>
+    <span class="c1">#....your code...</span>
+</pre></div>
+</div>
+<p>The above declaration will instruct FastAPI to read <code class="docutils literal notranslate"><span class="pre">Cookie</span></code> headers in the
+response and extract the value of the cookie named <code class="docutils literal notranslate"><span class="pre">sessionid</span></code> and pass it as the
+second argument (in this case). Note that since we haven’t given a default value
+for the <code class="docutils literal notranslate"><span class="pre">sessionid</span></code> parameter, the cookie <strong>must</strong> be present or the server will
+generate an error. To specify an optional cookie, provide a default value for the
+cookie parameter.</p>
+<p>In browser-side Javascript code, cookies set by the server can be accessed
+using <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie">document.cookie</a>. It’s not usually needed, so we won’t go into it further.</p>
+</section>
+</section>
 <section id="advanced-topics">
 <h2>Advanced topics<a class="headerlink" href="#advanced-topics" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
@@ -355,6 +468,7 @@ tokens, etc. Example <code class="docutils literal notranslate"><span class="pre
 <li class="toctree-l2"><a class="reference internal" href="#cross-site-requests">Cross site requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cross-site-scripting">Cross-site scripting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#python-libraries">Python libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-cookie-mechanism">The Cookie mechanism</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#advanced-topics">Advanced topics</a></li>
 </ul>
 </li>
