@@ -263,6 +263,22 @@ another site B.
 For services accessing other services via API calls, it is customary to pass
 such a bearer token in the ``Authorization: Bearer <token>`` header.
 
+.. admonition:: **Terminology**
+
+    We've used "browser-side" or "client" or "user" to mean refer to a device
+    or program that is used by a human user to access a particular online
+    service. The term generally used for this concept is **User Agent** --
+    i.e. an agent which acts on behalf of a user.
+
+.. figure:: images/signinseq.png
+    :align: center
+    :alt: Sequence of events for authenticated access to a service
+
+    Shows a "User Agent" signing in with credentials and the service
+    allocating a ``sessionid`` to represent the act of providing the
+    credentials so that access to the service can be granted for a set
+    period of time.
+
 Cross site requests
 -------------------
 
@@ -469,6 +485,90 @@ In browser-side Javascript code, cookies set by the server can be accessed
 using `document.cookie`_. It's not usually needed, so we won't go into it further.
 
 .. _document.cookie: https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+
+Using cookies for session management
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The word "session" has multiple meanings in a few contexts pertaining to web
+based applications, but two meanings are key -
+
+1. We saw in the earlier section the notion of "session storage" where a
+   "session" refers to an open browser window or tab. Once you close the
+   window/tab, the session ceases. So in MDN documentation pertaining to 
+   the browser-side, a "session" is taken with this meaning.
+
+2. In the context of a service requiring login, the period for which the user
+   is considered to be authenticated is the other notion of "session" that's
+   used. In this case, it is not relevant whether the user has the window/tab
+   open. Such a session can persist even across rebooting of the user's
+   computer. While even such sessions have an expiry date set on them, they are
+   more convenient for users in that they're asked to key in their credentials
+   (username and password) relatively less frequently.
+
+Applications typically use the cookie mechanism to manage sessions of the
+second kind. Below is a handler for signin and for another service end point
+that requires the user to be authenticated, as a code illustration.
+
+.. code:: python
+
+    from typing import Annotated
+    from fastapi import Cookie
+    from fastapi.responses import JSONResponse
+    from pydantic import BaseModel
+    import hmac, secrets
+
+    class Credentials(BaseModel):
+        username: str
+        password: str
+
+    server_secret_key = secrets.token_bytes(nbytes=32)
+    # This key is usually managed by an internal service and
+    # secure store, but is ok to generate fresh on start of
+    # server. Ideally it will also have to be "rotated" 
+    # (i.e. changed) at some interval.
+
+    def sign(text: str):
+        return hmac.digest(server_secret_key, text.encode(), 'sha256').hex()
+
+    @app.post("/signin")
+    def signin(creds: Credentials):
+        validate_credentials(creds.username, creds.password)
+        # The above makes any necessary calls to the database.
+
+        sessionid = secrets.token_urlsafe(nbytes=16)
+        signature = sign(sessionid)
+        response = JSONResponse(content={"status":"success"})
+        response.set_cookie(key="session", value=f"{sessionid}_{signature}", max_age=86400)
+        return response
+
+    @app.get("/someresource/{resid}")
+    def get_someresource(resid : str, session : Annotated[str, Cookie()]):
+        sessionid, signature = session.split("_")
+        # Checking whether the given signature is the same as what
+        # we'd produce if we signed the sessionid ensures that the
+        # session was indeed created by us (with an overwhelmingly
+        # high probability).
+        if signature != sign(sessionid)
+            # This is an invalid session since we know we didn't
+            # generate it. Note that to reject invalid sessions, 
+            # we didn't actually need to touch the database.
+            raise HTTPException(401, details="Unauthorized")
+
+        # Authenticated. Now we have to make sure that the
+        # user has permission to access this resource.
+        # This is often done using a faster and temporary
+        # "session store" using an in-memory DB like Redis.
+        # That way, the main database is not held up for
+        # small tasks like this, besides Redis being much faster
+        # than regular DBs for such use cases.
+        userid = db_get_session_user(sessionid)
+
+        check_authorization(userid, f"/someresource/{resid}")
+        # We expect check_authorization to raise a 401 HTTPException
+        # in case that failed.
+
+        # All is well. Respond to the request.
+        return response
 
 Advanced topics
 ---------------
