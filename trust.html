@@ -256,6 +256,22 @@ origin”. The cookies set by site A will only be sent back to site A and not to
 another site B.</p>
 <p>For services accessing other services via API calls, it is customary to pass
 such a bearer token in the <code class="docutils literal notranslate"><span class="pre">Authorization:</span> <span class="pre">Bearer</span> <span class="pre">&lt;token&gt;</span></code> header.</p>
+<div class="admonition-terminology admonition">
+<p class="admonition-title"><strong>Terminology</strong></p>
+<p>We’ve used “browser-side” or “client” or “user” to mean refer to a device
+or program that is used by a human user to access a particular online
+service. The term generally used for this concept is <strong>User Agent</strong> –
+i.e. an agent which acts on behalf of a user.</p>
+</div>
+<figure class="align-center" id="id4">
+<img alt="Sequence of events for authenticated access to a service" src="_images/signinseq.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 13 </span><span class="caption-text">Shows a “User Agent” signing in with credentials and the service
+allocating a <code class="docutils literal notranslate"><span class="pre">sessionid</span></code> to represent the act of providing the
+credentials so that access to the service can be granted for a set
+period of time.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="cross-site-requests">
 <h2>Cross site requests<a class="headerlink" href="#cross-site-requests" title="Permalink to this heading">¶</a></h2>
@@ -413,6 +429,87 @@ generate an error. To specify an optional cookie, provide a default value for th
 cookie parameter.</p>
 <p>In browser-side Javascript code, cookies set by the server can be accessed
 using <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie">document.cookie</a>. It’s not usually needed, so we won’t go into it further.</p>
+</section>
+<section id="using-cookies-for-session-management">
+<h3>Using cookies for session management<a class="headerlink" href="#using-cookies-for-session-management" title="Permalink to this heading">¶</a></h3>
+<p>The word “session” has multiple meanings in a few contexts pertaining to web
+based applications, but two meanings are key -</p>
+<ol class="arabic simple">
+<li><p>We saw in the earlier section the notion of “session storage” where a
+“session” refers to an open browser window or tab. Once you close the
+window/tab, the session ceases. So in MDN documentation pertaining to
+the browser-side, a “session” is taken with this meaning.</p></li>
+<li><p>In the context of a service requiring login, the period for which the user
+is considered to be authenticated is the other notion of “session” that’s
+used. In this case, it is not relevant whether the user has the window/tab
+open. Such a session can persist even across rebooting of the user’s
+computer. While even such sessions have an expiry date set on them, they are
+more convenient for users in that they’re asked to key in their credentials
+(username and password) relatively less frequently.</p></li>
+</ol>
+<p>Applications typically use the cookie mechanism to manage sessions of the
+second kind. Below is a handler for signin and for another service end point
+that requires the user to be authenticated, as a code illustration.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Annotated</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">Cookie</span>
+<span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">import</span> <span class="nn">hmac</span><span class="o">,</span> <span class="nn">secrets</span>
+
+<span class="k">class</span> <span class="nc">Credentials</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="n">server_secret_key</span> <span class="o">=</span> <span class="n">secrets</span><span class="o">.</span><span class="n">token_bytes</span><span class="p">(</span><span class="n">nbytes</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<span class="c1"># This key is usually managed by an internal service and</span>
+<span class="c1"># secure store, but is ok to generate fresh on start of</span>
+<span class="c1"># server. Ideally it will also have to be &quot;rotated&quot;</span>
+<span class="c1"># (i.e. changed) at some interval.</span>
+
+<span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">hmac</span><span class="o">.</span><span class="n">digest</span><span class="p">(</span><span class="n">server_secret_key</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="s1">&#39;sha256&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/signin&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">signin</span><span class="p">(</span><span class="n">creds</span><span class="p">:</span> <span class="n">Credentials</span><span class="p">):</span>
+    <span class="n">validate_credentials</span><span class="p">(</span><span class="n">creds</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">creds</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+    <span class="c1"># The above makes any necessary calls to the database.</span>
+
+    <span class="n">sessionid</span> <span class="o">=</span> <span class="n">secrets</span><span class="o">.</span><span class="n">token_urlsafe</span><span class="p">(</span><span class="n">nbytes</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="n">signature</span> <span class="o">=</span> <span class="n">sign</span><span class="p">(</span><span class="n">sessionid</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span><span class="s2">&quot;success&quot;</span><span class="p">})</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;session&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sessionid</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">signature</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">max_age</span><span class="o">=</span><span class="mi">86400</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/someresource/</span><span class="si">{resid}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_someresource</span><span class="p">(</span><span class="n">resid</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">session</span> <span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Cookie</span><span class="p">()]):</span>
+    <span class="n">sessionid</span><span class="p">,</span> <span class="n">signature</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+    <span class="c1"># Checking whether the given signature is the same as what</span>
+    <span class="c1"># we&#39;d produce if we signed the sessionid ensures that the</span>
+    <span class="c1"># session was indeed created by us (with an overwhelmingly</span>
+    <span class="c1"># high probability).</span>
+    <span class="k">if</span> <span class="n">signature</span> <span class="o">!=</span> <span class="n">sign</span><span class="p">(</span><span class="n">sessionid</span><span class="p">)</span>
+        <span class="c1"># This is an invalid session since we know we didn&#39;t</span>
+        <span class="c1"># generate it. Note that to reject invalid sessions,</span>
+        <span class="c1"># we didn&#39;t actually need to touch the database.</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="mi">401</span><span class="p">,</span> <span class="n">details</span><span class="o">=</span><span class="s2">&quot;Unauthorized&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Authenticated. Now we have to make sure that the</span>
+    <span class="c1"># user has permission to access this resource.</span>
+    <span class="c1"># This is often done using a faster and temporary</span>
+    <span class="c1"># &quot;session store&quot; using an in-memory DB like Redis.</span>
+    <span class="c1"># That way, the main database is not held up for</span>
+    <span class="c1"># small tasks like this, besides Redis being much faster</span>
+    <span class="c1"># than regular DBs for such use cases.</span>
+    <span class="n">userid</span> <span class="o">=</span> <span class="n">db_get_session_user</span><span class="p">(</span><span class="n">sessionid</span><span class="p">)</span>
+
+    <span class="n">check_authorization</span><span class="p">(</span><span class="n">userid</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/someresource/</span><span class="si">{</span><span class="n">resid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># We expect check_authorization to raise a 401 HTTPException</span>
+    <span class="c1"># in case that failed.</span>
+
+    <span class="c1"># All is well. Respond to the request.</span>
+    <span class="k">return</span> <span class="n">response</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="advanced-topics">
