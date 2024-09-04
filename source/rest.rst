@@ -360,6 +360,17 @@ that work by transferring various representations of your resource's state.
 
 Hence "Representational State Transfer".
 
+.. admonition:: **Exercise**
+
+    Supposing your application (accessed via a REST API) manages long running
+    processes on behalf of its users. This could be, for example, a long video
+    format conversion process that take perhaps an hour to complete. In such
+    cases, you wouldn't want to make a request and wait with the connection
+    open for an hour for a response. How would you design an API for such a
+    case? Hint: Start by thinking about what the "resource" that's being
+    managed is. You'll also gain an idea of how the resource itself cannot be
+    transferred though you can manipulate it via REST.
+
 Caveats
 -------
 
