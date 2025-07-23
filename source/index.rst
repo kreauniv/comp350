@@ -11,6 +11,7 @@ Welcome to Comp350: Software design
    :caption: Contents:
 
    intro
+   file
    shell
    regex
    minilangs
