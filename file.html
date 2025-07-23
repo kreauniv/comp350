@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The “file” abstraction &#8212; Comp350: Software design v1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d8a2add5" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The “shell”" href="shell.html" />
+    <link rel="prev" title="Introduction" href="intro.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-file-abstraction">
+<h1>The “file” abstraction<a class="headerlink" href="#the-file-abstraction" title="Link to this heading">¶</a></h1>
+<p>You’re all familiar with the notion of a file stored on your computer’s “disk”.
+From the operating system’s perspective, it doesn’t care about the contents
+of your files and only provides a handful of operations to deal with its contents.
+These are -</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://www.man7.org/linux/man-pages/man2/open.2.html">open</a> a file for operations. This is presented to the programmer as an
+integer value that represents the open file “handle” and this handle needs
+to be made available for the other operations.</p></li>
+<li><p><a class="reference external" href="https://www.man7.org/linux/man-pages/man2/read.2.html">read</a> one or more bytes from the “current position” (if the file is
+readable). This will advance the current position by those many bytes.
+You cannot read beyond the end of the file.</p></li>
+<li><p><a class="reference external" href="https://www.man7.org/linux/man-pages/man2/write.2.html">write</a> one or more bytes at the “current position” (if the file is
+writeable). This will also advance the current position by those many bytes.</p></li>
+<li><p><a class="reference external" href="https://www.man7.org/linux/man-pages/man2/lseek.2.html">seek</a> to a specific position within the file (if the file is seekable).</p></li>
+<li><p><a class="reference external" href="https://www.man7.org/linux/man-pages/man2/close.2.html">close</a> the file.</p></li>
+</ol>
+<p>Notice that these are very generic in nature. Therefore the operating system
+exposes many system facilities as such “streams of bytes” that you can
+open/read/write/seek/close. <a class="footnote-reference brackets" href="#seek" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> Some examples –</p>
+<ol class="arabic simple">
+<li><p>Want to write to your program’s “stdout”? Just <code class="docutils literal notranslate"><span class="pre">write</span></code> bytes to handle
+number 1. To write to stderr, <code class="docutils literal notranslate"><span class="pre">write</span></code> to handle number 2. It’s that
+simple. Want to read from “stdin”, just <code class="docutils literal notranslate"><span class="pre">read</span></code> from handle number 0.</p></li>
+<li><p>A connection to another computer (server or client) similarly provides a
+“<a class="reference external" href="https://www.man7.org/linux/man-pages/man2/socket.2.html">socket</a> handle” (also an integer just like a file handle) and transmitting
+or receiving bytes to/from another computer is simply a write/read on that
+handle.</p></li>
+<li><p>Older versions of Linux used to provide a special “file” named <a class="reference external" href="https://manpages.ubuntu.com/manpages/questing/man7/dsp.7.html">/dev/dsp</a> which if you open and read, you’ll be recording audio samples from
+your computer’s microphone and which if you write to, you will be sending
+audio samples to your computer’s speaker – i.e. playing a sound.</p></li>
+<li><p>Want some random bytes to use in your program? Open the “file” <a class="reference external" href="https://en.wikipedia.org/wiki//dev/random">/dev/random</a> and read how many ever bytes you want. You can’t write to it or
+“seek” to a different position though.</p></li>
+<li><p>Want a list of processes running on your linux machine? You can list the
+“directory” <a class="reference external" href="https://www.man7.org/linux/man-pages/man5/proc.5.html">/proc</a> and find one directory for each process which
+further contains more info you can read using the “file” interface.</p></li>
+</ol>
+<p>This is a core example of how one abstract “interface” can have multiple
+“implementations”. This is such a core idea in operating systems that a
+whole operating system called “Plan 9” was once built with <strong>all</strong> of its
+facilities accessible as “files”.</p>
+<p>Having such a common interface makes it easy to use all these diverse
+facilities as no new vocabulary needs to be learnt for programming them.
+Of course, you need to know the specific concepts about those various
+aspects to use them, but the mechanics of “how” is the same.</p>
+<section id="interface-implementation-split">
+<h2>Interface - implementation split<a class="headerlink" href="#interface-implementation-split" title="Link to this heading">¶</a></h2>
+<p>We call the set of functions open/read/write/seek/close the “interface” of the
+“file” abstraction and each of the above examples provide “implementations” of
+that interface.</p>
+<p><strong>Small</strong> interfaces that hide <strong>a lot</strong> of functionality are very beneficial
+for programming because they simplify the mental model a programmer needs to
+use and the number of words/functions they need to remember.</p>
+<p>For a function, its “interface” consists of the specific nature of its
+arguments and the return value(s) it provides. This is also referred to
+as its “type signature” or just “signature” for short.</p>
+<section id="example-logging">
+<h3>Example - logging<a class="headerlink" href="#example-logging" title="Link to this heading">¶</a></h3>
+<p>Supposing we have a procedure that does many operations but wishes to log
+intermediate steps to the terminal stdout. You might write it like this –</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">my_big_procedure</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m going to do step 1&quot;</span><span class="p">)</span>
+    <span class="n">do_step_1</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Now on to step 2&quot;</span><span class="p">)</span>
+    <span class="n">do_step_2</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All done&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;done&quot;</span>
+</pre></div>
+</div>
+<p>It is not much of a procedure, but I hope you get the idea why someone would
+write something with this pattern – this is usually called a “script”.</p>
+<p>We now notice that for the purpose of this procedure, <code class="docutils literal notranslate"><span class="pre">print</span></code> behaves
+as though it had the signature <code class="docutils literal notranslate"><span class="pre">print(arg:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code>. So if we wanted
+the procedure to be flexible enough to send those messages to any destination,
+(ex: to a file, to a web browser client via a websocket, etc.), we can simply take
+in the function to call as an argument like this –</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">my_big_procedure</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">log</span><span class="p">:</span> <span class="nb">callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span><span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="nb">print</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+   <span class="n">log</span><span class="p">(</span><span class="s2">&quot;I&#39;m going to do step 1&quot;</span><span class="p">)</span>
+   <span class="n">do_step_1</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+   <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Now on to step 2&quot;</span><span class="p">)</span>
+   <span class="n">do_step_2</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+   <span class="n">log</span><span class="p">(</span><span class="s2">&quot;All done&quot;</span><span class="p">)</span>
+   <span class="k">return</span> <span class="s2">&quot;done&quot;</span>
+</pre></div>
+</div>
+<p>Now ordinarily, you’ll call this new procedure in the same way, though it
+takes an extra argument, because we’ve given it a default. Supposing we want
+to collect all the messages into a list of strings, we can do this –</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">collect</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+<span class="n">my_big_procedure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;something&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">log</span><span class="o">=</span><span class="n">collect</span><span class="p">)</span>
+<span class="c1"># Now `messages` contains a list of the messages!</span>
+</pre></div>
+</div>
+<p>What we’ve done here is to generalize the “logging” behaviour of <code class="docutils literal notranslate"><span class="pre">my_big_procedure</span></code>
+to be customizable using a parameter. Anything that meets the “signature” of a
+logging procedure can be supplied. Supposing we wish to output to <code class="docutils literal notranslate"><span class="pre">stderr</span></code>,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">stderrlog</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+
+<span class="n">my_big_procedure</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;something&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">log</span><span class="o">=</span><span class="n">stderrlog</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="objects-and-classes">
+<h2>Objects and classes<a class="headerlink" href="#objects-and-classes" title="Link to this heading">¶</a></h2>
+<p>The “class” facility in Python is basically to provide such interfaces which
+are more than just one function. Any class that “implements” the same interface
+– i.e. has the same set of methods (identified by name) all of which
+have the same argument pattern and return types (i.e. the same signatures)
+can be substituted for each other. We saw how <code class="docutils literal notranslate"><span class="pre">StringIO</span></code> implements the
+same methods as a <code class="docutils literal notranslate"><span class="pre">file</span></code> and therefore can be used in its place.</p>
+<div class="admonition-liskov-substitution-principle admonition">
+<p class="admonition-title"><strong>Liskov substitution principle</strong></p>
+<p>Because this substitutability principle can be expressed as “if it looks
+like a duck and quacks like a duck, it is a duck”, this is also sometimes
+referred to as “duck typing”. The early computer scientist Barbara Liskov
+was the first to articulate it and so a more precise definition of it is
+attributed to her as the <a class="reference external" href="https://en.wikipedia.org/wiki/Liskov_substitution_principle">Liskov substitution principle</a>.</p>
+</div>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="seek" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Of these, <strong>seek</strong> is perhaps the most specific one that usually
+applies only to files.</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The “file” abstraction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#interface-implementation-split">Interface - implementation split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#objects-and-classes">Objects and classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="shell.html">The “shell”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regex.html">Basics of “regular expressions”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="minilangs.html">Many mini languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="git.html">A student’s guide to git</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Some utility tips to help you</a></li>
+<li class="toctree-l1"><a class="reference internal" href="json.html">JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="html.html">HTML/XHTML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="js.html">A crash course in JS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">Representational State Transfer (REST)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conc.html">Concurrency</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pim.html">PIM app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trust.html">Trust issues</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="intro.html" title="previous chapter">Introduction</a></li>
+      <li>Next: <a href="shell.html" title="next chapter">The “shell”</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Srikumar K. S..
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/file.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
