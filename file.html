@@ -57,6 +57,10 @@ open/read/write/seek/close. <a class="footnote-reference brackets" href="#seek" 
 <li><p>Want to write to your program’s “stdout”? Just <code class="docutils literal notranslate"><span class="pre">write</span></code> bytes to handle
 number 1. To write to stderr, <code class="docutils literal notranslate"><span class="pre">write</span></code> to handle number 2. It’s that
 simple. Want to read from “stdin”, just <code class="docutils literal notranslate"><span class="pre">read</span></code> from handle number 0.</p></li>
+<li><p>Want to communicate with another program on the same machine? You can
+open and write to a <a class="reference external" href="https://www.man7.org/linux/man-pages/man7/fifo.7.html">pipe</a> that the other program knows about.</p></li>
+</ol>
+<ol class="arabic simple" start="2">
 <li><p>A connection to another computer (server or client) similarly provides a
 “<a class="reference external" href="https://www.man7.org/linux/man-pages/man2/socket.2.html">socket</a> handle” (also an integer just like a file handle) and transmitting
 or receiving bytes to/from another computer is simply a write/read on that

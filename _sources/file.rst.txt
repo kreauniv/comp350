@@ -35,6 +35,9 @@ open/read/write/seek/close. [#seek]_ Some examples --
    number 1. To write to stderr, ``write`` to handle number 2. It's that
    simple. Want to read from "stdin", just ``read`` from handle number 0.
 
+2. Want to communicate with another program on the same machine? You can
+   open and write to a pipe_ that the other program knows about.
+
 2. A connection to another computer (server or client) similarly provides a
    "socket_ handle" (also an integer just like a file handle) and transmitting
    or receiving bytes to/from another computer is simply a write/read on that
@@ -57,6 +60,7 @@ open/read/write/seek/close. [#seek]_ Some examples --
 .. _random: https://en.wikipedia.org/wiki//dev/random
 .. _dsp: https://manpages.ubuntu.com/manpages/questing/man7/dsp.7.html
 .. _proc: https://www.man7.org/linux/man-pages/man5/proc.5.html
+.. _pipe: https://www.man7.org/linux/man-pages/man7/fifo.7.html
 
 This is a core example of how one abstract "interface" can have multiple
 "implementations". This is such a core idea in operating systems that a
