@@ -25,6 +25,7 @@ Welcome to Comp350: Software design
    conc
    pim
    trust
+   factor
 
 
 Indices and tables

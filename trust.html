@@ -7,12 +7,14 @@
 
     <title>Trust issues &#8212; Comp350: Software design v1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d8a2add5" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
     <script src="_static/documentation_options.js?v=5cb08e4e"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="On factoring programs" href="factor.html" />
     <link rel="prev" title="PIM app" href="pim.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -161,7 +163,10 @@ expensive to determine the message when given the hash, to the point of being
 nearly impossible to do so. A key constraint is that the output hash is
 completely determined by the input message and the function must always produce
 the same hash for the same message (so, you can’t have a random number
-generator as a “hash function”, for instance).</p>
+generator as a “hash function”, for instance). For a <em>cryptographic</em> hash
+function, it is also expected that two input byte sequences that are different
+in some way are extremely unlikely to produce the same output hash (known as a
+“collision”).</p>
 <p>Commonly used hash functions today include <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-1">SHA1</a>, <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-2">SHA256</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-2">SHA512</a>. Note
 that SHA256 is the same as SHA512 whose output is truncated. SHA1 hashes are
 used in git and you’d have already seen strings of hexadecimal numbers like
@@ -535,7 +540,16 @@ that requires the user to be authenticated, as a code illustration.</p>
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
@@ -568,6 +582,7 @@ that requires the user to be authenticated, as a code illustration.</p>
 <li class="toctree-l2"><a class="reference internal" href="#advanced-topics">Advanced topics</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="factor.html">On factoring programs</a></li>
 </ul>
 
 <div class="relations">
@@ -575,19 +590,10 @@ that requires the user to be authenticated, as a code illustration.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="pim.html" title="previous chapter">PIM app</a></li>
+      <li>Next: <a href="factor.html" title="next chapter">On factoring programs</a></li>
   </ul></li>
 </ul>
 </div>
-<search id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -604,8 +610,8 @@ that requires the user to be authenticated, as a code illustration.</p>
       &#169;2024, Srikumar K. S..
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/trust.rst.txt"

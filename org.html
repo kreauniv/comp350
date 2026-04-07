@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Design principles &#8212; Comp350: Software design v1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d8a2add5" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="design-principles">
+<h1>Design principles<a class="headerlink" href="#design-principles" title="Link to this heading">¶</a></h1>
+<p>The following are commonly practiced design principles. I’ve tried to
+illustrate them using simple examples.</p>
+<section id="experiment-to-understand-before-coding">
+<h2>Experiment to understand before coding<a class="headerlink" href="#experiment-to-understand-before-coding" title="Link to this heading">¶</a></h2>
+<p>In other words, don’t hesitate to write throw away code that you use to clarify
+your own understanding.</p>
+<p>For example, if you don’t know how to use a particular SQL statement, you can try
+it out first on the <cite>sqlite3</cite> REPL before you use the statement in your code.</p>
+<figure class="align-default" id="id1">
+<img alt="_images/sqlite3-shell.png" src="_images/sqlite3-shell.png" />
+<figcaption>
+<p><span class="caption-text">A sample interaction on the shell to clarify the insert statement.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>More broadly any aspect of your system that you feel you need to understand better
+could use some separate experimentation of this kind.</p>
+<p>The benefit of this is that you develop a habit of critically examining your
+understanding and it will grow as you learn more through your experiments.
+Also, if you keep piling on code that you don’t understand, then when your
+application doesn’t work as you expected, you’ll find it hard and frustrating to
+figure out what is going wrong … because there will be many things going wrong.</p>
+<p>At suitable junctures, you can also capture significant experimental code for the
+benefit of your team.</p>
+<p>A corollary of this is to ensure that as you’re building your application, you
+always keep it runnable at every stage, even if “running it” means it does
+nothing in the initial stages. Every little bit of functionality code you add,
+make sure that you manage to run the code at least once.</p>
+<p>An even better and professional discipline is to write tests for your code,
+which not only helps ensure that your code continues to work across future
+changes, but also helps explain how to use your code/libraries to your team.</p>
+</section>
+<section id="separation-of-concerns">
+<h2>Separation of concerns<a class="headerlink" href="#separation-of-concerns" title="Link to this heading">¶</a></h2>
+<p>A given function or procedure should not do both Input/Output (such as
+<cite>input()</cite> and <cite>print()</cite>) and some significant computation with that data. The
+I/O is better kept separate from the core computation which is to be expressed
+using appropriate data structures. This helps in the following ways -</p>
+<ol class="arabic simple">
+<li><p>Making the core logic testable.</p></li>
+<li><p>Substituting <cite>input()</cite> and <cite>print()</cite> with, say, network I/O without changing the core logic.</p></li>
+<li><p>Contain the impact of any changes that need to be made to some aspect of the code.</p></li>
+</ol>
+<p>Modules, classes and functions are all suitable options to effect separation of
+concerns. Keep each function’s, class’s and module’s role clear without mixing
+concerns. Don’t throw all your code into a single file for example, especially
+if it has many complex parts to it.</p>
+</section>
+<section id="document-your-functions">
+<h2>Document your functions<a class="headerlink" href="#document-your-functions" title="Link to this heading">¶</a></h2>
+<p>Describe the following when writing functions –</p>
+<ol class="arabic simple">
+<li><p>How are you representing the inputs to your function. Note that the
+function’s signature gives away some of this information, so you can
+use that to be clear about this as well. But if you have an argument
+that’s, say, an  integer or string, it may need additional description
+except in some very simple circumstances.</p></li>
+<li><p>How is the function returning its results.</p></li>
+<li><p>What does the function compute.</p></li>
+<li><p>Give some key illustrative examples.</p></li>
+</ol>
+<p>The above helps the function’s user to know how to use it without necessarily
+having to dive into how it works.</p>
+<p>For <em>your</em> function’s design, you’ll also need to chart out a plan for how to code
+it as well. The above steps should help you with that, but subsequently also write
+a single comment describing how the function should do its computation and that should
+help you with writing its code. In short, use “writing to discover” to help you design
+your functions.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">The “file” abstraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shell.html">The “shell”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regex.html">Basics of “regular expressions”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="minilangs.html">Many mini languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="git.html">A student’s guide to git</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Some utility tips to help you</a></li>
+<li class="toctree-l1"><a class="reference internal" href="json.html">JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="html.html">HTML/XHTML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="js.html">A crash course in JS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">Representational State Transfer (REST)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conc.html">Concurrency</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pim.html">PIM app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trust.html">Trust issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="factor.html">On factoring programs</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Srikumar K. S..
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/org.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

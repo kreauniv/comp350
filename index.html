@@ -7,11 +7,11 @@
 
     <title>Welcome to Comp350: Software design &#8212; Comp350: Software design v1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d8a2add5" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
     <script src="_static/documentation_options.js?v=5cb08e4e"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Introduction" href="intro.html" />
@@ -152,6 +152,19 @@
 <li class="toctree-l2"><a class="reference internal" href="trust.html#advanced-topics">Advanced topics</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="factor.html">On factoring programs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="factor.html#a-broad-framework">A broad framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="factor.html#focusing-on-data-transformation">Focusing on data transformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="factor.html#dependency-injection">Dependency injection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="factor.html#parsing">Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="factor.html#generalization">Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="factor.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="factor.html#contracting-at-the-boundaries">Contracting at the boundaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="factor.html#parse-don-t-validate">Parse. Don’t validate.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="factor.html#layering">Layering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="factor.html#substitution-principle">Substitution principle</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -180,7 +193,16 @@
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
@@ -198,6 +220,7 @@
 <li class="toctree-l1"><a class="reference internal" href="conc.html">Concurrency</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pim.html">PIM app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trust.html">Trust issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="factor.html">On factoring programs</a></li>
 </ul>
 
 <div class="relations">
@@ -208,16 +231,6 @@
   </ul></li>
 </ul>
 </div>
-<search id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -234,8 +247,8 @@
       &#169;2024, Srikumar K. S..
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/index.rst.txt"

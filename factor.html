@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>On factoring programs &#8212; Comp350: Software design v1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d8a2add5" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Trust issues" href="trust.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="on-factoring-programs">
+<h1>On factoring programs<a class="headerlink" href="#on-factoring-programs" title="Link to this heading">¶</a></h1>
+<p>Much of program and system design involves identifying how to divide up the
+program (or system) into parts that can be understood in isolation and can be
+composed to make the whole. We’ll call this “factoring” a program/system.
+It also goes by the name “decomposition”.</p>
+<p>You may have encountered the related term “refactoring” more commonly used to
+refer to restructuring a program without altering any functionality. There is
+no clear definition of “refactoring” practiced in the industry, but we’ll use it
+to refer to “changing the way the program or system has been factored” towards
+some maintenance goal such as improved comprehensibility, testability or
+flexibility.</p>
+<section id="a-broad-framework">
+<h2>A broad framework<a class="headerlink" href="#a-broad-framework" title="Link to this heading">¶</a></h2>
+<p>When faced with designing code for a task, it is useful to think about and
+articulate four aspects -</p>
+<ol class="arabic simple">
+<li><p>Stuff</p></li>
+<li><p>Structure</p></li>
+<li><p>Properties</p></li>
+<li><p>Behaviour</p></li>
+</ol>
+<section id="pyls-example">
+<h3><code class="docutils literal notranslate"><span class="pre">pyls</span></code> example<a class="headerlink" href="#pyls-example" title="Link to this heading">¶</a></h3>
+<p>For the simple <code class="docutils literal notranslate"><span class="pre">pyls</span></code> program you initially worked on, the “primary stuff”
+consists of files or folders identified by name, the “structure” consists of a
+list of files, and the “properties” include their names, modification times and
+whether they are files or folders. We have additional “auxiliary stuff” such as
+the “file system” which we can ask to fetch properties of files/folders
+identified by path. We also have the terminal to which we can print our
+results. You could say that using these to achieve our goal of listing the
+contents of a directory constitutes the “behaviour” we need to implement.</p>
+<p>It helps to have these find direct representation in your program. For example,
+we represented the “stuff and their properties” like this –</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FileInfo</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+   <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span>
+   <span class="n">modtime</span><span class="p">:</span> <span class="n">datetime</span>
+   <span class="n">isfile</span><span class="p">:</span> <span class="nb">bool</span>
+   <span class="n">size</span><span class="p">:</span> <span class="nb">int</span>
+</pre></div>
+</div>
+<p>The behaviour we sought was to take given options such as directory to scan
+and format of presentation to produce a “one item per line” output on the
+terminal. The structure in this case is nearly trivial - simply a list
+of files - i.e. <code class="code docutils literal notranslate"><span class="pre">list[FileInfo]</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">fetch_file_info</span><span class="p">(</span><span class="nb">dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FileInfo</span><span class="p">]:</span>
+   <span class="c1"># ... Uses the os to fetch file details.</span>
+</pre></div>
+</div>
+<p>Since the Terminal accepts strings to be printed out, we transformed
+each file into a string so we can send it out –</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Options</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+   <span class="n">dirname</span><span class="p">:</span> <span class="nb">str</span>
+   <span class="n">dir_indicator</span><span class="p">:</span> <span class="nb">bool</span>
+   <span class="n">longform</span><span class="p">:</span> <span class="nb">bool</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_options</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Options</span><span class="p">:</span>
+   <span class="c1"># Get options from command line</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">present_file</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">FileInfo</span><span class="p">,</span> <span class="n">dir_indicator</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">longform</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+   <span class="c1"># ... Construct a string.</span>
+</pre></div>
+</div>
+<p>Once we have all of these implemented, we merely needed to put together
+everything to have what we wanted –</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+   <span class="n">options</span> <span class="o">=</span> <span class="n">get_options</span><span class="p">()</span>
+   <span class="n">filenames</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">dirname</span><span class="p">)</span>
+   <span class="n">fileinfos</span> <span class="o">=</span> <span class="p">[</span><span class="n">fetch_file_info</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">]</span>
+   <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">present_file</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">dir_indicator</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">longform</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fileinfos</span><span class="p">]</span>
+   <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="focusing-on-data-transformation">
+<h2>Focusing on data transformation<a class="headerlink" href="#focusing-on-data-transformation" title="Link to this heading">¶</a></h2>
+<p>Doing I/O in a program is one of the aspects to pay close attention to –
+because you do not want to mix I/O with other computation your program
+needs to do. So in general, it helps to isolate all I/O in a portion
+of your code and keep the rest of your program structured using ordinary
+functions that perform data transformation.</p>
+<p>The type notation of Haskell is a useful way to work out how to compose
+the program. Again, in the <code class="docutils literal notranslate"><span class="pre">pyls</span></code> case, we could’ve expressed our program
+decomposition as the following sequence of “factoring” –</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="nf">main</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+<span class="c1">-----</span>
+<span class="nf">main</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">composed</span><span class="w"> </span><span class="kr">of</span>
+<span class="w">    </span><span class="n">get_file_infos</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="p">(</span><span class="kt">List</span><span class="w"> </span><span class="kt">FileInfo</span><span class="p">)</span>
+<span class="w">    </span><span class="n">print_file_infos</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">List</span><span class="w"> </span><span class="kt">FileInfo</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+<span class="c1">-----</span>
+<span class="nf">get_file_infos</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">composed</span><span class="w"> </span><span class="kr">of</span>
+<span class="w">   </span><span class="n">get_options</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="kt">Options</span>
+<span class="w">   </span><span class="n">dir_name</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Options</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span>
+<span class="w">   </span><span class="n">dir_contents</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="p">(</span><span class="kt">List</span><span class="w"> </span><span class="kt">FileInfo</span><span class="p">)</span>
+<span class="nf">print_file_infos</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">composed</span><span class="w"> </span><span class="kr">of</span>
+<span class="w">   </span><span class="n">present_file_info</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Options</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">FileInfo</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span>
+<span class="w">   </span><span class="n">print_line</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+<span class="c1">----</span>
+<span class="nf">dir_contents</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">composed</span><span class="w"> </span><span class="kr">of</span>
+<span class="w">   </span><span class="n">list_dir</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="p">(</span><span class="kt">List</span><span class="w"> </span><span class="kt">String</span><span class="p">)</span>
+<span class="w">   </span><span class="n">fetch_file_info</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="kt">FileInfo</span>
+</pre></div>
+</div>
+<p>For a given function F to be “factored” into functions A and B,
+it is important that the result type of A matches an argument type of B,
+so that F can be expressed as a composition of A and B as <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">.</span> <span class="pre">A</span></code>.
+In the above case, our main can then be composed from the above parts
+perhaps like this –</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="nf">main</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span>
+<span class="w">   </span><span class="n">opts</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">get_options</span>
+<span class="w">   </span><span class="n">items</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">list_dir</span><span class="w"> </span><span class="p">(</span><span class="n">dir_name</span><span class="w"> </span><span class="n">opts</span><span class="p">)</span>
+<span class="w">   </span><span class="n">infos</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="p">[</span><span class="n">fetch_file_info</span><span class="w"> </span><span class="p">(</span><span class="n">dir_name</span><span class="w"> </span><span class="n">opts</span><span class="p">)</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">items</span><span class="p">]</span>
+<span class="w">   </span><span class="n">sequence_</span><span class="w"> </span><span class="p">[</span><span class="n">print_line</span><span class="w"> </span><span class="p">(</span><span class="n">present_file_info</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="n">info</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">infos</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Notice how this is similar to the structure of our python version, suggesting
+that the decomposition (a.k.a. factoring) process is reusable across
+programming languages.</p>
+<p>We’ll now look at some factoring techniques.</p>
+</section>
+<section id="dependency-injection">
+<h2>Dependency injection<a class="headerlink" href="#dependency-injection" title="Link to this heading">¶</a></h2>
+<p>To generalize a procedure or a function over some particular aspect of its
+behaviour, that behaviour can be encapsulated into a function/procedure and
+passed as an argument. In more complex cases, this argument can be an object or
+even a class (in languages where classes are also objects). Because we’re
+lifting the dependency on specifics of the object out into the argument and
+“injecting” it back in when we’re calling our function, this technique is
+called “dependency injection”.</p>
+<p>Traditional OOP languages like Java tend to use this method extensively to simplify
+code and to effect separation of concerns. Therefore they also tend to have
+easier ways to perform such dependency injection. However the idea is as
+simple as we’ve stated it.</p>
+<p>In our <code class="docutils literal notranslate"><span class="pre">pyls</span></code> case, for example, if we wished to abstract over the
+“printing out of the results”, we could model that behaviour as an argument
+that is a function which performs the printing job. That way, we can pass
+any other implementation for that behaviour if we so desired, such as
+writing the string to a log file instead of the terminal.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">flexi_show_file_info</span><span class="p">(</span><span class="n">fs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FileInfo</span><span class="p">],</span> <span class="n">output_line</span> <span class="o">=</span> <span class="nb">print</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">output_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+
+<span class="c1"># If we wanted to write to another file, we can now call it</span>
+<span class="c1"># as ...</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;anotherfile.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">print_to_file</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="c1"># Inject the dependency into flexi_show_file_info</span>
+    <span class="n">flexi_show_file_info</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">output_line</span> <span class="o">=</span> <span class="n">print_to_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="parsing">
+<h2>Parsing<a class="headerlink" href="#parsing" title="Link to this heading">¶</a></h2>
+<p>The broad category of activities comprising the interpretation of user
+input into appropriate data structures for processing can be referred
+to as “parsing”. In the simplest of cases, we have the user giving
+us textual input, in which case it would be literally parsing of
+some language. In other cases, the user may be performing an activity
+that mixes modes like mouse input and key presses which need to be
+captured. For example, the process of dragging an object and dropping
+it into a target will need to be captured as an operation that focuses
+on which object was dragged and where it was dropped, as opposed to
+the mechanics of how the user went about it.</p>
+<p>In all cases, the end result of the “parsing” step is the creation of
+a data structure that represents the operation intended by the user.
+Again, in our <code class="docutils literal notranslate"><span class="pre">pyls</span></code> example, we parsed the command line arguments
+into an <code class="docutils literal notranslate"><span class="pre">Options</span></code> structure that looked like this –</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Options</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">dirname</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">longform</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">dir_indicator</span><span class="p">:</span> <span class="nb">bool</span>
+</pre></div>
+</div>
+<p>In our case, the user could’ve given this information in a plethora
+of ways –</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Argument patterns</span>
+<span class="s2">&quot;somedir&quot;</span><span class="w"> </span>--longform<span class="w"> </span>--formatted
+<span class="s2">&quot;somedir&quot;</span><span class="w"> </span>-l<span class="w"> </span>-F
+<span class="s2">&quot;somedir&quot;</span><span class="w"> </span>-lF
+<span class="s2">&quot;somedir&quot;</span><span class="w"> </span>-Fl
+<span class="s2">&quot;somedir&quot;</span><span class="w"> </span>-l
+<span class="s2">&quot;somedir&quot;</span><span class="w"> </span>-l<span class="w"> </span>--formatted
+<span class="s2">&quot;somedir&quot;</span><span class="w"> </span>-F<span class="w"> </span>--longform
+<span class="s2">&quot;somedir&quot;</span>
+</pre></div>
+</div>
+<p>And in all those cases, we normalize the input into a single <code class="docutils literal notranslate"><span class="pre">Options</span></code>
+object. By the time the object is created, default choices for unspecified
+arguments have been made, order or values provided have been accounted for,
+short and long forms have been normalized, and so on. The rest of the program
+now only has to work with <code class="docutils literal notranslate"><span class="pre">Options</span></code> without worrying about how we got it.</p>
+<p>That’s the benefit of treating input processing as “parsing” – by the time the
+<code class="docutils literal notranslate"><span class="pre">Options</span></code> object is created, the rest of the program can assume that any
+validation checks on the input that are necessary have been applied and no
+further checks are needed.</p>
+</section>
+<section id="generalization">
+<h2>Generalization<a class="headerlink" href="#generalization" title="Link to this heading">¶</a></h2>
+<p>In many cases, we may write functions for doing something specific, but then
+realize that if one aspect of it can be hidden, the function can be used for
+more purposes – i.e. becomes more generic. This can be achieved by splitting
+out that portion into a separate function and injecting it as a dependency.
+Though this also looks like dependency injection, we call it out as a
+“generalization” step because the intention is to render the function be
+usable in potentially unrelated contexts.</p>
+<p>This is kind of how we got the generic functions like <code class="docutils literal notranslate"><span class="pre">map</span></code>, <code class="docutils literal notranslate"><span class="pre">reduce</span></code>,
+<code class="docutils literal notranslate"><span class="pre">filter</span></code> and <code class="docutils literal notranslate"><span class="pre">foldl</span></code>.</p>
+<p><strong>Note</strong>: In Comp308, you’ll learn about <strong>beta-abstraction</strong> which formalizes
+this notion of generalization.</p>
+<p>As with most organization principles, it is possible to make code too general.
+It takes judgement to strike a good balance and you’ll develop that as you
+program more.</p>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
+<p>To make a module more flexible or usable in different deployment scenarios,
+we may choose to load constants from “configuration files”. Common configuration
+file formats are <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">ini</a>, <a class="reference external" href="https://en.wikipedia.org/wiki/JSON">json</a>, <a class="reference external" href="https://toml.io/en/">toml</a>, <a class="reference external" href="https://yaml.org/">yaml</a>.</p>
+<p>Typical uses of config information are to help the program better deal with
+differences in installed setups such as database connections, folder preferences,
+log file information, log levels required, API access tokens and so on.</p>
+<p>The high configurability requirements of deep-learning libraries gave rise
+to the <a class="reference external" href="https://github.com/google/gin-config">gin-config</a> package which automates the task of parsing the config
+information and setting appropriate constructor arguments.</p>
+<p>As seen with <a class="reference external" href="https://github.com/google/gin-config">gin-config</a>, such configurability is done only for entire programs
+usually and not for individual modules – i.e. there is one configuration file
+for the entire program. Furthermore, libraries don’t usually use configuration
+files and will expect all input to be provided via structures or function
+arguments. That enables libraries/packages to be used in environments the
+authors didn’t foresee – for example, in environments where there may not be
+permissions to access specific folders or the file system may be restricted in
+other ways.</p>
+</section>
+<section id="contracting-at-the-boundaries">
+<h2>Contracting at the boundaries<a class="headerlink" href="#contracting-at-the-boundaries" title="Link to this heading">¶</a></h2>
+<p>While functions may have type declarations restricting the types of arguments
+they may receive at call points, type declarations alone do not sufficiently
+describe the arguments, which are often additionally constrained. For example,
+though <code class="docutils literal notranslate"><span class="pre">math.sqrt</span></code> in python might be declared with the type <code class="docutils literal notranslate"><span class="pre">float</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code>,
+the argument is constrained to be <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">math.sqrt</span></code> applied to a
+negative number will raise an error.</p>
+<p>Input contracts refer to such constraints on the arguments of functions
+and can be easily expressed in code using “assertions”. In python, the
+<a class="reference external" href="https://docs.python.org/3.9/reference/simple_stmts.html#the-assert-statement">assert</a> statement provides this facility. When making assertions, it is
+useful to provide an appropriate string that includes additional information
+so that the way to fix the failing assertion is easy to identify.</p>
+<p>Similar to input contracts, every function will also make claims about its
+result, assuming it was called with valid input arguments. These are “output
+contracts”. For example, <code class="docutils literal notranslate"><span class="pre">math.sqrt</span></code> will guarantee that the result, when
+squared, will be close to the argument to a good approximation. A function
+often does not explicitly state output contracts, except in languages
+that support such contracts. It is, however, a valuable practice to document
+them either as assertions at return points or in the function’s docstring.</p>
+<p>Since a module or class is expected to provide some coherent functionality,
+they will also place similar contracts at their boundaries. Usually, they will
+require that any data structures defined by them be created only using the
+functions within the module, so that “invariants” about them can be ensured. An
+“invariant” is a property (i.e. a predicate) of an object that does not change
+across a particular operation. Some invariants are always expected to hold (for
+example, a list may be expected to always be in sorted order) while other
+invariants may apply specifically to some operations. In any case, it is
+important to document any such invariants as they provide valuable hints to the
+programmer using the module’s facilities.</p>
+<p>In summary, contracts are most usefully specified at “boundaries”.</p>
+</section>
+<section id="parse-don-t-validate">
+<h2>Parse. Don’t validate.<a class="headerlink" href="#parse-don-t-validate" title="Link to this heading">¶</a></h2>
+<p>In some code, you may see functions that check some property of one or more
+data structures to “validate” whether they’re suitable for use with some other
+functions. For example, if a function expects a monetary debit value, a
+validation function may check that the value is above zero and only uses
+two decimal places of precision.</p>
+<p>The principle asks that instead of writing such validation functions, you wrap
+the validated values in appropriate objects so that the proof that they’ve been
+validated is carried along with the values wherever they’re used. This helps
+all functions that reference the values be assured that they’re dealing with
+valid values and don’t themselves need to redundantly check the same conditions
+over and over again.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">pyls</span></code> example, we wrapped the information about a file in a <code class="docutils literal notranslate"><span class="pre">FileInfo</span></code>
+object so that functions which used it can assume that it is about a file and
+doesn’t need to check that its string argument is indeed a file that’s present
+in the file system.</p>
+<p>For more on this topic, see Alexis King’s article <a class="reference external" href="https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/">Parse. Don’t validate.</a>.</p>
+</section>
+<section id="layering">
+<h2>Layering<a class="headerlink" href="#layering" title="Link to this heading">¶</a></h2>
+<p>Designing the dependency relationships between components in such a way that
+components are partitioned into sets where each set is though of as a “layer”,
+with higher layers being dependent only on lower layers is called “layering”.
+There are other overloaded meanings, but this is the most common “layer
+architecture” that is also visually depicted as boxes sitting on boxes.</p>
+<p>Usually a layer’s job is to translate instructions it receives from layers
+above into instructions for layers below. Here we use “instruction” in the
+general sense of the word, including programmer designed data structures
+specified for communication between layers.</p>
+<p>The most famous example of the layer architecture is the <a href="#id2"><span class="problematic" id="id3">`OSI 7-layer network stack`_</span></a>.</p>
+<p>In graphics systems, it is common to translate drawing instructions called
+“scene graphs” into lower level commands to a driver such as OpenGL which
+itself translates it yet again into “GPU assembly language” called “shaders”
+(ex: vertex shaders, fragment shaders, geometry shaders) and sends to the
+graphics cards for the actual rendering.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>The primary constraint</strong> for such a layer architecture to work is
+that a layer should only be dependent on the layer or layers immediately
+below it in the hierarchy. It must <strong>not</strong> be dependent on a layer two steps
+below and must <strong>definitely not</strong> be dependent on any layer above it.
+This way, a layer serves as an abstraction facility for the layers above it.</p>
+</div>
+<p>Functions within a module may also fall into a layer structure, though not
+necessarily so. If they do, then it might be better to split the layers off
+into their own modules. If modules are organized in a layer structure, then
+lower layers may be organized as sub-modules with nested names. The main
+organizing principle though would be in the contracts between the modules.</p>
+</section>
+<section id="substitution-principle">
+<h2>Substitution principle<a class="headerlink" href="#substitution-principle" title="Link to this heading">¶</a></h2>
+<p>In programming languages that have a notion of subtyping, the design of the
+types should be in such a way that whenever a function expects an argument
+to be of type A, a value of type B that is a subtype of A is also considered
+legitimate and the function must work correctly in that case as well.</p>
+<p>i.e. a B type value can be used in place of an A type value wherever an A type
+value is appropriate.</p>
+<p>This is also referred to as Liskov Substitution Principle in honour of Barbara
+Liskov who coined it in the context of object-oriented programs. Today,
+OOP languages are not the only ones with sub-typing and the principle applies
+more broadly to those contexts also.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Comp350: Software design</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">The “file” abstraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shell.html">The “shell”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regex.html">Basics of “regular expressions”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="minilangs.html">Many mini languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="git.html">A student’s guide to git</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html">Some utility tips to help you</a></li>
+<li class="toctree-l1"><a class="reference internal" href="json.html">JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="html.html">HTML/XHTML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="js.html">A crash course in JS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">Representational State Transfer (REST)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conc.html">Concurrency</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pim.html">PIM app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trust.html">Trust issues</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">On factoring programs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#a-broad-framework">A broad framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#focusing-on-data-transformation">Focusing on data transformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependency-injection">Dependency injection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parsing">Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generalization">Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contracting-at-the-boundaries">Contracting at the boundaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parse-don-t-validate">Parse. Don’t validate.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#layering">Layering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#substitution-principle">Substitution principle</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="trust.html" title="previous chapter">Trust issues</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Srikumar K. S..
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/factor.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
