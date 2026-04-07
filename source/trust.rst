@@ -146,7 +146,10 @@ expensive to determine the message when given the hash, to the point of being
 nearly impossible to do so. A key constraint is that the output hash is
 completely determined by the input message and the function must always produce
 the same hash for the same message (so, you can't have a random number
-generator as a "hash function", for instance).
+generator as a "hash function", for instance). For a *cryptographic* hash
+function, it is also expected that two input byte sequences that are different
+in some way are extremely unlikely to produce the same output hash (known as a
+"collision").
 
 Commonly used hash functions today include SHA1_, SHA256_ and SHA512_. Note
 that SHA256 is the same as SHA512 whose output is truncated. SHA1 hashes are
