@@ -361,7 +361,7 @@ above into instructions for layers below. Here we use "instruction" in the
 general sense of the word, including programmer designed data structures
 specified for communication between layers.
 
-The most famous example of the layer architecture is the `OSI 7-layer network stack`_.
+The most famous example of the layer architecture is the `OSI 7-layer network model`_.
 
 .. _OSI 7-layer network model: https://en.wikipedia.org/wiki/OSI_protocols
 
