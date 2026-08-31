@@ -7,10 +7,9 @@
 
     <title>Basics of “regular expressions” &#8212; Comp350: Software design v1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d8a2add5" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
     <script src="_static/documentation_options.js?v=5cb08e4e"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -44,9 +43,18 @@ every programming language has a regex library included in the standard
 package. They all have mostly the same concepts, but sometimes differ in syntax
 in small ways due to the context of usage. We’ll concern ourselves with
 <code class="docutils literal notranslate"><span class="pre">grep</span></code> here and you can learn the differences on your own once you know this.</p>
-<p><code class="docutils literal notranslate"><span class="pre">grep</span></code> (the “GNU regular expression parser”) command is fully described on
-the <a class="reference external" href="https://www.gnu.org/software/grep/manual/grep.html">grep man page</a> including all the component constructs of the language,
-but I offer a commonly used subset here to give you a flavour of how to use it.</p>
+<p><code class="docutils literal notranslate"><span class="pre">grep</span></code> [#grep] command is fully described on the <a class="reference external" href="https://www.gnu.org/software/grep/manual/grep.html">grep man page</a> including
+all the component constructs of the language, but I offer a commonly used
+subset here to give you a flavour of how to use it.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="grep" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>The “GNU regular expression parser”. <a class="reference internal" href="#grep">grep</a> is an acronym for
+“globally search regular expression and print” - which was <cite>g/re/p</cite> in the
+early <cite>ed</cite> editor by Ken Thompson. There are other variants of “regular
+expressions” such as Perl’s PCRE (Perl Compatible Regular Expressions).</p>
+</aside>
+</aside>
 <section id="searching-for-words-and-phrases">
 <h2>Searching for words and phrases<a class="headerlink" href="#searching-for-words-and-phrases" title="Link to this heading">¶</a></h2>
 <p>To search for the exact phrase “King Kong versus Godzilla” in a movie script text
@@ -191,16 +199,16 @@ like “<code class="docutils literal notranslate"><span class="pre">{,n}</span>
 an exact number of times, you can either give “<code class="docutils literal notranslate"><span class="pre">{m,m}</span></code>” or abbreviate it as
 “<code class="docutils literal notranslate"><span class="pre">{m}</span></code>”.</p>
 <p>“<code class="docutils literal notranslate"><span class="pre">{1,}</span></code>” describes “one or more occurrences” and since this is a commonly used
-pattern it has a special character for it “<code class="docutils literal notranslate"><span class="pre">\+</span></code>”. <a class="footnote-reference brackets" href="#esc" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+pattern it has a special character for it “<code class="docutils literal notranslate"><span class="pre">\+</span></code>”. <a class="footnote-reference brackets" href="#esc" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
 <p>Similarly, the notion of “zero or more occurrences” is also commonly used and has a special
-character for it “<code class="docutils literal notranslate"><span class="pre">\*</span></code>”. <a class="footnote-reference brackets" href="#esc" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+character for it “<code class="docutils literal notranslate"><span class="pre">\*</span></code>”. <a class="footnote-reference brackets" href="#esc" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
 <p>These are considered “eager matching operators”, meaning they will match as many
 characters as possible. So if you have a text “xxxxx” and you’re using “<code class="docutils literal notranslate"><span class="pre">x\+</span></code>” to
 match it, though the notion of “one or more xs” includes the idea of “3 xs”, it will
 match the whole run of them <strong>eagerly</strong>.</p>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="esc" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
 <span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
 <p>In other situations, the “+” and “*” is usually not escaped like
 that. In the context of <code class="docutils literal notranslate"><span class="pre">grep</span></code> though, “+” by itself means the literal
@@ -306,16 +314,7 @@ or place them within a character set, like <code class="docutils literal notrans
 
 
 
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
@@ -357,6 +356,16 @@ or place them within a character set, like <code class="docutils literal notrans
   </ul></li>
 </ul>
 </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -373,8 +382,8 @@ or place them within a character set, like <code class="docutils literal notrans
       &#169;2024, Srikumar K. S..
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="_sources/regex.rst.txt"

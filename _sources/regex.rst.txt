@@ -11,11 +11,16 @@ package. They all have mostly the same concepts, but sometimes differ in syntax
 in small ways due to the context of usage. We'll concern ourselves with
 ``grep`` here and you can learn the differences on your own once you know this.
 
-``grep`` (the "GNU regular expression parser") command is fully described on
-the `grep man page`_ including all the component constructs of the language,
-but I offer a commonly used subset here to give you a flavour of how to use it.
+``grep`` [#grep] command is fully described on the `grep man page`_ including
+all the component constructs of the language, but I offer a commonly used
+subset here to give you a flavour of how to use it.
 
 .. _grep man page: https://www.gnu.org/software/grep/manual/grep.html
+.. [#grep] The "GNU regular expression parser". grep_ is an acronym for
+   "globally search regular expression and print" - which was `g/re/p` in the
+   early `ed` editor by Ken Thompson. There are other variants of "regular
+   expressions" such as Perl's PCRE (Perl Compatible Regular Expressions).
+.. _grep https://en.wikipedia.org/wiki/Grep
 
 Searching for words and phrases
 -------------------------------
